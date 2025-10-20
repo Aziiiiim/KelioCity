@@ -4,7 +4,6 @@ Ce dépôt contient notre travail sur le projet **KelioCity**, projet visant à 
 
 Ce projet se fait dans le cadre de l'UE PROCOM à l'**IMT Atlantique** en collaboration avec l'entreprise **Kelio**. 
 
-
 ## Installation et lancement
 
 ### Cloner le dépot
