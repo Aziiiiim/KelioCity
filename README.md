@@ -31,15 +31,27 @@ npm run dev
 
 Puis, le projet sera accessible à l'adresse : <http://localhost:5173>
 
+---
+
 ## Déploiment
+
+---
+
 ## Fonctionnalités
+
+---
+
 ## Démo
+
+---
 
 ## Auteurs
 
 - Azim BARHOUMI (azim.barhoumi@imt-atlantique.net)
 - Maureen LEPRINCE (maureen.leprince@imt-atlantique.net)
 - Arthur LOIZEAU (arthur.loizeau@imt-atlantique.net)
+
+---
 
 ## Superviseurs
 
