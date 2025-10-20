@@ -1,16 +1,48 @@
-# React + Vite
+# KelioCity
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ce dépôt contient notre travail sur le projet **KelioCity**, projet visant à modéliser l'espace de travail d'une entreprise et d'intéragir avec les éléments qui apparaissent.
 
-Currently, two official plugins are available:
+Ce projet se fait dans le cadre de l'UE PROCOM à l'**IMT Atlantique** en collaboration avec l'entreprise **Kelio**. 
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
+## Installation et lancement
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Cloner le dépot
 
-## Expanding the ESLint configuration
+- https:
+```bash
+git clone https://github.com/Aziiiiim/KelioCity.git
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- ssh:
+```bash
+git clone git@github.com:Aziiiiim/KelioCity.git
+```
+
+### Installer les dépendances
+```bash
+npm install
+```
+
+### Lancer le serveur
+```bash
+npm run dev
+```
+
+Puis, le projet sera accessible à l'adresse : <http://localhost:5173>
+
+## Déploiment
+## Fonctionnalités
+## Démo
+
+## Auteurs
+
+- Azim BARHOUMI (azim.barhoumi@imt-atlantique.net)
+- Maureen LEPRINCE (maureen.leprince@imt-atlantique.net)
+- Arthur LOIZEAU (arthur.loizeau@imt-atlantique.net)
+
+## Superviseurs
+
+- Mederic GILLET (mederic.gillet@kelio.com)
+- David MARTIN (david.martin@kelio.com)
+- Thomas LEDOUX (Thomas.Ledoux@imt-atlantique.fr)
