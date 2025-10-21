@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
+import diamondURL from '/assets/textures/diamond.png';
 
 const SpinningCube = () => {
   const canvasRef = useRef(null);
@@ -14,7 +15,7 @@ const SpinningCube = () => {
     camera.position.set(0, 0, 2);
 
     const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const texture = new THREE.TextureLoader().load('/assets/textures/diamond.png');
+    const texture = new THREE.TextureLoader().load(diamondURL);
     const material = new THREE.MeshPhongMaterial({ map: texture });
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
