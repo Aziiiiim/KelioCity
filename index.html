@@ -3,13 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <title>KelioCity</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style>
-      html, body, #root { height: 100%; margin: 0; }
-    </style>
+    <link rel="stylesheet" href="./src/styles/main.css">
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div id="root-window">
+      <div id="render-target"></div>
+    </div>
+    <script type="module">
+      import {createScene,onMouseDown,onMouseUp,onMouseMove} from './src/core/scene.jsx'
+      window.onload = () => {
+        window.scene = createScene();
+        document.addEventListener('mousedown',onMouseDown,false);
+        document.addEventListener('mouseup',onMouseUp,false);
+        document.addEventListener('mousemove',onMouseMove,false)
+        window.scene.start();
+      }
+    </script>
   </body>
 </html>
