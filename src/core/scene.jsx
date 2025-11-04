@@ -1,16 +1,17 @@
 import * as THREE from 'three';
-import { createCamera,onMouseDown as camMouseDown, onMouseUp as camMouseUp, onMouseMove as camMouseMove } from './camera.jsx';
+import { createCamera} from './camera.jsx';
 import { createSpinningCube } from '../objects/SpinningCube.jsx';
 import { createRenderer } from './renderer.jsx';
 import {createLight} from './lights.jsx';
-let activeCamera = null ;
+import {createBiggerSpinningCube} from '../objects/BiggerSpinningCube.jsx';
+import { createControls } from './controls.jsx';
+
 
 export function createScene(){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
 
     const { camera, resize: resizeCamera } = createCamera(gameWindow);
-    activeCamera = camera;
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
@@ -18,11 +19,18 @@ export function createScene(){
     const cube = createSpinningCube();
     scene.add(cube.mesh);
 
+    const biggerCube = createBiggerSpinningCube();
+    scene.add(biggerCube.mesh)
+
     const light = createLight();
     scene.add(light);
 
+
+    const controls = createControls(camera,gameWindow);
+
     function draw(){
         cube.update();
+        controls.update();
         renderer.render(scene,camera);
     }
 
@@ -41,18 +49,4 @@ export function createScene(){
     } 
 
     return { start, stop, scene, camera, renderer };
-}
-
-export function onMouseDown(event){
-    console.log('mousedown');
-    camMouseDown(event,activeCamera);
-}
-
-export function onMouseUp(event){
-    console.log('mouseup');
-    camMouseUp(event,activeCamera);
-}
-export function onMouseMove(event){
-    console.log('mousemove');
-    camMouseMove(event,activeCamera);
 }
