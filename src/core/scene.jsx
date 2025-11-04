@@ -41,6 +41,7 @@ export function createScene(){
     function draw(){
         cube.update();
         controls.update();
+        if (camera.position.y < 0) camera.position.y = 0;
         renderer.render(scene,camera);
     }
 
