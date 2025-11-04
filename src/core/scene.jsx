@@ -1,9 +1,8 @@
 import * as THREE from 'three';
 import { createCamera,onMouseDown as camMouseDown, onMouseUp as camMouseUp, onMouseMove as camMouseMove } from './camera.jsx';
-import { createSpinningCube } from '../objects/SpinningCube.jsx';
 import { createRenderer } from './renderer.jsx';
-import {createLight} from './lights.jsx';
-import {createMeetingRoom} from "../objects/MeetingRoom.jsx";
+import {createAmbientLight, createDirectionalLight} from './lights.jsx';
+import { createOffice } from '../objects/Office.jsx';
 let activeCamera = null ;
 
 export function createScene(){
@@ -16,27 +15,23 @@ export function createScene(){
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
 
-    // Load cube
-    const cube = createSpinningCube();
-    scene.add(cube.mesh);
-
-    // Load Meeting Room
-    const meetingRoomElements = createMeetingRoom();
-    function loadLoopMeetingRoom() {
-        requestAnimationFrame(loadLoopMeetingRoom);
-        for (let i=0; i<meetingRoomElements.length; i++) {
-            if (!scene.children.includes(meetingRoomElements[i])) {
-                scene.add(meetingRoomElements[i]);
+    // Load Office
+    const office = createOffice();
+    function loadLoopOffice() {
+        requestAnimationFrame(loadLoopOffice);
+        for (let i=0; i<office.length; i++) {
+            if (!scene.children.includes(office[i])) {
+                scene.add(office[i]);
             }
         }
     }
-    loadLoopMeetingRoom();
+    loadLoopOffice();
 
-    const light = createLight();
+    const light = createDirectionalLight();
     scene.add(light);
+    scene.add(light.target);
 
     function draw(){
-        cube.update();
         renderer.render(scene,camera);
     }
 
