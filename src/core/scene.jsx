@@ -3,9 +3,8 @@ import { createCamera} from './camera.jsx';
 import { createSpinningCube } from '../objects/SpinningCube.jsx';
 import { createRenderer } from './renderer.jsx';
 import {createLight} from './lights.jsx';
-import {createBiggerSpinningCube} from '../objects/BiggerSpinningCube.jsx';
 import { createControls } from './controls.jsx';
-
+import {createMeetingRoom} from "../objects/MeetingRoom.jsx";
 
 export function createScene(){
     const gameWindow = document.getElementById('render-target');
@@ -15,12 +14,23 @@ export function createScene(){
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
-    
+
+    // Load cube
     const cube = createSpinningCube();
     scene.add(cube.mesh);
 
-    const biggerCube = createBiggerSpinningCube();
-    scene.add(biggerCube.mesh)
+
+    // Load Meeting Room
+    const meetingRoomElements = createMeetingRoom();
+    function loadLoopMeetingRoom() {
+        requestAnimationFrame(loadLoopMeetingRoom);
+        for (let i=0; i<meetingRoomElements.length; i++) {
+            if (!scene.children.includes(meetingRoomElements[i])) {
+                scene.add(meetingRoomElements[i]);
+            }
+        }
+    }
+    loadLoopMeetingRoom();
 
     const light = createLight();
     scene.add(light);
