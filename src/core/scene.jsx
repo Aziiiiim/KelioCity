@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { createCamera} from './camera.jsx';
-import { createSpinningCube } from '../objects/SpinningCube.jsx';
 import { createRenderer } from './renderer.jsx';
 import {createAmbientLight, createDirectionalLight, createSetupLight} from './lights.jsx';
 import { createControls } from './controls.jsx';
@@ -40,7 +39,6 @@ export function createScene(){
     for (let i=0; i<lights.length; i++) {           
         scene.add(lights[i]);
     }
-
 
     const controls = createControls(camera,gameWindow);
 
