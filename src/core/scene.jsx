@@ -1,9 +1,12 @@
 import * as THREE from 'three';
 import { createCamera,onMouseDown as camMouseDown, onMouseUp as camMouseUp, onMouseMove as camMouseMove } from './camera.jsx';
 import { createRenderer } from './renderer.jsx';
-import {createAmbientLight, createDirectionalLight} from './lights.jsx';
+import {createAmbientLight, createDirectionalLight, createSetupLight} from './lights.jsx';
 import { createOffice } from '../objects/Office.jsx';
+import { createCharacters } from '../objects/Characters.jsx';
+
 let activeCamera = null ;
+let clock = new THREE.Clock();
 
 export function createScene(){
     const gameWindow = document.getElementById('render-target');
@@ -16,20 +19,27 @@ export function createScene(){
     gameWindow.appendChild(renderer.domElement);
 
     // Load Office
-    const office = createOffice();
-    function loadLoopOffice() {
-        requestAnimationFrame(loadLoopOffice);
+    let office = createOffice();
+    let characters = createCharacters();
+    function loadLoop() {
+        requestAnimationFrame(loadLoop);
         for (let i=0; i<office.length; i++) {
             if (!scene.children.includes(office[i])) {
                 scene.add(office[i]);
             }
         }
+        for (let i=0; i<characters.length; i++) {
+            if (!scene.children.includes(characters[i])) {
+                scene.add(characters[i].scene);
+            }
+        }
     }
-    loadLoopOffice();
+    loadLoop();
 
-    const light = createDirectionalLight();
-    scene.add(light);
-    scene.add(light.target);
+    const lights = createSetupLight();
+    for (let i=0; i<lights.length; i++) {           
+        scene.add(lights[i]);
+    }
 
     function draw(){
         renderer.render(scene,camera);
@@ -49,7 +59,19 @@ export function createScene(){
         renderer.setAnimationLoop(null);
     } 
 
-    return { start, stop, scene, camera, renderer };
+    function animate() {
+        requestAnimationFrame(animate);
+
+        const delta = clock.getDelta();
+
+        characters.forEach(character => {
+            character.mixer.update(delta);
+        });
+
+        renderer.render(scene, camera);
+    }
+
+    return { start, stop, animate, scene, camera, renderer };
 }
 
 export function onMouseDown(event){
@@ -65,3 +87,4 @@ export function onMouseMove(event){
     console.log('mousemove');
     camMouseMove(event,activeCamera);
 }
+

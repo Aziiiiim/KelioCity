@@ -40,7 +40,8 @@ export function createOffice() {
 
     // Desk
     loader.load( './assets/models/decoratedDesk.glb', function ( gltf ) {
-        gltf.scene.position.set(0.3,0,6);
+        gltf.scene.position.set(0.3,0,6.7);
+        gltf.scene.scale.set(1.1, 1.1, 1.1);
         elements.push( gltf.scene );
 
     }, undefined, function ( error ) {
@@ -85,7 +86,7 @@ export function createOffice() {
 
         console.error( error );
 
-    } );
+    } );    
 
     return elements;
 }
