@@ -98,6 +98,7 @@ export function createMeetingRoom() {
 
     const wallFront = wallBack.clone();
     wallFront.position.z = 7.5;
+    wallFront.rotation.y = Math.PI;
     toLoad.push(wallFront);
 
     const wallLeft = wallBack.clone();

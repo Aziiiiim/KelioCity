@@ -10,12 +10,9 @@
       <div id="render-target"></div>
     </div>
     <script type="module">
-      import {createScene,onMouseDown,onMouseUp,onMouseMove} from './src/core/scene.jsx'
+      import {createScene} from './src/core/scene.jsx'
       window.onload = () => {
         window.scene = createScene();
-        document.addEventListener('mousedown',onMouseDown,false);
-        document.addEventListener('mouseup',onMouseUp,false);
-        document.addEventListener('mousemove',onMouseMove,false)
         window.scene.start();
         window.scene.animate();
     }
