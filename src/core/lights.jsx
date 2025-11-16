@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 
 export function createLight(){
-    return new THREE.AmbientLight(0xffffff, 1.2);
+    const light = new THREE.AmbientLight(0xffffff, 2);
+    return light;
 }

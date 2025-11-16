@@ -4,7 +4,7 @@ import { createRenderer } from './renderer.jsx';
 import {createLight} from './lights.jsx';
 import { createControls } from './controls.jsx';
 import { createGround } from '../objects/Ground.jsx';
-
+import {createMeetingRoom} from "../objects/MeetingRoom.jsx";
 
 export function createScene(){
     const gameWindow = document.getElementById('render-target');
@@ -14,12 +14,22 @@ export function createScene(){
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
-    
     //const meshes = [];
     const ground = createGround();
 
     scene.add(ground);
 
+    // Load Meeting Room
+    const meetingRoomElements = createMeetingRoom();
+    function loadLoopMeetingRoom() {
+        requestAnimationFrame(loadLoopMeetingRoom);
+        for (let i=0; i<meetingRoomElements.length; i++) {
+            if (!scene.children.includes(meetingRoomElements[i])) {
+                scene.add(meetingRoomElements[i]);
+            }
+        }
+    }
+    loadLoopMeetingRoom();
 
     const light = createLight();
     scene.add(light);
@@ -29,6 +39,7 @@ export function createScene(){
 
     function draw(){
         controls.update();
+        if (camera.position.y < 0) camera.position.y = 0;
         renderer.render(scene,camera);
     }
 

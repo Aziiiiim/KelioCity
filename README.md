@@ -32,7 +32,12 @@ Puis, le projet sera accessible à l'adresse : <http://localhost:5173>
 
 ---
 
-## Déploiment
+## Déploiement
+- Sur n'importe quelle branche:
+```bash
+npm run deploy
+```
+Puis, le résultat déployé sera accessible à l'adresse : <https://aziiiiim.github.io/KelioCity/>
 
 ---
 
