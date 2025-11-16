@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { createCamera} from './camera.jsx';
-import { createSpinningCube } from '../objects/SpinningCube.jsx';
 import { createRenderer } from './renderer.jsx';
 import {createLight} from './lights.jsx';
 import { createControls } from './controls.jsx';
+import { createGround } from '../objects/Ground.jsx';
 import {createMeetingRoom} from "../objects/MeetingRoom.jsx";
 
 export function createScene(){
@@ -14,11 +14,10 @@ export function createScene(){
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
+    //const meshes = [];
+    const ground = createGround();
 
-    // Load cube
-    const cube = createSpinningCube();
-    scene.add(cube.mesh);
-
+    scene.add(ground);
 
     // Load Meeting Room
     const meetingRoomElements = createMeetingRoom();
@@ -39,7 +38,6 @@ export function createScene(){
     const controls = createControls(camera,gameWindow);
 
     function draw(){
-        cube.update();
         controls.update();
         if (camera.position.y < 0) camera.position.y = 0;
         renderer.render(scene,camera);

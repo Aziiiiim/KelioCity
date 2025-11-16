@@ -7,7 +7,7 @@ export function createCamera(container) {
     0.1,
     1000
   );
-  camera.position.set(0,0,6);
+  camera.position.set(5,5,5);
 
   function resize() {
     camera.aspect = container.clientWidth / container.clientHeight;
