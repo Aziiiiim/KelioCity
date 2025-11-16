@@ -1,10 +1,9 @@
 import * as THREE from 'three';
 import { createCamera} from './camera.jsx';
-import { createSpinningCube } from '../objects/SpinningCube.jsx';
 import { createRenderer } from './renderer.jsx';
 import {createLight} from './lights.jsx';
-import {createBiggerSpinningCube} from '../objects/BiggerSpinningCube.jsx';
 import { createControls } from './controls.jsx';
+import { createGround } from '../objects/Ground.jsx';
 
 
 export function createScene(){
@@ -16,11 +15,11 @@ export function createScene(){
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
     
-    const cube = createSpinningCube();
-    scene.add(cube.mesh);
+    //const meshes = [];
+    const ground = createGround();
 
-    const biggerCube = createBiggerSpinningCube();
-    scene.add(biggerCube.mesh)
+    scene.add(ground);
+
 
     const light = createLight();
     scene.add(light);
@@ -29,7 +28,6 @@ export function createScene(){
     const controls = createControls(camera,gameWindow);
 
     function draw(){
-        cube.update();
         controls.update();
         renderer.render(scene,camera);
     }
