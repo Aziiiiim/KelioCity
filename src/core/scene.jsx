@@ -21,6 +21,8 @@ export function createScene(){
 
     // Load Meeting Room
     const meetingRoomElements = createMeetingRoom();
+    scene.add(createLight(10.7,7.5,-4.3,-7.5));
+    scene.add(createLight(-4.3,-7.5,10.7,7.5));
     function loadLoopMeetingRoom() {
         requestAnimationFrame(loadLoopMeetingRoom);
         for (let i=0; i<meetingRoomElements.length; i++) {
@@ -30,9 +32,6 @@ export function createScene(){
         }
     }
     loadLoopMeetingRoom();
-
-    const light = createLight();
-    scene.add(light);
 
 
     const controls = createControls(camera,gameWindow);
