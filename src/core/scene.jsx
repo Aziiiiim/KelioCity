@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createCamera} from './camera.jsx';
 import { createRenderer } from './renderer.jsx';
 import {createLight, createSetupLight} from './lights.jsx';
@@ -23,29 +24,21 @@ export function createScene(){
     scene.add(ground);
 
     // Load Meeting Room
-    const meetingRoomElements = createMeetingRoom();
+    const MeetingRoom = createMeetingRoom();
+    scene.add(MeetingRoom);
     //scene.add(createLight(10.7,7.5,-4.3,-7.5));
     //scene.add(createLight(-4.3,-7.5,10.7,7.5));
-    function loadLoopMeetingRoom() {
-        requestAnimationFrame(loadLoopMeetingRoom);
-        for (let i=0; i<meetingRoomElements.length; i++) {
-            if (!scene.children.includes(meetingRoomElements[i])) {
-                scene.add(meetingRoomElements[i]);
-            }
-        }
-    }
-    loadLoopMeetingRoom();
+    
 
-    const characters = createCharacters();
-    function loadCharacters() {
-        requestAnimationFrame(loadCharacters);
-        for (let i=0; i<characters.length; i++) {
-            if (!scene.children.includes(characters[i].scene)) {
-                scene.add(characters[i].scene);
-            }
-        }
-    }
-    loadCharacters();
+    // Load Office
+    const office1 = createOffice(5, 0, 8);
+    scene.add(office1);
+    const office2 = createOffice(-1, 0, 8);
+    scene.add(office2);
+
+    // Load Characters
+    const {characters, groupCharacters} = createCharacters();
+    scene.add(groupCharacters);
 
     const lights = createSetupLight();
     for (let i=0; i<lights.length; i++) {           
