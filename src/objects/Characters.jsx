@@ -3,8 +3,9 @@ import * as THREE from 'three';
 
 export function createCharacters() {
 
+    const characters = [];
+    const groupCharacters = new THREE.Group();
 
-    var characters = [];
     const loader = new GLTFLoader();
 
     function initChar (asset, onReady) {
@@ -36,7 +37,8 @@ export function createCharacters() {
                 }
             };
 
-            characters.push( character)
+            characters.push( character);
+            groupCharacters.add(character.scene);
 
             if (onReady) onReady(character);
 
@@ -48,10 +50,16 @@ export function createCharacters() {
     }
 
     //Man 1
-    initChar('./assets/models/Man.glb', function(character) { //function to add rules to initialize the character
-        character.scene.position.set(0, 0, -1);
+    initChar('./assets/characters/Man1.glb', function(character) { //function to add rules to initialize the character
+        character.scene.position.set(5.1, 0, 7);
+        character.play("Sitting");
+    });
+
+    //Woman4
+    initChar('./assets/characters/Woman4.glb', function(character) { //function to add rules to initialize the character
+        character.scene.position.set(-0.9, 0, 7);
         character.play("Sitting");
     });
     
-    return characters;
+    return {characters, groupCharacters}
 }
