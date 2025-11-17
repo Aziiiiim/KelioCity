@@ -68,22 +68,6 @@ export function createMeetingRoom() {
         toLoad.push(employee);
     });
 
-    // We load the floor and the four walls
-    const texture = new THREE.TextureLoader().load('./assets/textures/laminate_floor.jpg');
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    texture.repeat.set(4, 4);
-    const material = new THREE.MeshPhongMaterial({ map: texture });
-    const floor = new THREE.Mesh(
-      new THREE.PlaneGeometry(15, 15),
-      material
-    );
-    floor.rotation.x = -Math.PI / 2;
-    floor.position.y = -0.4;
-    floor.position.x = 3.2;
-    floor.receiveShadow = true;
-    toLoad.push(floor);
-
     const wallTexture = new THREE.TextureLoader().load('./assets/textures/painted_plaster.jpg');
     wallTexture.wrapS = THREE.RepeatWrapping;
     wallTexture.wrapT = THREE.RepeatWrapping;

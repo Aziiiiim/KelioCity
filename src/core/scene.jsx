@@ -3,6 +3,7 @@ import { createCamera} from './camera.jsx';
 import { createRenderer } from './renderer.jsx';
 import {createAmbientLight, createDirectionalLight, createSetupLight} from './lights.jsx';
 import { createControls } from './controls.jsx';
+import { createGround } from '../objects/Ground.jsx';
 import { createOffice } from '../objects/Office.jsx';
 import { createCharacters } from '../objects/Characters.jsx';
 
@@ -16,20 +17,19 @@ export function createScene(){
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
+    const ground = createGround();
 
-    // Load Office
-    let office = createOffice();
-    let characters = createCharacters();
-    function loadLoop() {
-        requestAnimationFrame(loadLoop);
-        for (let i=0; i<office.length; i++) {
-            if (!scene.children.includes(office[i])) {
-                scene.add(office[i]);
-            }
-        }
-        for (let i=0; i<characters.length; i++) {
-            if (!scene.children.includes(characters[i])) {
-                scene.add(characters[i].scene);
+    scene.add(ground);
+
+    // Load Meeting Room
+    const meetingRoomElements = createMeetingRoom();
+    scene.add(createLight(10.7,7.5,-4.3,-7.5));
+    scene.add(createLight(-4.3,-7.5,10.7,7.5));
+    function loadLoopMeetingRoom() {
+        requestAnimationFrame(loadLoopMeetingRoom);
+        for (let i=0; i<meetingRoomElements.length; i++) {
+            if (!scene.children.includes(meetingRoomElements[i])) {
+                scene.add(meetingRoomElements[i]);
             }
         }
     }
@@ -41,6 +41,10 @@ export function createScene(){
     }
 
     const controls = createControls(camera,gameWindow);
+    camera.position.set(10,20,20);
+    controls.update();
+
+
 
     function draw(){
         controls.update();
