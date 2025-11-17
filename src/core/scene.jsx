@@ -17,20 +17,14 @@ export function createScene(){
     const ground = createGround();
 
     scene.add(ground);
+    scene.add(createLight(-25,-25,25,25));
+    scene.add(createLight(25,25,-25,-25));
 
     // Load Meeting Room
-    const meetingRoomElements = createMeetingRoom();
-    scene.add(createLight(10.7,7.5,-4.3,-7.5));
-    scene.add(createLight(-4.3,-7.5,10.7,7.5));
-    function loadLoopMeetingRoom() {
-        requestAnimationFrame(loadLoopMeetingRoom);
-        for (let i=0; i<meetingRoomElements.length; i++) {
-            if (!scene.children.includes(meetingRoomElements[i])) {
-                scene.add(meetingRoomElements[i]);
-            }
-        }
-    }
-    loadLoopMeetingRoom();
+    const meetingRoomElements = createMeetingRoom(-25,-25);
+    scene.add(meetingRoomElements.elements);
+    scene.add(createLight(-25,-25, meetingRoomElements.endX, meetingRoomElements.endZ));
+    scene.add(createLight(meetingRoomElements.endX, meetingRoomElements.endZ, -25,-25));
 
 
     const controls = createControls(camera,gameWindow);
