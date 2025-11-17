@@ -28,8 +28,9 @@ export function createScene(){
     // Load Meeting Room
     const meetingRoomElements = createMeetingRoom(-25,-25);
     scene.add(meetingRoomElements.elements);
-    scene.add(createLight(-25,-25, meetingRoomElements.endX, meetingRoomElements.endZ));
-    scene.add(createLight(meetingRoomElements.endX, meetingRoomElements.endZ, -25,-25));
+    const meetingRoomElements2 = createMeetingRoom(-25,meetingRoomElements.endZ);
+    scene.add(meetingRoomElements2.elements);
+
 
     // Load Office
     const office1 = createOffice(-6.7, 0, 5);

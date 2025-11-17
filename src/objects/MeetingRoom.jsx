@@ -100,6 +100,14 @@ export function createMeetingRoom(x,z) {
     wallRight.position.set(x+10.7, 2.45, z);
     elements.add(wallRight);
 
+    // Door
+    loader.load( './assets/models/door.glb', function ( gltf ) {
+        gltf.scene.position.set(x+10.6,0,z-5);
+        gltf.scene.scale.set(3,3,3);
+        gltf.scene.rotation.y = Math.PI/2;
+        elements.add( gltf.scene );
+    });
+
   const endX = x+10.7;
   const endZ = z+6;
   return {elements, endX, endZ};
