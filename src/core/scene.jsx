@@ -1,10 +1,11 @@
 import * as THREE from 'three';
 import { createCamera} from './camera.jsx';
 import { createRenderer } from './renderer.jsx';
-import {createAmbientLight, createDirectionalLight, createSetupLight} from './lights.jsx';
+import {createLight, createSetupLight} from './lights.jsx';
 import { createControls } from './controls.jsx';
 import { createGround } from '../objects/Ground.jsx';
 import { createOffice } from '../objects/Office.jsx';
+import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
 import { createCharacters } from '../objects/Characters.jsx';
 
 let clock = new THREE.Clock();
@@ -23,8 +24,8 @@ export function createScene(){
 
     // Load Meeting Room
     const meetingRoomElements = createMeetingRoom();
-    scene.add(createLight(10.7,7.5,-4.3,-7.5));
-    scene.add(createLight(-4.3,-7.5,10.7,7.5));
+    //scene.add(createLight(10.7,7.5,-4.3,-7.5));
+    //scene.add(createLight(-4.3,-7.5,10.7,7.5));
     function loadLoopMeetingRoom() {
         requestAnimationFrame(loadLoopMeetingRoom);
         for (let i=0; i<meetingRoomElements.length; i++) {
@@ -33,7 +34,18 @@ export function createScene(){
             }
         }
     }
-    loadLoop();
+    loadLoopMeetingRoom();
+
+    const characters = createCharacters();
+    function loadCharacters() {
+        requestAnimationFrame(loadCharacters);
+        for (let i=0; i<characters.length; i++) {
+            if (!scene.children.includes(characters[i].scene)) {
+                scene.add(characters[i].scene);
+            }
+        }
+    }
+    loadCharacters();
 
     const lights = createSetupLight();
     for (let i=0; i<lights.length; i++) {           
