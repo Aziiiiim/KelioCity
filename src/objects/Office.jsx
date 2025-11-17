@@ -1,15 +1,11 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
-
-export function createOffice(x, y, z) {
     
-    const elements = new THREE.Group();
 export function createOffice(x, y, z) {
     
     const elements = new THREE.Group();
 
     // Wall and floor
-    const floorGeo = new THREE.PlaneGeometry(6, 4);
     const floorGeo = new THREE.PlaneGeometry(6, 4);
     const floorMat = new THREE.MeshBasicMaterial( { color: 0xdedede } );
     const floorMesh = new THREE.Mesh(floorGeo, floorMat);
@@ -26,27 +22,17 @@ export function createOffice(x, y, z) {
     const wallMesh1 = new THREE.Mesh(wallGeo1, wallMat);
     wallMesh1.position.set(0+x,2.5+y,-3+z)
     elements.add(wallMesh1);
-    const wallMesh1 = new THREE.Mesh(wallGeo1, wallMat);
-    wallMesh1.position.set(0+x,2.5+y,-3+z)
-    elements.add(wallMesh1);
 
-    const wallMesh2 = new THREE.Mesh(wallGeo2, wallMat);
     const wallMesh2 = new THREE.Mesh(wallGeo2, wallMat);
     wallMesh2.rotation.y = Math.PI * -.5;
     wallMesh2.position.set(3+x,2.5+y,-1+z);
     elements.add(wallMesh2);
-    wallMesh2.position.set(3+x,2.5+y,-1+z);
-    elements.add(wallMesh2);
 
-    const wallMesh3 = new THREE.Mesh(wallGeo2, wallMat);
     const wallMesh3 = new THREE.Mesh(wallGeo2, wallMat);
     wallMesh3.rotation.y = Math.PI * .5;
     wallMesh3.position.set(-3+x,2.5+y,-1+z);
     elements.add(wallMesh3);
-    wallMesh3.position.set(-3+x,2.5+y,-1+z);
-    elements.add(wallMesh3);
 
-    const wallMesh4 = new THREE.Mesh(wallGeo1, wallMat);
     const wallMesh4 = new THREE.Mesh(wallGeo1, wallMat);
     wallMesh4.rotation.y = Math.PI ;
     wallMesh4.position.set(0+x,2.5+y,1+z);
@@ -141,7 +127,6 @@ export function createOffice(x, y, z) {
 
         console.error( error );
 
-    } ); 
     } ); 
 
     return elements;
