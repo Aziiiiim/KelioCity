@@ -32,9 +32,9 @@ export function createScene(){
     scene.add(createLight(meetingRoomElements.endX, meetingRoomElements.endZ, -25,-25));
 
     // Load Office
-    const office1 = createOffice(5, 0, 8);
+    const office1 = createOffice(-6.7, 0, 5);
     scene.add(office1);
-    const office2 = createOffice(-1, 0, 8);
+    const office2 = createOffice(-12.7, 0, 5);
     scene.add(office2);
 
     // Load Characters

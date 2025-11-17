@@ -4,15 +4,17 @@ import * as THREE from 'three';
 export function createOffice(x, y, z) {
     
     const elements = new THREE.Group();
+    x += 11.7;
+    z += 3;
 
     // Wall and floor
     const floorGeo = new THREE.PlaneGeometry(6, 4);
     const floorMat = new THREE.MeshBasicMaterial( { color: 0xdedede } );
     const floorMesh = new THREE.Mesh(floorGeo, floorMat);
     floorMesh.rotation.x = Math.PI * -.5;
-    floorMesh.position.set(0+x,y,-1+z)
+    floorMesh.position.set(0+x,y+0.01,-1+z)
     elements.add(floorMesh);
-    floorMesh.position.set(0+x,y,-1+z)
+    floorMesh.position.set(0+x,y+0.01,-1+z)
     elements.add(floorMesh);
 
     const wallGeo1 = new THREE.PlaneGeometry(6, 5);
@@ -20,7 +22,7 @@ export function createOffice(x, y, z) {
     const wallMat = new THREE.MeshBasicMaterial( { color: 0x5c6e66 } );
 
     const wallMesh1 = new THREE.Mesh(wallGeo1, wallMat);
-    wallMesh1.position.set(0+x,2.5+y,-3+z)
+    wallMesh1.position.set(0+x,2.5+y,-3+z);
     elements.add(wallMesh1);
 
     const wallMesh2 = new THREE.Mesh(wallGeo2, wallMat);
