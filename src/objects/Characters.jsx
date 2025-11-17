@@ -51,13 +51,13 @@ export function createCharacters() {
 
     //Man 1
     initChar('./assets/characters/Man1.glb', function(character) { //function to add rules to initialize the character
-        character.scene.position.set(5.1, 0, 7);
+        character.scene.position.set(22.1, 0, -23);
         character.play("Sitting");
     });
 
     //Woman4
     initChar('./assets/characters/Woman4.glb', function(character) { //function to add rules to initialize the character
-        character.scene.position.set(-0.9, 0, 7);
+        character.scene.position.set(16.1, 0, -23);
         character.play("Sitting");
     });
     

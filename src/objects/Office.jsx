@@ -4,7 +4,7 @@ import * as THREE from 'three';
 export function createOffice(x, y, z) {
     
     const elements = new THREE.Group();
-    x += 11.7;
+    x += 3;
     z += 3;
 
     // Wall and floor
@@ -19,7 +19,7 @@ export function createOffice(x, y, z) {
 
     const wallGeo1 = new THREE.PlaneGeometry(6, 5);
     const wallGeo2 = new THREE.PlaneGeometry(4, 5);
-    const wallMat = new THREE.MeshBasicMaterial( { color: 0x5c6e66 } );
+    const wallMat = new THREE.MeshBasicMaterial( { color: 0x5c6e66, side: THREE.DoubleSide } );
 
     const wallMesh1 = new THREE.Mesh(wallGeo1, wallMat);
     wallMesh1.position.set(0+x,2.5+y,-3+z);
