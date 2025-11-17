@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import floorDiffuseUrl from '/assets/textures/office_floor_diffuse.jpeg';
+import floorDiffuseUrl from '/assets/textures/laminate_floor.jpg';
 
 
 export function createGround(){
@@ -10,14 +10,15 @@ export function createGround(){
 
     texture.repeat.set(50, 50);
 
-    const material = new THREE.MeshStandardMaterial({
-        map: texture
-    });
-
-    const geometry = new THREE.PlaneGeometry(50, 50);
-    const ground = new THREE.Mesh(geometry, material);
+    const material = new THREE.MeshPhongMaterial({ map: texture });
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(50, 50),
+      material
+    );
 
     ground.rotation.x = -Math.PI / 2;
+    ground.position.y = -0.4;
+    ground.position.x = 3.2 ;
     ground.receiveShadow = true;
 
     return ground;

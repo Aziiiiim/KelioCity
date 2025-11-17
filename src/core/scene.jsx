@@ -14,7 +14,6 @@ export function createScene(){
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
-    //const meshes = [];
     const ground = createGround();
 
     scene.add(ground);
@@ -35,6 +34,10 @@ export function createScene(){
 
 
     const controls = createControls(camera,gameWindow);
+    camera.position.set(10,20,20);
+    controls.update();
+
+
 
     function draw(){
         controls.update();
