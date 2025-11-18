@@ -102,7 +102,7 @@ export function createMeetingRoom(x,z) {
 
     // Door
     loader.load( './assets/models/door.glb', function ( gltf ) {
-        gltf.scene.position.set(x+10.6,0,z-5);
+        gltf.scene.position.set(x+10.5,0,z-5);
         gltf.scene.scale.set(3,3,3);
         gltf.scene.rotation.y = Math.PI/2;
         elements.add( gltf.scene );

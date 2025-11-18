@@ -60,6 +60,47 @@ export function createCharacters() {
         character.scene.position.set(16.1, 0, -23);
         character.play("Sitting");
     });
+
+    //Man3
+    initChar('./assets/characters/Man3.glb', function(character) { //function to add rules to initialize the character
+        character.scene.position.set(0,0,0);
+        character.play("Walk");
+    });
+
+    //Man2
+    initChar('./assets/characters/Man2.glb', function(character) { //function to add rules to initialize the character
+        character.scene.position.set(3,0,15);
+        character.scene.rotation.y = Math.PI * .5;
+        character.play("Idle");
+    });
+
+    //Man4
+    initChar('./assets/characters/Man4.glb', function(character) { //function to add rules to initialize the character
+        character.scene.position.set(15,0,-10);
+        character.scene.rotation.y = Math.PI * -.5;
+        character.play("Idle");
+    });
+
+    //Woman1
+    initChar('./assets/characters/Woman1.glb', function(character) { //function to add rules to initialize the character
+        character.scene.position.set(-23.5,0,-6);
+        character.scene.rotation.y = Math.PI * .5;
+        character.play("Idle");
+    });
+
+    //Woman2
+    initChar('./assets/characters/Woman2.glb', function(character) { //function to add rules to initialize the character
+        character.scene.position.set(0,0,-10);
+        character.scene.rotation.y = Math.PI ;
+        character.play("Walk");
+    });
+
+    //Woan3
+    initChar('./assets/characters/Woman3.glb', function(character) { //function to add rules to initialize the character
+        character.scene.position.set(13.5,0,-10);
+        character.scene.rotation.y = Math.PI * .5;
+        character.play("Idle");
+    });
     
     return {characters, groupCharacters}
 }

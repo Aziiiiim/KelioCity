@@ -121,7 +121,7 @@ export function createOffice(x, y, z) {
 
     // Door
     loader.load( './assets/models/door.glb', function ( gltf ) {
-        gltf.scene.position.set(2.5+x,+y,1+z-0.15);
+        gltf.scene.position.set(2.5+x,+y,1+z-0.1);
         gltf.scene.scale.set(3,3,3);
         elements.add( gltf.scene );
 
