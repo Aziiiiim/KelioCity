@@ -1,0 +1,41 @@
+package com.keliocity.backend.model;
+
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "MEETINGS")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class Meeting {
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+	
+	@ManyToOne(optional = false)
+    @JoinColumn(name = "room_id", nullable = false)
+    private Room room;
+
+    @ManyToOne
+    @JoinColumn(name = "desk_id")
+    private Desk desk; // optionnel
+
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Column(name = "starting_hour", nullable = false)
+    private LocalDateTime startingHour;
+
+    @Column(name = "end_hour", nullable = false)
+    private LocalDateTime endHour;
+
+    @Column(name = "description")
+    private String description;
+}

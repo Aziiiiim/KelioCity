@@ -11,10 +11,10 @@ export function createScene(){
     const scene = new THREE.Scene();
 
 
-    fetch("http://localhost:8080/api/test")
-    .then(res => res.text())
-    .then(msg => console.log("Réponse du backend :", msg))
-    .catch(err => console.error("Erreur backend :", err));
+    fetch("http://localhost:8080/api/employees")
+    .then(res => res.json())
+    .then(data => console.log("👤 Employés :", data))
+    .catch(err => console.error("Erreur API:", err));
 
 
     const { camera, resize: resizeCamera } = createCamera(gameWindow);
