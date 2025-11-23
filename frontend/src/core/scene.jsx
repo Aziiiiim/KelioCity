@@ -10,6 +10,13 @@ export function createScene(){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
 
+
+    fetch("http://localhost:8080/api/test")
+    .then(res => res.text())
+    .then(msg => console.log("Réponse du backend :", msg))
+    .catch(err => console.error("Erreur backend :", err));
+
+
     const { camera, resize: resizeCamera } = createCamera(gameWindow);
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     resizeRenderer();

@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql_keliocity
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keliocity
+      MYSQL_USER: keliouser
+      MYSQL_PASSWORD: kelioPass123
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    image: eclipse-temurin:17-jdk
+    container_name: backend_keliocity
+    working_dir: /app
+    volumes:
+      - ./backend:/app   # ← Hot reload source code
+      - ~/.m2:/root/.m2  # ← Cache Maven = rapidité
+    command: ["./mvnw", "spring-boot:run"]
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/keliocity
+      SPRING_DATASOURCE_USERNAME: keliouser
+      SPRING_DATASOURCE_PASSWORD: kelioPass123
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+
+  frontend:
+    image: node:20
+    container_name: frontend_keliocity
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run dev -- --host"
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+
+volumes:
+  mysql_data:
