@@ -43,4 +43,8 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private EmployeeStatus status;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "sprite", nullable = false)
+    private Sprite sprite;
 }
