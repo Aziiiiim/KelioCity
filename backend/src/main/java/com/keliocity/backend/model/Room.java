@@ -31,4 +31,7 @@ public class Room {
 
     @Column(name = "coord_z2", nullable = false)
     private Float coordZ2;
+
+    @Column(name = "orientation_deg", nullable = false)
+    private Float orientation_deg;
 }
