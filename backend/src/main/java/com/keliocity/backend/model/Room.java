@@ -26,12 +26,9 @@ public class Room {
     @Column(name = "coord_z1", nullable = false)
     private Float coordZ1;
 
-    @Column(name = "coord_x2", nullable = false)
-    private Float coordX2;
-
-    @Column(name = "coord_z2", nullable = false)
-    private Float coordZ2;
-
     @Column(name = "orientation_deg", nullable = false)
-    private Float orientation_deg;
+    private Float orientationDeg;
+
+    @Column(name = "openspace_number", nullable = true)
+    private Integer openspaceNumber;
 }

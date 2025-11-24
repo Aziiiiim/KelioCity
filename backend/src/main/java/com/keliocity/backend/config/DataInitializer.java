@@ -11,13 +11,16 @@ public class DataInitializer implements CommandLineRunner {
     private final RoomRepository roomRepo;
     private final DeskRepository deskRepo;
     private final EmployeeRepository employeeRepo;
+    private final RoomTypeRepository roomTypeRepo;
 
     public DataInitializer(RoomRepository roomRepo,
                            DeskRepository deskRepo,
-                           EmployeeRepository employeeRepo) {
+                           EmployeeRepository employeeRepo,
+                           RoomTypeRepository roomTypeRepo) {
         this.roomRepo = roomRepo;
         this.deskRepo = deskRepo;
         this.employeeRepo = employeeRepo;
+        this.roomTypeRepo = roomTypeRepo;
     }
 
     @Override
@@ -25,6 +28,31 @@ public class DataInitializer implements CommandLineRunner {
 
         if (roomRepo.count() == 0) {
             System.out.println("➡️ Initialisation de la base de données…");
+
+            // --- ROOM TYPE ---
+            RoomType meetingRoom = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("MeetingRoom")
+                        .lengthX(10.7)
+                        .lengthZ(6)
+                        .build()
+            )
+
+            RoomType office = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office")
+                        .lengthX(6)
+                        .lengthZ(4)
+                        .build()
+            )
+
+            RoomType openspace = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Openspace")
+                        .lengthX(2.52)
+                        .lengthZ(3.85)
+                        .build()
+            )
 
             // --- ROOMS ---
             Room roomA = roomRepo.save(

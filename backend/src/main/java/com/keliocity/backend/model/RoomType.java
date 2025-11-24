@@ -19,12 +19,12 @@ public class RoomType {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "room_name", nullable = false)
-    private String room_name;
+    @Column(name = "roomtype_name", nullable = false)
+    private String roomName;
 
-    @Column(name = "length", nullable = false)
-    private Float length;
+    @Column(name = "length_x", nullable = false)
+    private Float lengthX;
 
-    @Column(name = "width", nullable = false)
-    private Float width;
+    @Column(name = "length_z", nullable = false)
+    private Float lengthZ;
 }
