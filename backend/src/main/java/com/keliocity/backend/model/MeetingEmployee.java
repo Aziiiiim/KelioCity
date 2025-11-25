@@ -4,18 +4,15 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 
 @Entity
 @Table(name = "MEETING_EMPLOYEES")
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class MeetingEmployee {
-	@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private MeetingEmployeeId id;
+	@EmbeddedId
+    private MeetingEmployeeId id = new MeetingEmployeeId();
 
     @ManyToOne
     @MapsId("meetingId")
