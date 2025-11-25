@@ -45,8 +45,8 @@ public class DataInitializer implements CommandLineRunner {
             RoomType meetingRoom = roomTypeRepo.save(
                     RoomType.builder()
                         .roomtypeName("MeetingRoom")
-                        .lengthX(10.7f)
-                        .lengthZ(6f)
+                        .lengthX(15f)
+                        .lengthZ(12f)
                         .build()
             );
 
