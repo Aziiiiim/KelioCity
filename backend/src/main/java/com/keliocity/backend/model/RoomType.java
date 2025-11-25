@@ -20,7 +20,7 @@ public class RoomType {
     private Integer id;
 
     @Column(name = "roomtype_name", nullable = false)
-    private String roomName;
+    private String roomtypeName;
 
     @Column(name = "length_x", nullable = false)
     private Float lengthX;
