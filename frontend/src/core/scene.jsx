@@ -9,6 +9,8 @@ import { createOffice } from '../objects/Office.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
 import { createCharacters } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
+import { apiTest } from "../utils/apiTest.js";
+
 
 let clock = new THREE.Clock();
 
@@ -16,10 +18,7 @@ export function createScene(){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
 
-    fetch("http://localhost:8080/api/employees")
-    .then(res => res.json())
-    .then(data => console.log("👤 Employés :", data))
-    .catch(err => console.error("Erreur API:", err));
+    //apiTest();
 
     const { camera, resize: resizeCamera } = createCamera(gameWindow);
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
