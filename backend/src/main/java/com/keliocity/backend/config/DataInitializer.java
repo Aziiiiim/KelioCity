@@ -8,8 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
 
-
-
 @Component
 public class DataInitializer implements CommandLineRunner {
 
