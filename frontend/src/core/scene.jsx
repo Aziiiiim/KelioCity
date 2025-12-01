@@ -9,7 +9,8 @@ import { createOffice } from '../objects/Office.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
 import { createCharacters } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
-import { apiTest } from "../utils/apiTest.js";
+import { createHighlighter } from "../utils/highlight.js";
+//import { apiTest } from "../utils/apiTest.js";
 
 
 let clock = new THREE.Clock();
@@ -74,6 +75,8 @@ export function createScene(){
     // Load Characters
     const {characters, groupCharacters} = createCharacters();
     scene.add(groupCharacters);
+
+    createHighlighter(camera, renderer, groupCharacters);
 
     const lights = createSetupLight();
     for (let i=0; i<lights.length; i++) {           
