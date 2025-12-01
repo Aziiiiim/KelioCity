@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-export function createMeetingRoom(x,z) {
+export function createMeetingRoom() {
     const elements = new THREE.Group();
-    x += 4.3;
-    z += 6;
+    let  x = 4.3;
+    let z = 6;
 
     // We load each element of our meeting room
     const loader = new GLTFLoader();

@@ -36,13 +36,12 @@ export function createScene(){
             for (let i=0; i < rooms.length; i++) {
                  let roomElements;
                  if (rooms[i]["roomType"]["roomtypeName"] === "MeetingRoom") {
-                     roomElements = createMeetingRoom(0,0).elements;
+                     roomElements = createMeetingRoom().elements;
                  }
                  else if (rooms[i]["roomType"]["roomtypeName"] === "Office") {
-                     console.log(rooms[i]["coordX1"]+""+rooms[i]["coordZ1"]);
-                     roomElements = createOffice(0, 0, 0);
+                     roomElements = createOffice();
                  } else if (rooms[i]["roomType"]["roomtypeName"] === "Openspace") {
-                     roomElements = createOpenspace(0, 0, rooms[i]["openspaceNumber"]);
+                     roomElements = createOpenspace(rooms[i]["openspaceNumber"]);
                  }
                  roomElements.rotation.y = rooms[i]["orientationDeg"] / 180 * Math.PI;
                  roomElements.position.set(rooms[i]["coordX1"], 0, rooms[i]["coordZ1"]);
@@ -50,50 +49,7 @@ export function createScene(){
             }
         })
         .catch(err => console.error("Erreur API:", err));
-
-
-    /*
-    // Load Meeting Room
-    const meetingRoomElements = createMeetingRoom(-25,-25);
-    scene.add(meetingRoomElements.elements);
-    const meetingRoomElements2 = createMeetingRoom(-25,meetingRoomElements.endZ);
-    scene.add(meetingRoomElements2.elements);
-    const meetingRoomElements3 = createMeetingRoom(-25,meetingRoomElements2.endZ);
-    meetingRoomElements3.elements.rotation.y = Math.PI/2;
-    meetingRoomElements3.elements.position.set(14,0,0);
-    scene.add(meetingRoomElements3.elements);
-    const meetingRoomElements4 = createMeetingRoom(-25,meetingRoomElements2.endZ);
-    meetingRoomElements4.elements.rotation.y = Math.PI/2;
-    meetingRoomElements4.elements.position.set(2,0,0);
-    scene.add(meetingRoomElements4.elements);
-
-    // Load Open spaces
-    const openspace1 = createOpenspace(-22,18,7);
-    scene.add(openspace1);
-    const openspace2 = createOpenspace(-22,10,7);
-    scene.add(openspace2);
-    const openspace3 = createOpenspace(-22,2,5);
-    scene.add(openspace3);
-
-    const openspace4 = createOpenspace(-22,2,10);
-    openspace4.rotation.y = Math.PI/2;
-    openspace4.position.set(16,0,-14);
-    scene.add(openspace4);
-    const openspace5 = createOpenspace(-22,2,10);
-    openspace5.rotation.y = Math.PI/2;
-    openspace5.position.set(4,0,-14);
-    scene.add(openspace5);
-
-    // Load Office
-    const office1 = createOffice(25-6, 0, -25);
-    scene.add(office1);
-    const office2 = createOffice(25-12, 0, -25);
-    scene.add(office2);
-    const office3 = createOffice(25-18, 0, -25);
-    scene.add(office3);
-    const office4 = createOffice(25-24, 0, -25);
-    scene.add(office4);
-    */
+     
     // Load Characters
     const {characters, groupCharacters} = createCharacters();
     scene.add(groupCharacters);
