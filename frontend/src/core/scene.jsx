@@ -9,6 +9,9 @@ import { createOffice } from '../objects/Office.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
 import { createCharacters } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
+import { createHighlighter } from "../utils/highlight.js";
+//import { apiTest } from "../utils/apiTest.js";
+
 
 let clock = new THREE.Clock();
 
@@ -16,7 +19,9 @@ export function createScene(){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
 
-    const { camera, resize: resizeCamera } = createCamera(gameWindow);
+    //apiTest();
+
+    const { camera, resize: resizeCamera, attachResetButton } = createCamera(gameWindow);
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
@@ -71,16 +76,16 @@ export function createScene(){
     const {characters, groupCharacters} = createCharacters();
     scene.add(groupCharacters);
 
+    createHighlighter(camera, renderer, groupCharacters);
+
     const lights = createSetupLight();
     for (let i=0; i<lights.length; i++) {           
         scene.add(lights[i]);
     }
 
     const controls = createControls(camera,gameWindow);
-    camera.position.set(10,20,20);
-    controls.update();
 
-
+    attachResetButton(controls);
 
     function draw(){
         controls.update();

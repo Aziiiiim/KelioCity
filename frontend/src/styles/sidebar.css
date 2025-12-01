@@ -1,0 +1,23 @@
+.sidebar {
+  position: fixed;  /* La sidebar reste collée à droite de l'écran */
+  right: 0;         /* Alignée à droite */
+  top: 0;           /* Alignée en haut */
+  width: 600px;     /* Largeur de la barre */
+  height: 100%;     /* Prend toute la hauteur de l'écran */
+  background: #ffffffee;    /* COuleur de fond (ee = transparent) */
+  backdrop-filter: blur(10px);  /*Effet flou*/ 
+  box-shadow: -4px 0 10px rgba(0,0,0,0.2);  /*Ombre portée sur la gauche*/
+  padding: 20px;    /*Marges internes*/ 
+  transform: translateX(100%);    /*Position initiale*/
+  transition: transform 0.4s ease;    /*Animation de slide */ 
+  z-index: 10;  /*S'assure que la sidebar apparaît au-dessus de la 3D*/ 
+  overflow-y: auto; /*Permet de scroller si le contenu dépasse*/
+}
+
+.sidebar.visible {
+  transform: translateX(0);
+}
+
+.sidebar.hidden {
+  transform: translateX(100%);
+}

@@ -1,0 +1,31 @@
+html,body {
+  height: 100%;
+  margin: 0;
+}
+
+#root-window {
+  height: 100%;
+}
+
+#render-target {
+  height: 100%;
+}
+
+.reset-btn {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  padding: 10px 15px;
+  background: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  transition: transform 0.15s ease;
+  z-index: 15;
+}
+
+.reset-btn:hover {
+  transform: scale(1.05);
+}
