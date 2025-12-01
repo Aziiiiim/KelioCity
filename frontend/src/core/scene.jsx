@@ -30,6 +30,29 @@ export function createScene(){
     scene.add(createLight(-25,-25,25,25));
     scene.add(createLight(25,25,-25,-25));
 
+     fetch("http://localhost:8080/api/rooms")
+        .then(res => res.json())
+        .then(rooms => {
+            for (let i=0; i < rooms.length; i++) {
+                 let roomElements;
+                 if (rooms[i]["roomType"]["roomtypeName"] === "MeetingRoom") {
+                     roomElements = createMeetingRoom(0,0).elements;
+                 }
+                 else if (rooms[i]["roomType"]["roomtypeName"] === "Office") {
+                     console.log(rooms[i]["coordX1"]+""+rooms[i]["coordZ1"]);
+                     roomElements = createOffice(0, 0, 0);
+                 } else if (rooms[i]["roomType"]["roomtypeName"] === "Openspace") {
+                     roomElements = createOpenspace(0, 0, rooms[i]["openspaceNumber"]);
+                 }
+                 roomElements.rotation.y = rooms[i]["orientationDeg"] / 180 * Math.PI;
+                 roomElements.position.set(rooms[i]["coordX1"], 0, rooms[i]["coordZ1"]);
+                 scene.add(roomElements);
+            }
+        })
+        .catch(err => console.error("Erreur API:", err));
+
+
+    /*
     // Load Meeting Room
     const meetingRoomElements = createMeetingRoom(-25,-25);
     scene.add(meetingRoomElements.elements);
@@ -70,7 +93,7 @@ export function createScene(){
     scene.add(office3);
     const office4 = createOffice(25-24, 0, -25);
     scene.add(office4);
-
+    */
     // Load Characters
     const {characters, groupCharacters} = createCharacters();
     scene.add(groupCharacters);
