@@ -102,13 +102,15 @@ export function createMeetingRoom(x,z) {
 
     // Door
     loader.load( './assets/models/door.glb', function ( gltf ) {
-        gltf.scene.position.set(x+10.5,0,z-5);
-        gltf.scene.scale.set(3,3,3);
+        gltf.scene.position.set(x+10.7,1.5,z-5);
+        gltf.scene.scale.set(4,4,4);
         gltf.scene.rotation.y = Math.PI/2;
         elements.add( gltf.scene );
     });
 
   const endX = x+10.7;
   const endZ = z+6;
+
+  elements.focusPosition = new THREE.Vector3(0, 9, 4);
   return {elements, endX, endZ};
 }
