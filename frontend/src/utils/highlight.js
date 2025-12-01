@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { openSidebar, closeSidebar } from "./sidebar.js";
 
 export function createHighlighter(camera, renderer, targetGroup) {
     const raycaster = new THREE.Raycaster();
@@ -56,7 +57,29 @@ export function createHighlighter(camera, renderer, targetGroup) {
         }
     };
 
+    const onClick = (e) => {
+        const bounds = renderer.domElement.getBoundingClientRect();
+
+        mouse.x = ((e.clientX - bounds.left) / bounds.width) * 2 - 1;
+        mouse.y = -((e.clientY - bounds.top) / bounds.height) * 2 + 1;
+
+        raycaster.setFromCamera(mouse, camera);
+        const hits = raycaster.intersectObject(targetGroup, true);
+
+        if (hits.length > 0) {
+            let obj = hits[0].object;
+            while (obj.parent && obj.parent !== targetGroup)
+                obj = obj.parent;
+
+            openSidebar();
+        } else {
+            closeSidebar();
+        }
+    };
+
+
     window.addEventListener("mousemove", onMouseMove);
+    window.addEventListener("click", onClick);
 
     return { highlight };
 }

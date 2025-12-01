@@ -21,7 +21,7 @@ export function createScene(){
 
     //apiTest();
 
-    const { camera, resize: resizeCamera } = createCamera(gameWindow);
+    const { camera, resize: resizeCamera, attachResetButton } = createCamera(gameWindow);
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
@@ -84,10 +84,8 @@ export function createScene(){
     }
 
     const controls = createControls(camera,gameWindow);
-    camera.position.set(10,20,20);
-    controls.update();
 
-
+    attachResetButton(controls);
 
     function draw(){
         controls.update();
