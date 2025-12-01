@@ -108,6 +108,10 @@ export function createMeetingRoom(x,z) {
         elements.add( gltf.scene );
     });
 
+    const box = new THREE.Box3().setFromObject(elements);
+    const center = box.getCenter(new THREE.Vector3());
+    elements.position.sub(center);
+
   const endX = x+10.7;
   const endZ = z+6;
   return {elements, endX, endZ};

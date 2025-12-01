@@ -131,5 +131,9 @@ export function createOffice(x, y, z) {
 
     } ); 
 
+    const box = new THREE.Box3().setFromObject(elements);
+    const center = box.getCenter(new THREE.Vector3());
+    elements.position.sub(center);
+
     return elements;
 }
