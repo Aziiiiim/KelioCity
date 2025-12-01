@@ -5,7 +5,10 @@ import { createRenderer } from './renderer.jsx';
 import {createLight, createSetupLight} from './lights.jsx';
 import { createControls } from './controls.jsx';
 import { createGround } from '../objects/Ground.jsx';
-import { createOffice } from '../objects/Office.jsx';
+import { createOffice1Desk } from '../objects/Office1Desk.jsx';
+import { createOffice2Desks } from '../objects/Office2Desks.jsx';
+import { createOffice4Desks } from '../objects/Office4Desks.jsx';
+import { createOffice6Desks } from '../objects/Office6Desks.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
 import { createCharacters } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
@@ -58,14 +61,18 @@ export function createScene(){
     scene.add(openspace5);
 
     // Load Office
-    const office1 = createOffice(25-6, 0, -25);
+    const office1 = createOffice1Desk(25-6, 0, -25);
     scene.add(office1);
-    const office2 = createOffice(25-12, 0, -25);
+    const office2 = createOffice1Desk(25-12, 0, -25);
     scene.add(office2);
-    const office3 = createOffice(25-18, 0, -25);
+    const office3 = createOffice2Desks(19, 0, 6.98);
+    office3.rotation.y = Math.PI*.5;
     scene.add(office3);
-    const office4 = createOffice(25-24, 0, -25);
+    const office4 = createOffice4Desks(-1.04, 0, -25);
     scene.add(office4);
+    const office5 = createOffice6Desks(0, 0, -9.98);
+    office5.rotation.y = Math.PI*.5;
+    scene.add(office5);
 
     // Load Characters
     const {characters, groupCharacters} = createCharacters();

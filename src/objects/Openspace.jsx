@@ -27,9 +27,9 @@ export function createOpenspace(x,z, nb_desks) {
         desk.rotation.y = Math.PI * j;
         elements.add(desk);
       });
-      loader.load('./assets/models/Computer.glb', (gltf) => {
+      loader.load('./assets/models/Laptop.glb', (gltf) => {
         const computer = gltf.scene;
-        computer.scale.set(0.002, 0.002, 0.002);
+        computer.scale.set(0.3,0.3,0.3);
         computer.position.set(x+2.52 * i - j*0.7 + 0.3, 0.87, z+1+j*1.25);
         computer.rotation.y = Math.PI * j;
         elements.add(computer);
