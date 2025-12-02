@@ -29,4 +29,7 @@ public class Desk {
 
     @Column(name = "coord_z", nullable = false)
     private Float coordZ;
+
+    @Column(name = "orientation_deg", nullable = false)
+    private Float orientationDeg;
 }
