@@ -79,8 +79,8 @@ export function createOffice() {
 
     // Message Board
     loader.load( './assets/models/messageBoard.glb', function ( gltf ) {
-        gltf.scene.position.set(0,1,-2.9+z);
-        gltf.scene.position.set(0,1,-2.9+z);
+        gltf.scene.position.set(2,1,-2.9+z);
+        gltf.scene.position.set(2,1,-2.9+z);
         gltf.scene.scale.set(0.02,0.02,0.02);
         gltf.scene.rotation.y = Math.PI*-.5;
         elements.add( gltf.scene );
