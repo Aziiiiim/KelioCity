@@ -48,11 +48,35 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
-            RoomType office = roomTypeRepo.save(
+            RoomType office1Desk = roomTypeRepo.save(
                     RoomType.builder()
-                        .roomtypeName("Office")
+                        .roomtypeName("Office1Desk")
                         .lengthX(6f)
                         .lengthZ(4f)
+                        .build()
+            );
+
+            RoomType office2Desks = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office2Desks")
+                        .lengthX(5f)
+                        .lengthZ(6f)
+                        .build()
+            );
+
+            RoomType office4Desks = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office4Desks")
+                        .lengthX(7f)
+                        .lengthZ(6f)
+                        .build()
+            );
+
+            RoomType office6Desks = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office6Desks")
+                        .lengthX(7f)
+                        .lengthZ(9f)
                         .build()
             );
 
@@ -103,7 +127,7 @@ public class DataInitializer implements CommandLineRunner {
 
             Room roomA105 = roomRepo.save(
                     Room.builder()
-                        .roomType(office)
+                        .roomType(office1Desk)
                         .roomName("A104")
                         .coordX1(19f).coordZ1(-25f)
                         .orientationDeg(0f)
@@ -112,7 +136,7 @@ public class DataInitializer implements CommandLineRunner {
 
             Room roomA106 = roomRepo.save(
                     Room.builder()
-                        .roomType(office)
+                        .roomType(office1Desk)
                         .roomName("A105")
                         .coordX1(13f).coordZ1(-25f)
                         .orientationDeg(0f)
@@ -121,7 +145,7 @@ public class DataInitializer implements CommandLineRunner {
 
             Room roomA107 = roomRepo.save(
                     Room.builder()
-                        .roomType(office)
+                        .roomType(office1Desk)
                         .roomName("A106")
                         .coordX1(7f).coordZ1(-25f)
                         .orientationDeg(0f)
@@ -130,7 +154,7 @@ public class DataInitializer implements CommandLineRunner {
 
             Room roomA108 = roomRepo.save(
                     Room.builder()
-                        .roomType(office)
+                        .roomType(office1Desk)
                         .roomName("A107")
                         .coordX1(1f).coordZ1(-25f)
                         .orientationDeg(0f)
