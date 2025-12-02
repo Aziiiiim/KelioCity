@@ -9,9 +9,10 @@ export function createCamera(container) {
     1000
   );
   camera.position.set(10,20,20);
-  const initialPosition = camera.position.clone();
+  const initialPoint = new THREE.Object3D();
+  initialPoint.position.set(0, 0, 0);
+  initialPoint.focusPosition = new THREE.Vector3(10, 20, 20); 
 
-  const initialTarget = new THREE.Vector3(0, 0, 0);
 
 
   function attachResetButton(controls) {
@@ -23,20 +24,7 @@ export function createCamera(container) {
 
 
   function reset(controls) {
-    camera.position.copy(initialPosition);
-    console.log("camera BEFORE reset:", camera.position);
-
-    if (controls) {
-      const old = controls.enableDamping;
-      controls.enableDamping = false;
-
-      controls.target.copy(initialTarget);
-      controls.update();
-
-      controls.enableDamping = old;
-      console.log("camera AFTER reset:", camera.position);
-
-    }
+    cameraOn(camera, controls, initialPoint);
   }
 
   function resize() {
@@ -55,16 +43,35 @@ export function cameraOn (camera, controls, obj) {
 
     // Position de caméra souhaitée 
     const camPos = center.clone().add(obj.focusPosition);
+    const startTarget = controls.target.clone();
+
+    const targetProxy = {
+        x: startTarget.x,
+        y: startTarget.y,
+        z: startTarget.z
+    };
 
     gsap.to(camera.position, {
         duration: 1.5,
         x: camPos.x,
         y: camPos.y,
         z: camPos.z,
-        ease: "power2.inOut"
+        ease: "power2.inOut",
+        onUpdate: () => {
+            // Mise à jour progressive de la target pendant le mouvement
+            controls.target.set(targetProxy.x, targetProxy.y, targetProxy.z);
+            controls.update();
+        }
     });
 
-    controls.target.copy(center);
+
+    gsap.to(targetProxy, {
+        duration: 1.5,
+        x: center.x,
+        y: center.y,
+        z: center.z,
+        ease: "power2.inOut"
+    });
 }
 
 /*

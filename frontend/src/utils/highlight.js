@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import { openSidebar, closeSidebar } from "./sidebar.js";
+import { cameraOn } from "../core/camera.jsx";
 
-export function createHighlighter(camera, renderer, targetGroup) {
+export function createHighlighter(camera,controls, renderer, targetGroup ) {
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
@@ -72,6 +73,7 @@ export function createHighlighter(camera, renderer, targetGroup) {
                 obj = obj.parent;
 
             openSidebar();
+            cameraOn(camera, controls, obj);
         } else {
             closeSidebar();
         }

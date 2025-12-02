@@ -83,8 +83,6 @@ export function createScene(){
     const {characters, groupCharacters} = createCharacters();
     scene.add(groupCharacters);
 
-    createHighlighter(camera, renderer, groupCharacters);
-
     const lights = createSetupLight();
     for (let i=0; i<lights.length; i++) {           
         scene.add(lights[i]);
@@ -93,7 +91,8 @@ export function createScene(){
     const controls = createControls(camera,gameWindow);
 
     attachResetButton(controls);
-
+    createHighlighter(camera, controls, renderer, groupCharacters);
+    
     function draw(){
         controls.update();
         if (camera.position.y < 0) camera.position.y = 0;
