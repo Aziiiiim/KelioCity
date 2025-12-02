@@ -193,7 +193,7 @@ public class DataInitializer implements CommandLineRunner {
                     Desk.builder()
                         .deskName("Desk A105")
                         .room(roomA105)
-                        .coordX(10.3f).coordZ(-16f)
+                        .coordX(22.1f).coordZ(-23f)
                         .build()
             );
 
@@ -201,7 +201,7 @@ public class DataInitializer implements CommandLineRunner {
                     Desk.builder()
                         .deskName("Desk A106")
                         .room(roomA106)
-                        .coordX(4.3f).coordZ(-16f)
+                        .coordX(16.1f).coordZ(-23f)
                         .build()
             );
 
@@ -209,7 +209,7 @@ public class DataInitializer implements CommandLineRunner {
                     Desk.builder()
                         .deskName("Desk A107")
                         .room(roomA107)
-                        .coordX(-2.3f).coordZ(-16f)
+                        .coordX(10.1f).coordZ(-23f)
                         .build()
             );
 
@@ -217,7 +217,7 @@ public class DataInitializer implements CommandLineRunner {
                     Desk.builder()
                         .deskName("Desk A108")
                         .room(roomA108)
-                        .coordX(-6.3f).coordZ(-16f)
+                        .coordX(6.1f).coordZ(-23f)
                         .build()
             );
 
@@ -366,7 +366,7 @@ public class DataInitializer implements CommandLineRunner {
                             Desk.builder()
                                 .deskName("Desk OA100_00"+(j+1)+" "+(2*i+1))
                                 .room(openspaces[j])
-                                .coordX((-20.95f+2.52f*i)).coordZ(18f-8f*j)
+                                .coordX((-19.75f+2.52f*i)).coordZ(18.3f-8f*j)
                                 .build()
                         );
                         deskRepo.flush();
@@ -394,7 +394,7 @@ public class DataInitializer implements CommandLineRunner {
                             Desk.builder()
                                 .deskName("Desk OA100_00"+(j+1)+" "+(2*i+2))
                                 .room(openspaces[j])
-                                .coordX(-21.45f+2.52f*i).coordZ(21.85f-8f*j)
+                                .coordX(-20.35f+2.52f*i).coordZ(21.1f-8f*j)
                                 .build()
                         );
                         deskRepo.flush();
@@ -428,7 +428,7 @@ public class DataInitializer implements CommandLineRunner {
                         Desk.builder()
                             .deskName("Desk OA100_00"+(j+4)+" "+(2*i+1))
                             .room(openspaces[j+3])
-                            .coordX(0f-12f*j).coordZ(-12.95f+2.52f*i)
+                            .coordX(16.3f-12f*j).coordZ(-16.9f+2.52f*i)
                             .build()
                     );
                     deskRepo.flush();
@@ -456,7 +456,7 @@ public class DataInitializer implements CommandLineRunner {
                         Desk.builder()
                             .deskName("Desk OA100_00"+(j+4)+" "+(2*i+2))
                             .room(openspaces[j+3])
-                            .coordX(19.85f-12f*j).coordZ(-12.95f+2.52f*i)
+                            .coordX(19.15f-12f*j).coordZ(-16.35f+2.52f*i)
                             .build()
                     );
                     deskRepo.flush();
