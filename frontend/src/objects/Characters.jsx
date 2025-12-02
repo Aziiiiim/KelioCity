@@ -1,106 +1,42 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
 
-export function createCharacters() {
-
-    const characters = [];
-    const groupCharacters = new THREE.Group();
-
+export function initChar (asset, onReady) {
     const loader = new GLTFLoader();
 
-    function initChar (asset, onReady) {
-        loader.load( asset, function ( gltf ) {
-            gltf.scene.scale.set(0.5,0.5,0.5);
+    loader.load( asset, function ( gltf ) {
+        gltf.scene.scale.set(0.5,0.5,0.5);
 
-            const armature = gltf.scene.getObjectByName("HumanArmature");  
-            const mixer = new THREE.AnimationMixer(armature);
-            const actions = {};
-            actions["Sitting"] = mixer.clipAction( gltf.animations[7] ); // s'asseoir
-            actions["Sitting"].setLoop(THREE.LoopOnce);
-            actions["Sitting"].clampWhenFinished = true;
-            
-            actions["Walk"] = mixer.clipAction( gltf.animations[10] ); // marcher
-            actions["Standing"] = mixer.clipAction( gltf.animations[8] ); // se mettre debout
-            actions["Idle"] = mixer.clipAction( gltf.animations[2] ); // être debout
-            
-            const character = {
-                scene: gltf.scene,
-                mixer,
-                actions,
-                currentAction: null,
+        const armature = gltf.scene.getObjectByName("HumanArmature");
+        const mixer = new THREE.AnimationMixer(armature);
+        const actions = {};
+        actions["Sitting"] = mixer.clipAction( gltf.animations[7] ); // s'asseoir
+        actions["Sitting"].setLoop(THREE.LoopOnce);
+        actions["Sitting"].clampWhenFinished = true;
 
-                play(name) {
-                    if (this.currentAction) this.currentAction.fadeOut(0.2);
-                    const newAction = this.actions[name];
-                    newAction.reset().fadeIn(0.2).play();
-                    this.currentAction = newAction;
-                }
-            };
+        actions["Walk"] = mixer.clipAction( gltf.animations[10] ); // marcher
+        actions["Standing"] = mixer.clipAction( gltf.animations[8] ); // se mettre debout
+        actions["Idle"] = mixer.clipAction( gltf.animations[2] ); // être debout
 
-            characters.push( character);
-            groupCharacters.add(character.scene);
+        const character = {
+            scene: gltf.scene,
+            mixer,
+            actions,
+            currentAction: null,
 
-            if (onReady) onReady(character);
+            play(name) {
+                if (this.currentAction) this.currentAction.fadeOut(0.2);
+                const newAction = this.actions[name];
+                newAction.reset().fadeIn(0.2).play();
+                this.currentAction = newAction;
+            }
+        };
 
-        }, undefined, function ( error ) {
+        if (onReady) onReady(character);
 
-            console.error( error );
+    }, undefined, function ( error ) {
 
-        } );
-    }
+        console.error( error );
 
-    //Man 1
-    initChar('./assets/characters/Man1.glb', function(character) { //function to add rules to initialize the character
-        character.scene.position.set(22.1, 0, -23);
-        character.play("Sitting");
-    });
-
-    //Woman4
-    initChar('./assets/characters/Woman4.glb', function(character) { //function to add rules to initialize the character
-        character.scene.position.set(16.1, 0, -23);
-        character.play("Sitting");
-    });
-
-    //Man3
-    initChar('./assets/characters/Man3.glb', function(character) { //function to add rules to initialize the character
-        character.scene.position.set(0,0,0);
-        character.play("Walk");
-    });
-
-    //Man2
-    initChar('./assets/characters/Man2.glb', function(character) { //function to add rules to initialize the character
-        character.scene.position.set(3,0,15);
-        character.scene.rotation.y = Math.PI * .5;
-        character.play("Idle");
-    });
-
-    //Man4
-    initChar('./assets/characters/Man4.glb', function(character) { //function to add rules to initialize the character
-        character.scene.position.set(15,0,-10);
-        character.scene.rotation.y = Math.PI * -.5;
-        character.play("Idle");
-    });
-
-    //Woman1
-    initChar('./assets/characters/Woman1.glb', function(character) { //function to add rules to initialize the character
-        character.scene.position.set(-23.5,0,-6);
-        character.scene.rotation.y = Math.PI * .5;
-        character.play("Idle");
-    });
-
-    //Woman2
-    initChar('./assets/characters/Woman2.glb', function(character) { //function to add rules to initialize the character
-        character.scene.position.set(0,0,-10);
-        character.scene.rotation.y = Math.PI ;
-        character.play("Walk");
-    });
-
-    //Woan3
-    initChar('./assets/characters/Woman3.glb', function(character) { //function to add rules to initialize the character
-        character.scene.position.set(13.5,0,-10);
-        character.scene.rotation.y = Math.PI * .5;
-        character.play("Idle");
-    });
-    
-    return {characters, groupCharacters}
+    } );
 }

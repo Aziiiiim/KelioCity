@@ -7,7 +7,7 @@ import { createControls } from './controls.jsx';
 import { createGround } from '../objects/Ground.jsx';
 import { createOffice } from '../objects/Office.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
-import { createCharacters } from '../objects/Characters.jsx';
+import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { apiTest } from "../utils/apiTest.js";
 
@@ -30,6 +30,7 @@ export function createScene(){
     scene.add(createLight(-25,-25,25,25));
     scene.add(createLight(25,25,-25,-25));
 
+     let characters = [];
      fetch("http://localhost:8080/api/rooms")
         .then(res => res.json())
         .then(rooms => {
@@ -47,12 +48,23 @@ export function createScene(){
                  roomElements.position.set(rooms[i]["coordX1"], 0, rooms[i]["coordZ1"]);
                  scene.add(roomElements);
             }
+
+            fetch("http://localhost:8080/api/employees")
+                .then(res => res.json())
+                .then(employees => {
+                    for (let i=0; i < employees.length; i++) {
+                        let spriteName = employees[i]["sprite"].charAt(0) + employees[i]["sprite"].slice(1).toLowerCase();
+                        initChar("./assets/characters/"+spriteName+".glb", function(character) {
+                            character.scene.position.set(employees[i]["desk"]["coordX"], 0, employees[i]["desk"]["coordZ"]);
+                            character.play("Sitting");
+                            scene.add(character.scene);
+                            characters.push(character);
+                        });
+                    }
+                })
+                .catch(err => console.error("Erreur API:", err));
         })
         .catch(err => console.error("Erreur API:", err));
-     
-    // Load Characters
-    const {characters, groupCharacters} = createCharacters();
-    scene.add(groupCharacters);
 
     const lights = createSetupLight();
     for (let i=0; i<lights.length; i++) {           
@@ -89,7 +101,6 @@ export function createScene(){
         requestAnimationFrame(animate);
 
         const delta = clock.getDelta();
-
         characters.forEach(character => {
             character.mixer.update(delta);
         });
