@@ -10,7 +10,10 @@ export function createCharacters() {
 
     function initChar (asset, onReady) {
         loader.load( asset, function ( gltf ) {
-            gltf.scene.scale.set(0.5,0.5,0.5);
+            scene = gltf.scene;
+            scene.scale.set(0.5,0.5,0.5);
+            
+            scene.focusPosition =  new THREE.Vector3(0, 7, 4);
 
             const armature = gltf.scene.getObjectByName("HumanArmature");  
             const mixer = new THREE.AnimationMixer(armature);
@@ -24,7 +27,7 @@ export function createCharacters() {
             actions["Idle"] = mixer.clipAction( gltf.animations[2] ); // être debout
             
             const character = {
-                scene: gltf.scene,
+                scene: scene,
                 mixer,
                 actions,
                 currentAction: null,
@@ -95,7 +98,7 @@ export function createCharacters() {
         character.play("Walk");
     });
 
-    //Woan3
+    //Woman3
     initChar('./assets/characters/Woman3.glb', function(character) { //function to add rules to initialize the character
         character.scene.position.set(13.5,0,-10);
         character.scene.rotation.y = Math.PI * .5;

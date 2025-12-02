@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import gsap from "gsap"
 
 export function createCamera(container) {
   const camera = new THREE.PerspectiveCamera(
@@ -45,3 +46,40 @@ export function createCamera(container) {
 
   return { camera, resize,attachResetButton };
 }
+
+export function cameraOn (camera, controls, obj) {
+    const box = new THREE.Box3().setFromObject(obj);
+    const center = new THREE.Vector3();
+    box.getCenter(center);
+    console.log(center);
+
+    // Position de caméra souhaitée 
+    const camPos = center.clone().add(obj.focusPosition);
+
+    gsap.to(camera.position, {
+        duration: 1.5,
+        x: camPos.x,
+        y: camPos.y,
+        z: camPos.z,
+        ease: "power2.inOut"
+    });
+
+    controls.target.copy(center);
+}
+
+/*
+function hideWallsBetweenCameraAndObj (camera, obj, walls) {
+    const origin = camera.position.clone();
+    const target = new THREE.Vector3();
+    obj.getWorldPosition(target);
+
+    const direction = target.clone().sub(origin).normalize();
+    const ray = new THREE.Raycaster(origin, direction);
+
+    const hits = ray.intersectObjects(walls, false);
+
+    hits.forEach(hit => {
+        hit.object.visible = false;
+    });
+}
+*/
