@@ -62,13 +62,6 @@ export function createMeetingRoom(x,z) {
         proj.position.set(x-4.1, 2.35, z);
         elements.add(proj);
     });
-    // We load one person
-    loader.load('./assets/models/BusinessMan.glb', (gltf) => {
-        const employee = gltf.scene;
-        employee.scale.set(1.3, 1.3, 1.3);
-        employee.position.set(x-3, 0, z-2);
-        elements.add(employee);
-    });
 
     const wallTexture = new THREE.TextureLoader().load('./assets/textures/painted_plaster.jpg');
     wallTexture.wrapS = THREE.RepeatWrapping;
