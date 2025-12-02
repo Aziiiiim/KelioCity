@@ -96,8 +96,8 @@ export function createOffice1Desk() {
 
     // Door
     loader.load( './assets/models/door.glb', function ( gltf ) {
-        gltf.scene.position.set(2.5+x,0,1+z-0.15);
-        gltf.scene.scale.set(3,3,3);
+        gltf.scene.position.set(2+x,1.5,1+z);
+        gltf.scene.scale.set(4,4,4);
         elements.add( gltf.scene );
         elements.add( gltf.scene );
 
@@ -105,19 +105,7 @@ export function createOffice1Desk() {
 
         console.error( error );
 
-    } );    
-
-    // Door
-    loader.load( './assets/models/door.glb', function ( gltf ) {
-        gltf.scene.position.set(2.5+x,0,1+z-0.1);
-        gltf.scene.scale.set(3,3,3);
-        elements.add( gltf.scene );
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } ); 
+    } );
 
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());

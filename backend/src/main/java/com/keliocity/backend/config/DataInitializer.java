@@ -220,7 +220,7 @@ public class DataInitializer implements CommandLineRunner {
                     Desk.builder()
                         .deskName("Desk A108")
                         .room(roomA108)
-                        .coordX(6.1f).coordZ(-23f)
+                        .coordX(4.1f).coordZ(-23f)
                         .orientationDeg(0f)
                         .build()
             );
