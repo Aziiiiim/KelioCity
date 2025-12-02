@@ -46,9 +46,14 @@ export function createScene(){
                 let roomElements;
                 if (rooms[i]["roomType"]["roomtypeName"] === "MeetingRoom") {
                     roomElements = createMeetingRoom().elements;
-                }
-                else if (rooms[i]["roomType"]["roomtypeName"] === "Office") {
+                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office") {
                     roomElements = createOffice1Desk();
+                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office2Desks") {
+                    roomElements = createOffice2Desks();
+                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office4Desks") {
+                    roomElements = createOffice4Desks();
+                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office6Desks") {
+                    roomElements = createOffice6Desks();
                 } else if (rooms[i]["roomType"]["roomtypeName"] === "Openspace") {
                     roomElements = createOpenspace(rooms[i]["openspaceNumber"]);
                 }
