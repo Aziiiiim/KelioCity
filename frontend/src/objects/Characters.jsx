@@ -13,7 +13,6 @@ export function initChar (asset, onReady) {
         actions["Sitting"] = mixer.clipAction( gltf.animations[7] ); // s'asseoir
         actions["Sitting"].setLoop(THREE.LoopOnce);
         actions["Sitting"].clampWhenFinished = true;
-
         actions["Walk"] = mixer.clipAction( gltf.animations[10] ); // marcher
         actions["Standing"] = mixer.clipAction( gltf.animations[8] ); // se mettre debout
         actions["Idle"] = mixer.clipAction( gltf.animations[2] ); // être debout

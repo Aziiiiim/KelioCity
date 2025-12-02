@@ -1,15 +1,19 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { createCamera} from './camera.jsx';
+import { createCamera, cameraOn} from './camera.jsx';
 import { createRenderer } from './renderer.jsx';
 import {createLight, createSetupLight} from './lights.jsx';
 import { createControls } from './controls.jsx';
 import { createGround } from '../objects/Ground.jsx';
-import { createOffice } from '../objects/Office.jsx';
+import { createOffice1Desk } from '../objects/Office1Desk.jsx';
+import { createOffice2Desks } from '../objects/Office2Desks.jsx';
+import { createOffice4Desks } from '../objects/Office4Desks.jsx';
+import { createOffice6Desks } from '../objects/Office6Desks.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
-import { apiTest } from "../utils/apiTest.js";
+import { createHighlighter } from "../utils/highlight.js";
+//import { apiTest } from "../utils/apiTest.js";
 
 
 let clock = new THREE.Clock();
@@ -20,7 +24,7 @@ export function createScene(){
 
     //apiTest();
 
-    const { camera, resize: resizeCamera } = createCamera(gameWindow);
+    const { camera, resize: resizeCamera, attachResetButton } = createCamera(gameWindow);
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
@@ -30,7 +34,8 @@ export function createScene(){
     scene.add(createLight(-25,-25,25,25));
     scene.add(createLight(25,25,-25,-25));
 
-     let characters = [];
+     const characters = [];
+     const groupCharacters = new THREE.Group();
      fetch("http://localhost:8080/api/rooms")
         .then(res => res.json())
         .then(rooms => {
@@ -40,7 +45,7 @@ export function createScene(){
                      roomElements = createMeetingRoom().elements;
                  }
                  else if (rooms[i]["roomType"]["roomtypeName"] === "Office") {
-                     roomElements = createOffice();
+                     roomElements = createOffice1Desk();
                  } else if (rooms[i]["roomType"]["roomtypeName"] === "Openspace") {
                      roomElements = createOpenspace(rooms[i]["openspaceNumber"]);
                  }
@@ -64,6 +69,7 @@ export function createScene(){
                             character.play("Sitting");
                             scene.add(character.scene);
                             characters.push(character);
+                            groupCharacters.add(character);
                         });
                     }
                 })
@@ -77,11 +83,10 @@ export function createScene(){
     }
 
     const controls = createControls(camera,gameWindow);
-    camera.position.set(10,20,20);
-    controls.update();
 
-
-
+    attachResetButton(controls);
+    createHighlighter(camera, controls, renderer, groupCharacters);
+    
     function draw(){
         controls.update();
         if (camera.position.y < 0) camera.position.y = 0;
@@ -96,6 +101,7 @@ export function createScene(){
         window.addEventListener('resize', onResize);
         onResize();
         renderer.setAnimationLoop(draw);
+
     } 
     
     function stop(){

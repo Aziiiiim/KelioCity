@@ -4,10 +4,16 @@
     <meta charset="UTF-8" />
     <title>KelioCity</title>
     <link rel="stylesheet" href="./src/styles/main.css">
+    <link rel="stylesheet" href="./src/styles/sidebar.css">
   </head>
   <body>
     <div id="root-window">
       <div id="render-target"></div>
+        <button id="reset-camera-btn" class="reset-btn">Reset Camera</button>
+        <div id="sidebar" class="sidebar hidden">
+          <h2>Informations</h2>
+          <p>Clique sur un personnage pour afficher ses infos.</p>
+        </div>
     </div>
     <script type="module">
       import {createScene} from './src/core/scene.jsx'
