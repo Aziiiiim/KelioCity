@@ -54,9 +54,13 @@ export function createScene(){
                 .then(employees => {
                     for (let i=0; i < employees.length; i++) {
                         let spriteName = employees[i]["sprite"].charAt(0) + employees[i]["sprite"].slice(1).toLowerCase();
+                        let pos_y = 0;
+                        if (employees[i]["desk"]["room"]["roomType"]["roomtypeName"] === "Openspace") {
+                            pos_y = 0.4;
+                        }
                         initChar("./assets/characters/"+spriteName+".glb", function(character) {
                             character.scene.rotation.y = (employees[i]["desk"]["orientationDeg"]+employees[i]["desk"]["room"]["orientationDeg"])/180*Math.PI;
-                            character.scene.position.set(employees[i]["desk"]["coordX"], 0, employees[i]["desk"]["coordZ"]);
+                            character.scene.position.set(employees[i]["desk"]["coordX"], pos_y, employees[i]["desk"]["coordZ"]);
                             character.play("Sitting");
                             scene.add(character.scene);
                             characters.push(character);
@@ -100,7 +104,6 @@ export function createScene(){
 
     function animate() {
         requestAnimationFrame(animate);
-
         const delta = clock.getDelta();
         characters.forEach(character => {
             character.mixer.update(delta);
