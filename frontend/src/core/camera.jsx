@@ -39,7 +39,6 @@ export function cameraOn (camera, controls, obj) {
     const box = new THREE.Box3().setFromObject(obj);
     const center = new THREE.Vector3();
     box.getCenter(center);
-    console.log(center);
 
     // Position de caméra souhaitée 
     const camPos = center.clone().add(obj.focusPosition);

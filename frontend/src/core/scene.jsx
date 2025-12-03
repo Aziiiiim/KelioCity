@@ -10,7 +10,7 @@ import { createOffice2Desks } from '../objects/Office2Desks.jsx';
 import { createOffice4Desks } from '../objects/Office4Desks.jsx';
 import { createOffice6Desks } from '../objects/Office6Desks.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
-import { createCharacters } from '../objects/Characters.jsx';
+import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { createHighlighter } from "../utils/highlight.js";
 //import { apiTest } from "../utils/apiTest.js";
@@ -26,6 +26,7 @@ export function createScene(){
 
     const { camera, resize: resizeCamera, attachResetButton } = createCamera(gameWindow);
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
+    const controls = createControls(camera,gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
     const ground = createGround();
@@ -34,64 +35,70 @@ export function createScene(){
     scene.add(createLight(-25,-25,25,25));
     scene.add(createLight(25,25,-25,-25));
 
-    // Load Meeting Room
-    const meetingRoomElements = createMeetingRoom(-25,-25);
-    scene.add(meetingRoomElements.elements);
-    const meetingRoomElements2 = createMeetingRoom(-25,meetingRoomElements.endZ);
-    scene.add(meetingRoomElements2.elements);
-    const meetingRoomElements3 = createMeetingRoom(-25,meetingRoomElements2.endZ);
-    meetingRoomElements3.elements.rotation.y = Math.PI/2;
-    meetingRoomElements3.elements.position.set(14,0,0);
-    scene.add(meetingRoomElements3.elements);
-    const meetingRoomElements4 = createMeetingRoom(-25,meetingRoomElements2.endZ);
-    meetingRoomElements4.elements.rotation.y = Math.PI/2;
-    meetingRoomElements4.elements.position.set(2,0,0);
-    scene.add(meetingRoomElements4.elements);
-
-    // Load Open spaces
-    const openspace1 = createOpenspace(-22,18,7);
-    scene.add(openspace1);
-    const openspace2 = createOpenspace(-22,10,7);
-    scene.add(openspace2);
-    const openspace3 = createOpenspace(-22,2,5);
-    scene.add(openspace3);
-
-    const openspace4 = createOpenspace(-22,2,10);
-    openspace4.rotation.y = Math.PI/2;
-    openspace4.position.set(16,0,-14);
-    scene.add(openspace4);
-    const openspace5 = createOpenspace(-22,2,10);
-    openspace5.rotation.y = Math.PI/2;
-    openspace5.position.set(4,0,-14);
-    scene.add(openspace5);
-
-    // Load Office
-    const office1 = createOffice1Desk(25-6, 0, -25);
-    scene.add(office1);
-    const office2 = createOffice1Desk(25-12, 0, -25);
-    scene.add(office2);
-    const office3 = createOffice2Desks(19, 0, 6.98);
-    office3.rotation.y = Math.PI*.5;
-    scene.add(office3);
-    const office4 = createOffice4Desks(-1.04, 0, -25);
-    scene.add(office4);
-    const office5 = createOffice6Desks(0, 0, -9.98);
-    office5.rotation.y = Math.PI*.5;
-    scene.add(office5);
-
-    // Load Characters
-    const {characters, groupCharacters} = createCharacters();
-    scene.add(groupCharacters);
+    const roomList = [];
+    scene.groupRooms = new THREE.Group();
+    scene.add(scene.groupRooms);
+    const characters = [];
+    scene.groupCharacters = new THREE.Group();
+    scene.add(scene.groupCharacters);  
+    fetch("http://localhost:8080/api/rooms")
+       .then(res => res.json())
+       .then(rooms => {
+           for (let i=0; i < rooms.length; i++) {
+                let roomElements;
+                if (rooms[i]["roomType"]["roomtypeName"] === "MeetingRoom") {
+                    roomElements = createMeetingRoom().elements;
+                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office1Desk") {
+                    roomElements = createOffice1Desk();
+                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office2Desks") {
+                    roomElements = createOffice2Desks();
+                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office4Desks") {
+                    roomElements = createOffice4Desks();
+                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office6Desks") {
+                    roomElements = createOffice6Desks();
+                } else if (rooms[i]["roomType"]["roomtypeName"] === "Openspace") {
+                    roomElements = createOpenspace(rooms[i]["openspaceNumber"]);
+                }
+                roomElements.rotation.y = rooms[i]["orientationDeg"] / 180 * Math.PI;
+                roomElements.position.set(rooms[i]["coordX1"], 0, rooms[i]["coordZ1"]);
+                roomList.push(roomElements);
+                scene.groupRooms.add(roomElements);
+           }
+           fetch("http://localhost:8080/api/employees")
+               .then(res => res.json())
+               .then(employees => {
+                   let loadedChars = 0;
+                   for (let i=0; i < employees.length; i++) {
+                       let spriteName = employees[i]["sprite"].charAt(0) + employees[i]["sprite"].slice(1).toLowerCase();
+                       let pos_y = 0;
+                       if (employees[i]["desk"]["room"]["roomType"]["roomtypeName"] === "Openspace") {
+                           pos_y = 0.4;
+                       }
+                       initChar("./assets/characters/"+spriteName+".glb", function(character) {
+                           character.scene.rotation.y = (employees[i]["desk"]["orientationDeg"]+employees[i]["desk"]["room"]["orientationDeg"])/180*Math.PI;
+                           character.scene.position.set(employees[i]["desk"]["coordX"], pos_y, employees[i]["desk"]["coordZ"]);
+                           character.play("Sitting");
+                           scene.groupCharacters.add(character.scene);
+                           characters.push(character);
+                           loadedChars += 1;
+                           if (loadedChars === employees.length) {
+                               createHighlighter(camera, controls, renderer, scene.groupCharacters);
+                           }
+                       });
+                   }
+               })
+               .catch(err => console.error("Erreur API:", err));
+       })
+       .catch(err => console.error("Erreur API:", err));
 
     const lights = createSetupLight();
     for (let i=0; i<lights.length; i++) {           
         scene.add(lights[i]);
     }
 
-    const controls = createControls(camera,gameWindow);
+
 
     attachResetButton(controls);
-    createHighlighter(camera, controls, renderer, groupCharacters);
     
     function draw(){
         controls.update();
@@ -116,9 +123,7 @@ export function createScene(){
 
     function animate() {
         requestAnimationFrame(animate);
-
         const delta = clock.getDelta();
-
         characters.forEach(character => {
             character.mixer.update(delta);
         });

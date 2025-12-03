@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-export function createOpenspace(x,z, nb_desks) {
+export function createOpenspace(nb_desks) {
   const elements = new THREE.Group();
-  x += 1.28;
-  z += 1.35;
+  let x = 1.28;
+  let z = 1.35;
 
   // We load each element of our openspace desks
   const loader = new GLTFLoader();
@@ -57,6 +57,10 @@ export function createOpenspace(x,z, nb_desks) {
   );
   wall_long.position.set(x+nb_desks*1.26-0.6, 1, z+0.37);
   elements.add(wall_long);
+
+  const box = new THREE.Box3().setFromObject(elements);
+  const center = box.getCenter(new THREE.Vector3());
+  elements.position.sub(center);
 
   return elements;
 };

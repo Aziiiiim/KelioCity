@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 
-export function createMeetingRoom(x,z) {
+export function createMeetingRoom() {
     const elements = new THREE.Group();
-    x += 4.3;
-    z += 6;
+    let  x = 4.3;
+    let z = 6;
 
     // We load each element of our meeting room
     const loader = new GLTFLoader();
@@ -100,6 +100,10 @@ export function createMeetingRoom(x,z) {
         gltf.scene.rotation.y = Math.PI/2;
         elements.add( gltf.scene );
     });
+
+    const box = new THREE.Box3().setFromObject(elements);
+    const center = box.getCenter(new THREE.Vector3());
+    elements.position.sub(center);
 
   const endX = x+10.7;
   const endZ = z+6;

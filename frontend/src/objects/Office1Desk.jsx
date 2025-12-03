@@ -1,18 +1,17 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
-    
-export function createOffice1Desk(x, y, z) {
-    
+
+export function createOffice1Desk() {
     const elements = new THREE.Group();
-    x += 3;
-    z += 3;
+    let x = 3;
+    let z = 3;
 
     // Wall and floor
     const floorGeo = new THREE.PlaneGeometry(6, 4);
     const floorMat = new THREE.MeshBasicMaterial( { color: 0xdedede } );
     const floorMesh = new THREE.Mesh(floorGeo, floorMat);
     floorMesh.rotation.x = Math.PI * -.5;
-    floorMesh.position.set(0+x,y+0.01,-1+z)
+    floorMesh.position.set(x,0.01,-1+z)
     elements.add(floorMesh);
 
     const wallGeo1 = new THREE.PlaneGeometry(6, 5);
@@ -20,33 +19,31 @@ export function createOffice1Desk(x, y, z) {
     const wallMat = new THREE.MeshBasicMaterial( { color: 0x99a88c, side: THREE.DoubleSide } );
 
     const wallMesh1 = new THREE.Mesh(wallGeo1, wallMat);
-    wallMesh1.position.set(0+x,2.5+y,-3+z);
+    wallMesh1.position.set(x,2.5,-3+z);
     elements.add(wallMesh1);
 
     const wallMesh2 = new THREE.Mesh(wallGeo2, wallMat);
     wallMesh2.rotation.y = Math.PI * -.5;
-    wallMesh2.position.set(3+x,2.5+y,-1+z);
+    wallMesh2.position.set(3+x,2.5,-1+z);
     elements.add(wallMesh2);
 
     const wallMesh3 = new THREE.Mesh(wallGeo2, wallMat);
     wallMesh3.rotation.y = Math.PI * .5;
-    wallMesh3.position.set(-3+x,2.5+y,-1+z);
+    wallMesh3.position.set(-3+x,2.5,-1+z);
     elements.add(wallMesh3);
 
     const wallMesh4 = new THREE.Mesh(wallGeo1, wallMat);
     wallMesh4.rotation.y = Math.PI ;
-    wallMesh4.position.set(0+x,2.5+y,1+z);
+    wallMesh4.position.set(x,2.5,1+z);
     elements.add(wallMesh4);
 
-
-    
     const loader = new GLTFLoader();
-    
-    
+
 
     // Desk
     loader.load( './assets/models/decoratedDesk.glb', function ( gltf ) {
-        gltf.scene.position.set(0.3+x,0+y,6.7+z);
+        gltf.scene.position.set(0.3+x,0,6.7+z);
+        gltf.scene.position.set(0.3+x,0,6.7+z);
         gltf.scene.scale.set(1.1, 1.1, 1.1);
         elements.add( gltf.scene );
 
@@ -58,7 +55,8 @@ export function createOffice1Desk(x, y, z) {
 
     // Chair
     loader.load( './assets/models/chair.glb', function ( gltf ) {
-        gltf.scene.position.set(-11.7+x,0+y,6+z);
+        gltf.scene.position.set(-11.7+x,0,6+z);
+        gltf.scene.position.set(-11.7+x,0,6+z);
         gltf.scene.scale.set(0.035,0.035,0.035);
         elements.add( gltf.scene );
 
@@ -70,7 +68,8 @@ export function createOffice1Desk(x, y, z) {
 
     // Message Board
     loader.load( './assets/models/messageBoard.glb', function ( gltf ) {
-        gltf.scene.position.set(0+x,1+y,-2.9+z);
+        gltf.scene.position.set(2,1,-2.9+z);
+        gltf.scene.position.set(2,1,-2.9+z);
         gltf.scene.scale.set(0.02,0.02,0.02);
         gltf.scene.rotation.y = Math.PI*-.5;
         elements.add( gltf.scene );
@@ -83,7 +82,8 @@ export function createOffice1Desk(x, y, z) {
 
     // Shelf
     loader.load( './assets/models/containerShelf.glb', function ( gltf ) {
-        gltf.scene.position.set(2.6+x,1.14+y,-2.2+z);
+        gltf.scene.position.set(2.6+x,1.14,-2.2+z);
+        gltf.scene.position.set(2.6+x,1.14,-2.2+z);
         gltf.scene.scale.set(0.03,0.03,0.03);
         gltf.scene.rotation.y = Math.PI*.5;
         elements.add( gltf.scene );
@@ -96,17 +96,20 @@ export function createOffice1Desk(x, y, z) {
 
     // Door
     loader.load( './assets/models/door.glb', function ( gltf ) {
-        gltf.scene.position.set(2+x,1.5+y,1+z);
+        gltf.scene.position.set(2+x,1.5,1+z);
         gltf.scene.scale.set(4,4,4);
+        elements.add( gltf.scene );
         elements.add( gltf.scene );
 
     }, undefined, function ( error ) {
 
         console.error( error );
 
-    } ); 
+    } );
 
-    
+    const box = new THREE.Box3().setFromObject(elements);
+    const center = box.getCenter(new THREE.Vector3());
+    elements.position.sub(center);
     elements.focusPosition = new THREE.Vector3(0, 8, 3);
 
     return elements;

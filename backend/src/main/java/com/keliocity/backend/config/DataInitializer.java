@@ -48,11 +48,35 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
-            RoomType office = roomTypeRepo.save(
+            RoomType office1Desk = roomTypeRepo.save(
                     RoomType.builder()
-                        .roomtypeName("Office")
+                        .roomtypeName("Office1Desk")
                         .lengthX(6f)
                         .lengthZ(4f)
+                        .build()
+            );
+
+            RoomType office2Desks = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office2Desks")
+                        .lengthX(5f)
+                        .lengthZ(6f)
+                        .build()
+            );
+
+            RoomType office4Desks = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office4Desks")
+                        .lengthX(7f)
+                        .lengthZ(6f)
+                        .build()
+            );
+
+            RoomType office6Desks = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office6Desks")
+                        .lengthX(7f)
+                        .lengthZ(9f)
                         .build()
             );
 
@@ -78,7 +102,7 @@ public class DataInitializer implements CommandLineRunner {
                     Room.builder()
                         .roomType(meetingRoom)
                         .roomName("A102")
-                        .coordX1(-25f).coordZ1(-19f)
+                        .coordX1(-25f).coordZ1(-13f)
                         .orientationDeg(0f)
                         .build()
             );
@@ -87,7 +111,7 @@ public class DataInitializer implements CommandLineRunner {
                     Room.builder()
                         .roomType(meetingRoom)
                         .roomName("A103")
-                        .coordX1(14f).coordZ1(0f)
+                        .coordX1(13f).coordZ1(25f)
                         .orientationDeg(90f)
                         .build()
             );
@@ -96,15 +120,15 @@ public class DataInitializer implements CommandLineRunner {
                     Room.builder()
                         .roomType(meetingRoom)
                         .roomName("A104")
-                        .coordX1(2f).coordZ1(0f)
+                        .coordX1(1f).coordZ1(25f)
                         .orientationDeg(90f)
                         .build()
             );
 
             Room roomA105 = roomRepo.save(
                     Room.builder()
-                        .roomType(office)
-                        .roomName("A104")
+                        .roomType(office1Desk)
+                        .roomName("A105")
                         .coordX1(19f).coordZ1(-25f)
                         .orientationDeg(0f)
                         .build()
@@ -112,8 +136,8 @@ public class DataInitializer implements CommandLineRunner {
 
             Room roomA106 = roomRepo.save(
                     Room.builder()
-                        .roomType(office)
-                        .roomName("A105")
+                        .roomType(office1Desk)
+                        .roomName("A106")
                         .coordX1(13f).coordZ1(-25f)
                         .orientationDeg(0f)
                         .build()
@@ -121,19 +145,28 @@ public class DataInitializer implements CommandLineRunner {
 
             Room roomA107 = roomRepo.save(
                     Room.builder()
-                        .roomType(office)
-                        .roomName("A106")
-                        .coordX1(7f).coordZ1(-25f)
-                        .orientationDeg(0f)
+                        .roomType(office2Desks)
+                        .roomName("A107")
+                        .coordX1(6.99f).coordZ1(-20f)
+                        .orientationDeg(90f)
                         .build()
             );
 
             Room roomA108 = roomRepo.save(
                     Room.builder()
-                        .roomType(office)
-                        .roomName("A107")
-                        .coordX1(1f).coordZ1(-25f)
+                        .roomType(office4Desks)
+                        .roomName("A108")
+                        .coordX1(-0.02f).coordZ1(-25f)
                         .orientationDeg(0f)
+                        .build()
+            );
+
+            Room roomA109 = roomRepo.save(
+                    Room.builder()
+                        .roomType(office6Desks)
+                        .roomName("A109")
+                        .coordX1(-2.99f).coordZ1(-1f)
+                        .orientationDeg(180f)
                         .build()
             );
 
@@ -171,7 +204,7 @@ public class DataInitializer implements CommandLineRunner {
                     Room.builder()
                         .roomType(openspace)
                         .roomName("OA100_004")
-                        .coordX1(16f).coordZ1(-14f)
+                        .coordX1(16f).coordZ1(8f)
                         .orientationDeg(90f)
                         .openspaceNumber(10)
                         .build()
@@ -181,7 +214,7 @@ public class DataInitializer implements CommandLineRunner {
                     Room.builder()
                         .roomType(openspace)
                         .roomName("OA100_005")
-                        .coordX1(4f).coordZ1(-14f)
+                        .coordX1(4f).coordZ1(8f)
                         .orientationDeg(90f)
                         .openspaceNumber(10)
                         .build()
@@ -193,7 +226,8 @@ public class DataInitializer implements CommandLineRunner {
                     Desk.builder()
                         .deskName("Desk A105")
                         .room(roomA105)
-                        .coordX(10.3f).coordZ(-16f)
+                        .coordX(22.1f).coordZ(-23f)
+                        .orientationDeg(0f)
                         .build()
             );
 
@@ -201,23 +235,116 @@ public class DataInitializer implements CommandLineRunner {
                     Desk.builder()
                         .deskName("Desk A106")
                         .room(roomA106)
-                        .coordX(4.3f).coordZ(-16f)
+                        .coordX(16.1f).coordZ(-23f)
+                        .orientationDeg(0f)
                         .build()
             );
 
-            Desk deskA107 = deskRepo.save(
+            Desk deskA107_1 = deskRepo.save(
                     Desk.builder()
-                        .deskName("Desk A107")
+                        .deskName("Desk A107 1")
                         .room(roomA107)
-                        .coordX(-2.3f).coordZ(-16f)
+                        .coordX(10.97f).coordZ(-23.61f)
+                        .orientationDeg(90f)
                         .build()
             );
 
-            Desk deskA108 = deskRepo.save(
+            Desk deskA107_2 = deskRepo.save(
                     Desk.builder()
-                        .deskName("Desk A108")
+                        .deskName("Desk A107 2")
+                        .room(roomA107)
+                        .coordX(9.2f).coordZ(-21.4f)
+                        .orientationDeg(-90f)
+                        .build()
+            );
+
+            Desk deskA108_1 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A108 1")
                         .room(roomA108)
-                        .coordX(-6.3f).coordZ(-16f)
+                        .coordX(2.205f).coordZ(-23.325f)
+                        .orientationDeg(90f)
+                        .build()
+            );
+
+            Desk deskA108_2 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A108 2")
+                        .room(roomA108)
+                        .coordX(2.218f).coordZ(-21.045f)
+                        .orientationDeg(90f)
+                        .build()
+            );
+
+            Desk deskA108_3 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A108 3")
+                        .room(roomA108)
+                        .coordX(4.679f).coordZ(-22.858f)
+                        .orientationDeg(-90f)
+                        .build()
+            );
+
+            Desk deskA108_4 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A108 4")
+                        .room(roomA108)
+                        .coordX(4.679f).coordZ(-20.533f)
+                        .orientationDeg(-90f)
+                        .build()
+            );
+
+            Desk deskA109_1 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A109 1")
+                        .room(roomA109)
+                        .coordX(-7.566f).coordZ(-8.3f)
+                        .orientationDeg(-90f)
+                        .build()
+            );
+
+            Desk deskA109_2 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A109 1")
+                        .room(roomA109)
+                        .coordX(-7.566f).coordZ(-6.132f)
+                        .orientationDeg(-90f)
+                        .build()
+            );
+
+            Desk deskA109_3 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A109 1")
+                        .room(roomA109)
+                        .coordX(-7.566f).coordZ(-3.8f)
+                        .orientationDeg(-90f)
+                        .build()
+            );
+
+            Desk deskA109_4 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A109 1")
+                        .room(roomA109)
+                        .coordX(-5.185f).coordZ(-7.773f)
+                        .orientationDeg(90f)
+                        .build()
+            );
+
+            Desk deskA109_5 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A109 1")
+                        .room(roomA109)
+                        .coordX(-5.185f).coordZ(-5.49f)
+                        .orientationDeg(90f)
+                        .build()
+            );
+
+            Desk deskA109_6 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A109 1")
+                        .room(roomA109)
+                        .coordX(-5.185f).coordZ(-3.2f)
+                        .orientationDeg(90f)
                         .build()
             );
 
@@ -254,7 +381,7 @@ public class DataInitializer implements CommandLineRunner {
                     Employee.builder()
                         .firstName("Jade")
                         .lastName("Bernard")
-                        .desk(deskA107)
+                        .desk(deskA107_1)
                         .email("jade.bernard@keliocity.com")
                         .phoneNumber("0611020777")
                         .workingHours("09:00-17:00")
@@ -264,17 +391,157 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
+            Employee pol = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Pol")
+                        .lastName("Meuler")
+                        .desk(deskA107_2)
+                        .email("pol.meuler@keliocity.com")
+                        .phoneNumber("0611721777")
+                        .workingHours("09:00-17:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.AVAILABLE)
+                        .sprite(Sprite.MAN2)
+                        .build()
+            );
+
             Employee paul = employeeRepo.save(
                     Employee.builder()
                         .firstName("Paul")
                         .lastName("Lefevre")
-                        .desk(deskA108)
+                        .desk(deskA108_1)
                         .email("paul.lefevre@keliocity.com")
                         .phoneNumber("0681283384")
                         .workingHours("08:00-16:00")
                         .inOffice(WorkLocation.REMOTE)
                         .status(EmployeeStatus.OCCUPIED)
                         .sprite(Sprite.MAN2)
+                        .build()
+            );
+
+            Employee jacob = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Jacob")
+                        .lastName("Clair")
+                        .desk(deskA108_2)
+                        .email("jacob.clair@keliocity.com")
+                        .phoneNumber("0681243384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.MAN1)
+                        .build()
+            );
+
+            Employee alicia = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Alicia")
+                        .lastName("Rodriguez")
+                        .desk(deskA108_3)
+                        .email("alicia.rodriguez@keliocity.com")
+                        .phoneNumber("0681283389")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.WOMAN2)
+                        .build()
+            );
+
+            Employee marguerite = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Marguerite")
+                        .lastName("Diatre")
+                        .desk(deskA108_4)
+                        .email("marguerite.diatre@keliocity.com")
+                        .phoneNumber("0681203384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.WOMAN1)
+                        .build()
+            );
+
+            Employee alexis = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Alexis")
+                        .lastName("Dialo")
+                        .desk(deskA109_1)
+                        .email("alexis.dialo@keliocity.com")
+                        .phoneNumber("0781203384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.REMOTE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.MAN3)
+                        .build()
+            );
+
+            Employee jeanne = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Jeanne")
+                        .lastName("Dargen")
+                        .desk(deskA109_2)
+                        .email("jeanne.dargen@keliocity.com")
+                        .phoneNumber("0681201384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.WOMAN3)
+                        .build()
+            );
+
+            Employee matthieu = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Matthieu")
+                        .lastName("Ness")
+                        .desk(deskA109_3)
+                        .email("matthieu.ness@keliocity.com")
+                        .phoneNumber("0681803384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.MAN4)
+                        .build()
+            );
+
+            Employee jacques = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Jacques")
+                        .lastName("Marlot")
+                        .desk(deskA109_4)
+                        .email("jacques.marlot@keliocity.com")
+                        .phoneNumber("0681243384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.MAN1)
+                        .build()
+            );
+
+            Employee alphonsine = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Alphonsine")
+                        .lastName("Sauvignon")
+                        .desk(deskA109_5)
+                        .email("alphonsine.sauvignon@keliocity.com")
+                        .phoneNumber("0631203384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.WOMAN1)
+                        .build()
+            );
+
+            Employee Hector = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Hector")
+                        .lastName("De Thouars")
+                        .desk(deskA109_6)
+                        .email("hector.dethouars@keliocity.com")
+                        .phoneNumber("0681000384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.REMOTE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.WOMAN1)
                         .build()
             );
 
@@ -366,7 +633,8 @@ public class DataInitializer implements CommandLineRunner {
                             Desk.builder()
                                 .deskName("Desk OA100_00"+(j+1)+" "+(2*i+1))
                                 .room(openspaces[j])
-                                .coordX((-20.95f+2.52f*i)).coordZ(18f-8f*j)
+                                .coordX((-19.75f+2.52f*i)).coordZ(18.3f-8f*j)
+                                .orientationDeg(0f)
                                 .build()
                         );
                         deskRepo.flush();
@@ -394,7 +662,8 @@ public class DataInitializer implements CommandLineRunner {
                             Desk.builder()
                                 .deskName("Desk OA100_00"+(j+1)+" "+(2*i+2))
                                 .room(openspaces[j])
-                                .coordX(-21.45f+2.52f*i).coordZ(21.85f-8f*j)
+                                .coordX(-20.35f+2.52f*i).coordZ(21.1f-8f*j)
+                                .orientationDeg(180f)
                                 .build()
                         );
                         deskRepo.flush();
@@ -428,7 +697,8 @@ public class DataInitializer implements CommandLineRunner {
                         Desk.builder()
                             .deskName("Desk OA100_00"+(j+4)+" "+(2*i+1))
                             .room(openspaces[j+3])
-                            .coordX(0f-12f*j).coordZ(-12.95f+2.52f*i)
+                            .coordX(16.3f-12f*j).coordZ(-16.9f+2.52f*i)
+                            .orientationDeg(0f)
                             .build()
                     );
                     deskRepo.flush();
@@ -456,7 +726,8 @@ public class DataInitializer implements CommandLineRunner {
                         Desk.builder()
                             .deskName("Desk OA100_00"+(j+4)+" "+(2*i+2))
                             .room(openspaces[j+3])
-                            .coordX(19.85f-12f*j).coordZ(-12.95f+2.52f*i)
+                            .coordX(19.15f-12f*j).coordZ(-16.35f+2.52f*i)
+                            .orientationDeg(180f)
                             .build()
                     );
                     deskRepo.flush();
