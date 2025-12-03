@@ -12,7 +12,7 @@ export function createOffice6Desks() {
     const floorMat = new THREE.MeshBasicMaterial( { color: 0xdedede } );
     const floorMesh = new THREE.Mesh(floorGeo, floorMat);
     floorMesh.rotation.x = Math.PI * -.5;
-    floorMesh.position.set(4.5+x,y+0.01,4.5+z)
+    floorMesh.position.set(4.5+x,0.01,4.5)
     elements.add(floorMesh);
 
     const wallGeo1 = new THREE.PlaneGeometry(7, 5);

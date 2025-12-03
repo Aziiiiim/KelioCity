@@ -46,7 +46,7 @@ export function createScene(){
                 let roomElements;
                 if (rooms[i]["roomType"]["roomtypeName"] === "MeetingRoom") {
                     roomElements = createMeetingRoom().elements;
-                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office") {
+                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office1Desk") {
                     roomElements = createOffice1Desk();
                 } else if (rooms[i]["roomType"]["roomtypeName"] === "Office2Desks") {
                     roomElements = createOffice2Desks();
