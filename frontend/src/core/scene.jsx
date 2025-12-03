@@ -36,7 +36,8 @@ export function createScene(){
     scene.add(createLight(25,25,-25,-25));
 
     const roomList = [];
-    const groupRooms = new THREE.Group();
+    scene.groupRooms = new THREE.Group();
+    scene.add(scene.groupRooms);
     const characters = [];
     scene.groupCharacters = new THREE.Group();
     scene.add(scene.groupCharacters);  
@@ -61,8 +62,7 @@ export function createScene(){
                 roomElements.rotation.y = rooms[i]["orientationDeg"] / 180 * Math.PI;
                 roomElements.position.set(rooms[i]["coordX1"], 0, rooms[i]["coordZ1"]);
                 roomList.push(roomElements);
-                groupRooms.add(roomElements);
-                scene.add(roomElements);
+                scene.groupRooms.add(roomElements);
            }
            fetch("http://localhost:8080/api/employees")
                .then(res => res.json())
@@ -81,11 +81,8 @@ export function createScene(){
                            character.scene.userData.employee = employees[i];
                            scene.groupCharacters.add(character.scene);
                            characters.push(character);
-                           //scene.add(character.scene);
                            loadedChars += 1;
-                           //console.log("Nb enfants dans groupCharacters =", scene.groupCharacters.children.length);
                            if (loadedChars === employees.length) {
-                               console.log("ok");
                                createHighlighter(camera, controls, renderer, scene.groupCharacters);
                            }
                        });
