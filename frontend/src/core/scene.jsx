@@ -78,6 +78,7 @@ export function createScene(){
                            character.scene.rotation.y = (employees[i]["desk"]["orientationDeg"]+employees[i]["desk"]["room"]["orientationDeg"])/180*Math.PI;
                            character.scene.position.set(employees[i]["desk"]["coordX"], pos_y, employees[i]["desk"]["coordZ"]);
                            character.play("Sitting");
+                           character.scene.userData.employee = employees[i];
                            scene.groupCharacters.add(character.scene);
                            characters.push(character);
                            //scene.add(character.scene);

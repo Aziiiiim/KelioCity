@@ -72,7 +72,8 @@ export function createHighlighter(camera,controls, renderer, targetGroup ) {
             while (obj.parent && obj.parent !== targetGroup)
                 obj = obj.parent;
 
-            openSidebar();
+            const employee = obj.userData.employee;
+            openSidebar(employee);
             cameraOn(camera, controls, obj);
         } else {
             closeSidebar();
