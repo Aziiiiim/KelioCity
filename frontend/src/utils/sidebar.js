@@ -29,7 +29,7 @@ export function openSidebar(employee) {
     <h3>Position</h3>
     <div class="info-row">
       <div class="info-label">Bureau</div>
-      <div class="info-value">${employee.desk?.id ?? "Aucun"}</div>
+      <div class="info-value">${employee.desk?.room?.roomName ?? "Aucun"}</div>
     </div>
     <div class="info-row">
       <div class="info-label">Présence</div>
