@@ -3,9 +3,11 @@ import * as THREE from 'three';
 
 export function initChar (asset, onReady) {
     const loader = new GLTFLoader();
-
+    
     loader.load( asset, function ( gltf ) {
+        //console.log("Avant tout, parent =", gltf.scene.parent);
         gltf.scene.scale.set(0.5,0.5,0.5);
+        gltf.scene.focusPosition = new THREE.Vector3(0, 7, 4);
 
         const armature = gltf.scene.getObjectByName("HumanArmature");
         const mixer = new THREE.AnimationMixer(armature);
