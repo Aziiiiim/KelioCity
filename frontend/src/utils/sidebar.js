@@ -1,20 +1,7 @@
 const sidebar = document.getElementById("sidebar");
 
-const dummyEmployee = {
-  firstName: "Azim",
-  lastName: "Barhoumi",
-  email: "azim.barhoumi@imt-atlantique.net",
-  phoneNumber: "+33 6 01 02 03 04",
-  desk: { id: 27 },
-  workingHours: "09:00 - 17:00",
-  inOffice: "OFFICE",
-  status: "AVAILABLE",
-  sprite: "Man3"
-};
 
-
-
-export function openSidebar(employee = dummyEmployee) {
+export function openSidebar(employee) {
   sidebar.innerHTML = `
     <button class="close-btn">&times;</button>
 
