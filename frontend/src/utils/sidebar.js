@@ -9,7 +9,7 @@ export function openSidebar(employee) {
     <div class="sidebar-avatar"></div>
     <div>
       <h2>${employee.firstName} ${employee.lastName}</h2>
-      <div class="sidebar-status">${employee.status}</div>
+      <div class="sidebar-status ${employee.status === "AVAILABLE" ? "sidebar-available" : "sidebar-occupied"}">${employee.status}</div>
     </div>
   </div>
 
