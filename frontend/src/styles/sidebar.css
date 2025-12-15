@@ -67,6 +67,10 @@
   color : #df8423;
 }
 
+.sidebar-not-available {
+  color : #ff0000;
+}
+
 .sidebar-section {
   margin-bottom: 32px;
 }
