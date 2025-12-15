@@ -17,7 +17,7 @@ export function openSidebar(employee) {
 
       <div>
         <h2>${employee.firstName} ${employee.lastName}</h2>
-        <div class="sidebar-status">${employee.status || "Disponible"}</div>
+       <div class="sidebar-status ${employee.status === "AVAILABLE" ? "sidebar-available" : (employee.status === "OCCUPIED" ? "sidebar-occupied" : "sidebar-not-available")}">${employee.status}</div>
       </div>
     </div>
 

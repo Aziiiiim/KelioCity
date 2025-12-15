@@ -82,7 +82,21 @@
 .sidebar-status {
   font-size: 14px;
   font-weight: 500;
-  color: #4caf50;
+  color: black;
+  margin-top: 2px;
+}
+
+
+.sidebar-available {
+  color: #4caf50; /* Disponible = vert */
+}
+
+.sidebar-occupied {
+  color : #df8423;
+}
+
+.sidebar-not-available {
+  color : #ff0000;
 }
 
 /* CARDS */
@@ -176,3 +190,4 @@
   font-weight: 600;
   color: #333;
 }
+
