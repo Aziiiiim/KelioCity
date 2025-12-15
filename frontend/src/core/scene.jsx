@@ -40,22 +40,33 @@ export function createScene(){
     scene.add(scene.groupRooms);
     const characters = [];
     scene.groupCharacters = new THREE.Group();
-    scene.add(scene.groupCharacters);  
+    scene.add(scene.groupCharacters);
+    const objectList = [];
     fetch("http://localhost:8080/api/rooms")
        .then(res => res.json())
        .then(rooms => {
            for (let i=0; i < rooms.length; i++) {
                 let roomElements;
                 if (rooms[i]["roomType"]["roomtypeName"] === "MeetingRoom") {
-                    roomElements = createMeetingRoom().elements;
+                    let meetingRoom = createMeetingRoom(function (doorPivot, toggleDoor) { createHighlighter(camera,controls,renderer, doorPivot, toggleDoor) });
+                    roomElements = meetingRoom.elements;
+                    objectList.push(meetingRoom);
                 } else if (rooms[i]["roomType"]["roomtypeName"] === "Office1Desk") {
-                    roomElements = createOffice1Desk();
+                    let office1desk = createOffice1Desk(function (doorPivot, toggleDoor) { createHighlighter(camera,controls,renderer,doorPivot,toggleDoor) })
+                    roomElements = office1desk.elements;
+                    objectList.push(office1desk);
                 } else if (rooms[i]["roomType"]["roomtypeName"] === "Office2Desks") {
-                    roomElements = createOffice2Desks();
+                    let office2desk = createOffice2Desks(function (doorPivot, toggleDoor) { createHighlighter(camera,controls,renderer,doorPivot,toggleDoor) })
+                    roomElements = office2desk.elements;
+                    objectList.push(office2desk);
                 } else if (rooms[i]["roomType"]["roomtypeName"] === "Office4Desks") {
-                    roomElements = createOffice4Desks();
+                    let office4desk = createOffice4Desks(function (doorPivot, toggleDoor) { createHighlighter(camera,controls,renderer,doorPivot,toggleDoor) })
+                    roomElements = office4desk.elements;
+                    objectList.push(office4desk);
                 } else if (rooms[i]["roomType"]["roomtypeName"] === "Office6Desks") {
-                    roomElements = createOffice6Desks();
+                    let office6desk = createOffice6Desks(function (doorPivot, toggleDoor) { createHighlighter(camera,controls,renderer,doorPivot,toggleDoor) })
+                    roomElements = office6desk.elements;
+                    objectList.push(office6desk);
                 } else if (rooms[i]["roomType"]["roomtypeName"] === "Openspace") {
                     roomElements = createOpenspace(rooms[i]["openspaceNumber"]);
                 }
@@ -97,10 +108,8 @@ export function createScene(){
         scene.add(lights[i]);
     }
 
-
-
     attachResetButton(controls);
-    
+
     function draw(){
         controls.update();
         if (camera.position.y < 0) camera.position.y = 0;
@@ -128,6 +137,9 @@ export function createScene(){
         characters.forEach(character => {
             character.mixer.update(delta);
         });
+        objectList.forEach(objectRoom => {
+            objectRoom.openDoor(delta);
+        })
 
         renderer.render(scene, camera);
     }

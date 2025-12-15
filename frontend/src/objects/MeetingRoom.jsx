@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {createHighlighter} from "../utils/highlight.js";
 
-export function createMeetingRoom() {
+export function createMeetingRoom(initDoor) {
     const elements = new THREE.Group();
     let  x = 4.3;
     let z = 6;
@@ -88,26 +89,69 @@ export function createMeetingRoom() {
     wallLeft.position.set(x-4.3, 2.45, z);
     elements.add(wallLeft);
 
-    const wallRight = wallLeft.clone();
+    /*const wallRight = wallLeft.clone();
     wallRight.rotation.y = Math.PI/2;
     wallRight.position.set(x+10.7, 2.45, z);
-    elements.add(wallRight);
+    elements.add(wallRight);*/
+    const wallRight1 = new THREE.Mesh(
+      new THREE.PlaneGeometry(10.3, 5),
+      wallMaterial
+    );
+    wallRight1.rotation.y = Math.PI/2;
+    wallRight1.position.set(x+10.7, 2.45, z+0.85);
+    elements.add(wallRight1);
+    const wallRight2 = new THREE.Mesh(
+      new THREE.PlaneGeometry(1.7, 1.9),
+      wallMaterial
+    );
+    wallRight2.rotation.y = Math.PI/2;
+    wallRight2.position.set(x+10.7, 4, z-5.1);
+    elements.add(wallRight2);
+    const wallRight3 = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.1, 5),
+      wallMaterial
+    );
+    wallRight3.rotation.y = Math.PI/2;
+    wallRight3.position.set(x+10.7, 2.45, z-5.95);
+    elements.add(wallRight3);
+
 
     // Door
+    let doorPivot = null;
+    let doorOpen = false;
+    let doorProgress = 0;
     loader.load( './assets/models/door.glb', function ( gltf ) {
-        gltf.scene.position.set(x+10.7,1.5,z-5);
         gltf.scene.scale.set(4,4,4);
-        gltf.scene.rotation.y = Math.PI/2;
-        elements.add( gltf.scene );
+        doorPivot = new THREE.Group();
+        doorPivot.position.set(x+10.7, 1.5, z-5.88);
+        gltf.scene.position.set(-0.88,0,0);
+        doorPivot.add(gltf.scene);
+        elements.add( doorPivot );
+        doorPivot.rotation.y = Math.PI/2;
+        initDoor(doorPivot, toggleDoor);
     });
+    function openDoor(delta) {
+        if (!doorPivot) return; // porte pas encore chargée
+
+        const target = doorOpen ? 1 : 0;
+
+        doorProgress += (target - doorProgress) * delta;
+        doorProgress = THREE.MathUtils.clamp(doorProgress, 0, 1);
+
+        doorPivot.rotation.y = (1-doorProgress) * Math.PI / 2;
+    }
+    function toggleDoor() {
+        doorOpen = !doorOpen;
+    }
+
 
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);
 
-  const endX = x+10.7;
-  const endZ = z+6;
+    const endX = x+10.7;
+    const endZ = z+6;
 
-  elements.focusPosition = new THREE.Vector3(0, 9, 4);
-  return {elements, endX, endZ};
+    elements.focusPosition = new THREE.Vector3(0, 9, 4);
+    return {elements, endX, endZ, openDoor, doorPivot };
 }

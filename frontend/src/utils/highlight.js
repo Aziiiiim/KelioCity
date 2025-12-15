@@ -2,7 +2,7 @@ import * as THREE from "three";
 import { openSidebar, closeSidebar } from "./sidebar.js";
 import { cameraOn } from "../core/camera.jsx";
 
-export function createHighlighter(camera,controls, renderer, targetGroup ) {
+export function createHighlighter(camera,controls, renderer, targetGroup, onclick = null ) {
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
@@ -29,8 +29,12 @@ export function createHighlighter(camera,controls, renderer, targetGroup ) {
             if (node.isMesh) {
                 store[node.uuid] = node.material;
                 node.material = node.material.clone();
-                node.material.color.set(0x00ff00);
-                node.material.emissive.set(0x003300);
+                if (!onclick) {
+                    node.material.color.set(0x00ff00);
+                    node.material.emissive.set(0x003300);
+                } else {
+                    node.material.color.multiplyScalar(0.6);
+                }
             }
         });
         originalMaterials.set(object, store);
@@ -72,11 +76,17 @@ export function createHighlighter(camera,controls, renderer, targetGroup ) {
             while (obj.parent && obj.parent !== targetGroup)
                 obj = obj.parent;
 
-            const employee = obj.userData.employee;
-            openSidebar(employee);
-            cameraOn(camera, controls, obj);
+            if (!onclick) {
+                const employee = obj.userData.employee;
+                openSidebar(employee);
+                cameraOn(camera, controls, obj);
+            } else {
+                onclick();
+            }
         } else {
-            closeSidebar();
+            if (!onclick) {
+                closeSidebar();
+            }
         }
     };
 

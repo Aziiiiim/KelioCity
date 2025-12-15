@@ -2,7 +2,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
 import { Group } from 'three/examples/jsm/libs/tween.module.js';
     
-export function createOffice6Desks() {
+export function createOffice6Desks(initDoor) {
     let x = -1;
 
     const elements = new THREE.Group();
@@ -130,22 +130,39 @@ export function createOffice6Desks() {
     } );    
 
     // Door
+    let doorPivot = null;
+    let doorOpen = false;
+    let doorProgress = 0;
     loader.load( './assets/models/door.glb', function ( gltf ) {
-        gltf.scene.position.set(1+x,1.5,4.5);
         gltf.scene.scale.set(4,4,4);
-        gltf.scene.rotation.y = Math.PI*.5;
-        elements.add( gltf.scene );
-
+        doorPivot = new THREE.Group();
+        doorPivot.position.set(1+x,1.5,5.48);
+        gltf.scene.position.set(-0.88,0,0);
+        doorPivot.add(gltf.scene);
+        elements.add( doorPivot );
+        doorPivot.rotation.y = Math.PI/2;
+        initDoor(doorPivot, toggleDoor);
     }, undefined, function ( error ) {
-
         console.error( error );
-
     } );
+    function openDoor(delta) {
+        if (!doorPivot) return; // porte pas encore chargée
+
+        const target = doorOpen ? 1 : 0;
+
+        doorProgress += (target - doorProgress) * delta;
+        doorProgress = THREE.MathUtils.clamp(doorProgress, 0, 1);
+
+        doorPivot.rotation.y = (1-doorProgress) * Math.PI / 2;
+    }
+    function toggleDoor() {
+        doorOpen = !doorOpen;
+    }
 
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);
     elements.focusPosition = new THREE.Vector3(0, 8, 3);
 
-    return elements;
+    return {elements, openDoor, doorPivot};
 }
