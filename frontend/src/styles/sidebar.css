@@ -4,7 +4,7 @@
   top: 0;           /* Alignée en haut */
   width: 600px;     /* Largeur de la barre */
   height: 100%;     /* Prend toute la hauteur de l'écran */
-  background: rgba(255, 255, 255, 0.92);    /* COuleur de fond (ee = transparent) */
+  background: #ffffffee;    /* Couleur de fond (ee = transparent) */
   border-left: 1px solid #e5e5e5;
   backdrop-filter: blur(10px);  /*Effet flou*/ 
   box-shadow: -4px 0 12px rgba(0,0,0,0.12);  /*Ombre portée sur la gauche*/
@@ -82,7 +82,20 @@
 .sidebar-status {
   font-size: 14px;
   font-weight: 500;
-  color: #4caf50;
+  margin-top: 2px;
+  color: black;
+}
+
+.sidebar-available {
+  color: #4caf50; /* Disponible = vert */
+}
+
+.sidebar-occupied {
+  color : #df8423;
+}
+
+.sidebar-not-available {
+  color : #ff0000;
 }
 
 /* CARDS */
