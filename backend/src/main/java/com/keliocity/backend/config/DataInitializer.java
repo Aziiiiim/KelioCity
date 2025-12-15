@@ -754,6 +754,90 @@ public class DataInitializer implements CommandLineRunner {
                 }
             }
 
+            LocalDateTime today = LocalDateTime.now()
+                    .withHour(0).withMinute(0).withSecond(0).withNano(0);
+
+            LocalDateTime tomorrow = today.plusDays(1);
+
+            List<Employee> employees = employeeRepo.findAll();
+            List<Room> meetingRooms = roomRepo.findAll().stream()
+                    .filter(r -> r.getRoomType().getRoomtypeName().equals("MeetingRoom"))
+                    .toList();
+
+            int meetingIndex = 0;
+            for (Employee employee : employees) {
+
+                // --- Réunion aujourd’hui ---
+                LocalDateTime startToday = today.withHour(9 + (meetingIndex % 4));
+                LocalDateTime endToday = startToday.plusHours(1);
+
+                Meeting meetingToday = meetingRepo.save(
+                    Meeting.builder()
+                        .room(meetingRooms.get(meetingIndex % meetingRooms.size()))
+                        .title("Réunion – " + employee.getFirstName())
+                        .startingHour(startToday)
+                        .endHour(endToday)
+                        .description("Réunion projet")
+                        .build()
+                );
+                meetingRepo.flush();
+
+                meetingEmployeeRepo.save(
+                    new MeetingEmployee(
+                        meetingToday,
+                        employee,
+                        true,
+                        employee.getInOffice() == WorkLocation.REMOTE
+                    )
+                );
+
+                // --- Travail individuel aujourd’hui (focus) ---
+                Meeting focusToday = meetingRepo.save(
+                    Meeting.builder()
+                        .room(meetingRooms.get(0))
+                        .desk(employee.getDesk())
+                        .title("Travail personnel")
+                        .startingHour(today.withHour(14))
+                        .endHour(today.withHour(16))
+                        .description("Temps de concentration")
+                        .build()
+                );
+                meetingRepo.flush();
+
+                meetingEmployeeRepo.save(
+                    new MeetingEmployee(
+                        focusToday,
+                        employee,
+                        true,
+                        employee.getInOffice() == WorkLocation.REMOTE
+                    )
+                );
+
+                // --- Réunion demain ---
+                LocalDateTime startTomorrow = tomorrow.withHour(10 + (meetingIndex % 3));
+
+                Meeting meetingTomorrow = meetingRepo.save(
+                    Meeting.builder()
+                        .room(meetingRooms.get((meetingIndex + 1) % meetingRooms.size()))
+                        .title("Point équipe")
+                        .startingHour(startTomorrow)
+                        .endHour(startTomorrow.plusMinutes(45))
+                        .description("Synchronisation équipe")
+                        .build()
+                );
+                meetingRepo.flush();
+
+                meetingEmployeeRepo.save(
+                    new MeetingEmployee(
+                        meetingTomorrow,
+                        employee,
+                        true,
+                        employee.getInOffice() == WorkLocation.REMOTE
+                    )
+                );
+
+                meetingIndex++;
+            }
             // - - - MEETINGS - - -
             Meeting meeting1 = meetingRepo.save(
                     Meeting.builder()
