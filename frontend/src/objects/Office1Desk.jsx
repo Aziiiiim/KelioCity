@@ -32,10 +32,27 @@ export function createOffice1Desk(initDoor) {
     wallMesh3.position.set(-3+x,2.5,-1+z);
     elements.add(wallMesh3);
 
-    const wallMesh4 = new THREE.Mesh(wallGeo1, wallMat);
-    wallMesh4.rotation.y = Math.PI ;
-    wallMesh4.position.set(x,2.5,1+z);
-    elements.add(wallMesh4);
+    const wallFrontLeft = new THREE.Mesh(
+        new THREE.PlaneGeometry(3.4, 5),
+        wallMat
+    );
+    wallFrontLeft.rotation.y = Math.PI;
+    wallFrontLeft.position.set(x-1.31, 2.5, 1+z);
+    elements.add(wallFrontLeft);
+    const wallFrontTop = new THREE.Mesh(
+        new THREE.PlaneGeometry(2, 1.98),
+        wallMat
+    );
+    wallFrontTop.rotation.y = Math.PI;
+    wallFrontTop.position.set(x+1, 4.01, 1+z);
+    elements.add(wallFrontTop);
+    const wallFrontRight = new THREE.Mesh(
+        new THREE.PlaneGeometry(1, 5),
+        wallMat
+    );
+    wallFrontRight.rotation.y = Math.PI;
+    wallFrontRight.position.set(x+2.5, 2.5, 1+z);
+    elements.add(wallFrontRight);
 
     const loader = new GLTFLoader();
 
