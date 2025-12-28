@@ -110,39 +110,31 @@ export function createScene(){
 
     attachResetButton(controls);
 
-    function draw(){
-        controls.update();
-        if (camera.position.y < 0) camera.position.y = 0;
-        renderer.render(scene,camera);
-    }
-
-    function start(){
+    function start() {
         function onResize() {
             resizeRenderer();
             resizeCamera();
         }
         window.addEventListener('resize', onResize);
         onResize();
-        renderer.setAnimationLoop(draw);
 
-    } 
-    
-    function stop(){
-        renderer.setAnimationLoop(null);
-    } 
+        renderer.setAnimationLoop(() => {
+            const delta = clock.getDelta();
 
-    function animate() {
-        requestAnimationFrame(animate);
-        const delta = clock.getDelta();
-        characters.forEach(character => {
-            character.mixer.update(delta);
+            controls.update();
+
+            if (camera.position.y < 0) camera.position.y = 0;
+
+            characters.forEach(c => c.mixer.update(delta));
+            objectList.forEach(room => room.openDoor?.(delta));
+
+            renderer.render(scene, camera);
         });
-        objectList.forEach(objectRoom => {
-            objectRoom.openDoor(delta);
-        })
+        }
 
-        renderer.render(scene, camera);
-    }
+        function stop() {
+            renderer.setAnimationLoop(null);
+        }
 
-    return { start, stop, animate, scene, camera, renderer };
+    return { start, stop, scene, camera, renderer };
 }

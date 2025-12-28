@@ -1,43 +1,49 @@
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
+import { makeSkinnedInstance } from '../utils/asset.js';
 
-export function initChar (asset, onReady) {
-    const loader = new GLTFLoader();
-    
-    loader.load( asset, function ( gltf ) {
-        //console.log("Avant tout, parent =", gltf.scene.parent);
-        gltf.scene.scale.set(0.5,0.5,0.5);
-        gltf.scene.focusPosition = new THREE.Vector3(0, 7, 4);
+function clipOrIndex(animations, idx) {
+  return animations[idx] ?? null;
+}
 
-        const armature = gltf.scene.getObjectByName("HumanArmature");
-        const mixer = new THREE.AnimationMixer(armature);
-        const actions = {};
-        actions["Sitting"] = mixer.clipAction( gltf.animations[7] ); // s'asseoir
-        actions["Sitting"].setLoop(THREE.LoopOnce);
-        actions["Sitting"].clampWhenFinished = true;
-        actions["Walk"] = mixer.clipAction( gltf.animations[10] ); // marcher
-        actions["Standing"] = mixer.clipAction( gltf.animations[8] ); // se mettre debout
-        actions["Idle"] = mixer.clipAction( gltf.animations[2] ); // être debout
+export function initChar(asset, onReady) {
+  makeSkinnedInstance(asset)
+    .then(({ obj, animations }) => {
+      obj.scale.set(0.5, 0.5, 0.5);
+      obj.focusPosition = new THREE.Vector3(0, 7, 4);
+      
+      const mixer = new THREE.AnimationMixer(obj);
 
-        const character = {
-            scene: gltf.scene,
-            mixer,
-            actions,
-            currentAction: null,
+      const actions = {};
+      const sitting = clipOrIndex(animations, 7);
+      const walk = clipOrIndex(animations, 10);
+      const standing = clipOrIndex(animations, 8);
+      const idle = clipOrIndex(animations, 2);
 
-            play(name) {
-                if (this.currentAction) this.currentAction.fadeOut(0.2);
-                const newAction = this.actions[name];
-                newAction.reset().fadeIn(0.2).play();
-                this.currentAction = newAction;
-            }
-        };
+      if (sitting) {
+        actions.Sitting = mixer.clipAction(sitting);
+        actions.Sitting.setLoop(THREE.LoopOnce);
+        actions.Sitting.clampWhenFinished = true;
+      }
+      if (walk) actions.Walk = mixer.clipAction(walk);
+      if (standing) actions.Standing = mixer.clipAction(standing);
+      if (idle) actions.Idle = mixer.clipAction(idle);
 
-        if (onReady) onReady(character);
+      const character = {
+        scene: obj,
+        mixer,
+        actions,
+        currentAction: null,
 
-    }, undefined, function ( error ) {
+        play(name) {
+          const newAction = this.actions[name];
+          if (!newAction) return;
+          if (this.currentAction) this.currentAction.fadeOut(0.2);
+          newAction.reset().fadeIn(0.2).play();
+          this.currentAction = newAction;
+        },
+      };
 
-        console.error( error );
-
-    } );
+      onReady?.(character);
+    })
+    .catch(console.error);
 }
