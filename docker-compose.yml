@@ -20,8 +20,8 @@ services:
     container_name: backend_keliocity
     working_dir: /app
     volumes:
-      - ./backend:/app   # ← Hot reload source code
-      - ~/.m2:/root/.m2  # ← Cache Maven = rapidité
+      - ./backend:/app
+      - maven_repo:/root/.m2
     command: ["./mvnw", "spring-boot:run"]
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/keliocity
@@ -39,7 +39,10 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
-    command: sh -c "npm install && npm run dev -- --host"
+    environment:
+    - CHOKIDAR_USEPOLLING=true
+    - CHOKIDAR_INTERVAL=250
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0 --port 5173"
     ports:
       - "5173:5173"
     depends_on:
@@ -47,3 +50,4 @@ services:
 
 volumes:
   mysql_data:
+  maven_repo:
