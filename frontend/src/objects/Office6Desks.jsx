@@ -2,7 +2,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
 import { Group } from 'three/examples/jsm/libs/tween.module.js';
     
-export function createOffice6Desks() {
+export function createOffice6Desks(initDoor) {
     let x = -1;
 
     const elements = new THREE.Group();
@@ -28,10 +28,27 @@ export function createOffice6Desks() {
     wallMesh2.position.set(8+x,2.5,4.5);
     elements.add(wallMesh2);
 
-    const wallMesh3 = new THREE.Mesh(wallGeo2, wallMat);
-    wallMesh3.rotation.y = Math.PI * .5;
-    wallMesh3.position.set(1+x,2.5,4.5);
-    elements.add(wallMesh3);
+    const wallFrontLeft = new THREE.Mesh(
+        new THREE.PlaneGeometry(5.5, 5),
+        wallMat
+    );
+    wallFrontLeft.rotation.y = Math.PI * 0.5;
+    wallFrontLeft.position.set(1 + x, 2.5, 2.74);
+    elements.add(wallFrontLeft);
+    const wallFrontTop = new THREE.Mesh(
+        new THREE.PlaneGeometry(2, 1.96),
+        wallMat
+    );
+    wallFrontTop.rotation.y = Math.PI * 0.5;
+    wallFrontTop.position.set(1 + x, 4.02, 6.4);
+    elements.add(wallFrontTop);
+    const wallFrontRight = new THREE.Mesh(
+        new THREE.PlaneGeometry(1.9, 5),
+        wallMat
+    );
+    wallFrontRight.rotation.y = Math.PI * 0.5;
+    wallFrontRight.position.set(1 + x, 2.5, 8.05);
+    elements.add(wallFrontRight);
 
     const wallMesh4 = new THREE.Mesh(wallGeo1, wallMat);
     wallMesh4.rotation.y = Math.PI ;
@@ -130,22 +147,39 @@ export function createOffice6Desks() {
     } );    
 
     // Door
+    let doorPivot = null;
+    let doorOpen = false;
+    let doorProgress = 0;
     loader.load( './assets/models/door.glb', function ( gltf ) {
-        gltf.scene.position.set(1+x,1.5,4.5);
         gltf.scene.scale.set(4,4,4);
-        gltf.scene.rotation.y = Math.PI*.5;
-        elements.add( gltf.scene );
-
+        doorPivot = new THREE.Group();
+        doorPivot.position.set(1+x,1.5,5.48);
+        gltf.scene.position.set(-0.88,0,0);
+        doorPivot.add(gltf.scene);
+        elements.add( doorPivot );
+        doorPivot.rotation.y = Math.PI/2;
+        initDoor(doorPivot, toggleDoor);
     }, undefined, function ( error ) {
-
         console.error( error );
-
     } );
+    function openDoor(delta) {
+        if (!doorPivot) return; // porte pas encore chargée
+
+        const target = doorOpen ? 1 : 0;
+
+        doorProgress += (target - doorProgress) * delta;
+        doorProgress = THREE.MathUtils.clamp(doorProgress, 0, 1);
+
+        doorPivot.rotation.y = (1-doorProgress) * Math.PI / 2;
+    }
+    function toggleDoor() {
+        doorOpen = !doorOpen;
+    }
 
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);
     elements.focusPosition = new THREE.Vector3(0, 8, 3);
 
-    return elements;
+    return {elements, openDoor, doorPivot};
 }

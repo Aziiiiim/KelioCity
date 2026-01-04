@@ -2,7 +2,8 @@ import * as THREE from "three";
 import { openSidebar, closeSidebar } from "./sidebar.js";
 import { cameraOn } from "../core/camera.jsx";
 
-export function createHighlighter(camera, controls, renderer, targetGroup ) {
+export function createHighlighter(camera,controls, renderer, targetGroup, onclick = null ) {
+
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
 
@@ -25,25 +26,36 @@ export function createHighlighter(camera, controls, renderer, targetGroup ) {
         highlighted = object;
         if (!object) return;
 
-        let color = 0xffffff;
-        const employee = object.userData.employee;
-        console.log(employee.status);
-        if (employee.status == "AVAILABLE") {
-            color = 0x00ff00;
-        } else if (employee.status == "OCCUPIED") {
-            color = 0xdf8423;
-        } else if (employee.status == "NOT_AVAILABLE") {
-            color = 0xff0000;
-        }   
-        
-        if (!filter_highlighted.get(highlighted)) {
+        if (!onclick) {
+            let color = 0xffffff;
+            const employee = object.userData.employee;
+            if (employee.status === "AVAILABLE") {
+                color = 0x00ff00;
+            } else if (employee.status === "OCCUPIED") {
+                color = 0xdf8423;
+            } else if (employee.status === "NOT_AVAILABLE") {
+                color = 0xff0000;
+            }
+
+            if (!filter_highlighted.get(highlighted)) {
+                const store = {};
+                object.traverse(node => {
+                    if (node.isMesh) {
+                        store[node.uuid] = node.material;
+                        node.material = node.material.clone();
+                        node.material.color.set(color);
+                        node.material.emissive.set(0x003300);
+                    }
+                });
+                originalMaterials.set(object, store);
+            }
+        } else {
             const store = {};
             object.traverse(node => {
                 if (node.isMesh) {
                     store[node.uuid] = node.material;
                     node.material = node.material.clone();
-                    node.material.color.set(color);
-                    node.material.emissive.set(0x003300);
+                    node.material.color.multiplyScalar(0.6);
                 }
             });
             originalMaterials.set(object, store);
@@ -86,11 +98,17 @@ export function createHighlighter(camera, controls, renderer, targetGroup ) {
             while (obj.parent && obj.parent !== targetGroup)
                 obj = obj.parent;
 
-            const employee = obj.userData.employee;
-            openSidebar(employee);
-            cameraOn(camera, controls, obj);
+            if (!onclick) {
+                const employee = obj.userData.employee;
+                openSidebar(employee);
+                cameraOn(camera, controls, obj);
+            } else {
+                onclick();
+            }
         } else {
-            closeSidebar();
+            if (!onclick) {
+                closeSidebar();
+            }
         }
     };
 
