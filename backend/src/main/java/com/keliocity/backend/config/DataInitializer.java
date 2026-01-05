@@ -414,7 +414,7 @@ public class DataInitializer implements CommandLineRunner {
                         .phoneNumber("0681283384")
                         .workingHours("08:00-16:00")
                         .inOffice(WorkLocation.REMOTE)
-                        .status(EmployeeStatus.OCCUPIED)
+                        .status(EmployeeStatus.AVAILABLE)
                         .sprite(Sprite.MAN2)
                         .build()
             );
@@ -428,7 +428,7 @@ public class DataInitializer implements CommandLineRunner {
                         .phoneNumber("0681243384")
                         .workingHours("08:00-16:00")
                         .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.OCCUPIED)
+                        .status(EmployeeStatus.ABSENT)
                         .sprite(Sprite.MAN1)
                         .build()
             );
@@ -797,8 +797,8 @@ public class DataInitializer implements CommandLineRunner {
                         .room(meetingRooms.get(0))
                         .desk(employee.getDesk())
                         .title("Travail personnel")
-                        .startingHour(today.withHour(17))
-                        .endHour(today.withHour(18))
+                        .startingHour(today.withHour(18))
+                        .endHour(today.withHour(19))
                         .description("Temps de concentration")
                         .build()
                 );

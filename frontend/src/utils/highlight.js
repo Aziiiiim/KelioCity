@@ -31,9 +31,11 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
             const employee = object.userData.employee;
             fetch("http://localhost:8080/api/employees/"+employee.id+"/in-meeting")
                 .then(in_meeting => {
-                    if (employee.status === "AVAILABLE" && !in_meeting) {
+                    if (employee.status === "AVAILABLE" && employee.inOffice === "OFFICE" && !in_meeting) {
                         color = 0x00ff00;
-                    } else if (employee.status === "OCCUPIED" || in_meeting) {
+                    } else if (employee.inOffice === "REMOTE" && employee.status !== "ABSENT" && !in_meeting) {
+                        color = 0xeeff00;
+                    } else if (employee.status === "OCCUPIED" || (in_meeting && employee.status !== "ABSENT")) {
                         color = 0xdf8423;
                     } else if (employee.status === "ABSENT") {
                         color = 0xff0000;
