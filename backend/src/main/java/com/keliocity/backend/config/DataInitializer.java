@@ -858,8 +858,8 @@ public class DataInitializer implements CommandLineRunner {
                     Meeting.builder()
                         .room(roomA102)
                         .title("Revue de Projet")
-                        .startingHour(LocalDateTime.of(2025,11,25,11,30))
-                        .endHour(LocalDateTime.of(2025,11,25,14,30))
+                        .startingHour(LocalDateTime.of(2026,01,5,21,0))
+                        .endHour(LocalDateTime.of(2026,01,5,23,30))
                         .description("Revue de projet PROCOM")
                         .build()
             );

@@ -30,7 +30,10 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
             let color = 0xffffff;
             const employee = object.userData.employee;
             fetch("http://localhost:8080/api/employees/"+employee.id+"/in-meeting")
+                .then(res => res.text())
+                .then(res => res === "true")
                 .then(in_meeting => {
+                    if (highlighted !== object) return;
                     if (employee.status === "AVAILABLE" && employee.inOffice === "OFFICE" && !in_meeting) {
                         color = 0x00ff00;
                     } else if (employee.inOffice === "REMOTE" && employee.status !== "ABSENT" && !in_meeting) {
