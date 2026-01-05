@@ -797,8 +797,8 @@ public class DataInitializer implements CommandLineRunner {
                         .room(meetingRooms.get(0))
                         .desk(employee.getDesk())
                         .title("Travail personnel")
-                        .startingHour(today.withHour(14))
-                        .endHour(today.withHour(16))
+                        .startingHour(today.withHour(17))
+                        .endHour(today.withHour(18))
                         .description("Temps de concentration")
                         .build()
                 );

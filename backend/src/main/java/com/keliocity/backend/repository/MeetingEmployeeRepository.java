@@ -29,4 +29,17 @@ public interface MeetingEmployeeRepository extends JpaRepository<MeetingEmployee
         @Param("startOfDay") LocalDateTime startOfDay,
         @Param("endOfDay") LocalDateTime endOfDay
     );
+
+    @Query("""
+    SELECT COUNT(me) > 0
+    FROM MeetingEmployee me
+    WHERE me.employee.id = :employeeId
+      AND me.present = true
+      AND me.meeting.startingHour <= :now
+      AND me.meeting.endHour >= :now
+    """)
+    boolean existsEmployeeInMeetingNow(
+        @Param("employeeId") Integer employeeId,
+        @Param("now") LocalDateTime now
+    );
 }
