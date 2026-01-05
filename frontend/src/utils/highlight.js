@@ -29,26 +29,28 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
         if (!onclick) {
             let color = 0xffffff;
             const employee = object.userData.employee;
-            if (employee.status === "AVAILABLE") {
-                color = 0x00ff00;
-            } else if (employee.status === "OCCUPIED") {
-                color = 0xdf8423;
-            } else if (employee.status === "NOT_AVAILABLE") {
-                color = 0xff0000;
-            }
-
-            if (!filter_highlighted.get(highlighted)) {
-                const store = {};
-                object.traverse(node => {
-                    if (node.isMesh) {
-                        store[node.uuid] = node.material;
-                        node.material = node.material.clone();
-                        node.material.color.set(color);
-                        node.material.emissive.set(0x003300);
+            fetch("http://localhost:8080/api/employees/"+employee.id+"/in-meeting")
+                .then(in_meeting => {
+                    if (employee.status === "AVAILABLE" && !in_meeting) {
+                        color = 0x00ff00;
+                    } else if (employee.status === "OCCUPIED" || in_meeting) {
+                        color = 0xdf8423;
+                    } else if (employee.status === "ABSENT") {
+                        color = 0xff0000;
+                    }
+                    if (!filter_highlighted.get(highlighted)) {
+                        const store = {};
+                        object.traverse(node => {
+                            if (node.isMesh) {
+                                store[node.uuid] = node.material;
+                                node.material = node.material.clone();
+                                node.material.color.set(color);
+                                node.material.emissive.set(0x003300);
+                            }
+                        });
+                        originalMaterials.set(object, store);
                     }
                 });
-                originalMaterials.set(object, store);
-            }
         } else {
             const store = {};
             object.traverse(node => {
