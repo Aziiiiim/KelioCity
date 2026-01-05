@@ -27,10 +27,27 @@ export function createOffice6Desks(initDoor) {
     wallMesh2.position.set(8+x,2.5,4.5);
     elements.add(wallMesh2);
 
-    const wallMesh3 = new THREE.Mesh(wallGeo2, wallMat);
-    wallMesh3.rotation.y = Math.PI * .5;
-    wallMesh3.position.set(1+x,2.5,4.5);
-    elements.add(wallMesh3);
+    const wallFrontLeft = new THREE.Mesh(
+        new THREE.PlaneGeometry(5.5, 5),
+        wallMat
+    );
+    wallFrontLeft.rotation.y = Math.PI * 0.5;
+    wallFrontLeft.position.set(1 + x, 2.5, 2.74);
+    elements.add(wallFrontLeft);
+    const wallFrontTop = new THREE.Mesh(
+        new THREE.PlaneGeometry(2, 1.96),
+        wallMat
+    );
+    wallFrontTop.rotation.y = Math.PI * 0.5;
+    wallFrontTop.position.set(1 + x, 4.02, 6.4);
+    elements.add(wallFrontTop);
+    const wallFrontRight = new THREE.Mesh(
+        new THREE.PlaneGeometry(1.9, 5),
+        wallMat
+    );
+    wallFrontRight.rotation.y = Math.PI * 0.5;
+    wallFrontRight.position.set(1 + x, 2.5, 8.05);
+    elements.add(wallFrontRight);
 
     const wallMesh4 = new THREE.Mesh(wallGeo1, wallMat);
     wallMesh4.rotation.y = Math.PI ;
