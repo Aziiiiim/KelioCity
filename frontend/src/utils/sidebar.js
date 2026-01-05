@@ -21,12 +21,6 @@ export function openSidebar(employee) {
       </div>
     </div>
 
-      <div>
-        <h2>${employee.firstName} ${employee.lastName}</h2>
-        <div class="sidebar-status">${employee.status || "Disponible"}</div>
-      </div>
-    </div>
-
     <div class="sidebar-section card animate">
       <h3>Coordonnées</h3>
       <div class="info-grid">
