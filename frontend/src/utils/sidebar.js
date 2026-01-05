@@ -48,7 +48,7 @@ export function openSidebar(employee) {
 
         <div class="info-label">Présence</div>
         <div class="info-value">
-          ${employee.inOffice ? "Office" : "Télétravail"}
+          ${employee.inOffice === "OFFICE" ? "Office" : "Télétravail"}
         </div>
       </div>
     </div>
