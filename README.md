@@ -61,7 +61,7 @@ Voici ce que met en place le **docker-compose.yml** :
     
 - Backend (Spring Boot):
   - Utilise l'image **eclipse-temurin:17-jdk**
-  - Recompilation automatique si le code est modifié
+  - Recompilation automatique si le code est modifié (!! si DataInitializer est modifié, il faut relancer tous les services !!)
   - Exposé sur <http://localhost:8080>
   - Se connecte à la DB automatiquement
 

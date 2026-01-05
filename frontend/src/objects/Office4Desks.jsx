@@ -1,10 +1,8 @@
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
-import { Group } from 'three/examples/jsm/libs/tween.module.js';
+import { makeInstance } from '../utils/asset.js'; 
     
 export function createOffice4Desks(initDoor) {
     let x = -1;
-
     const elements = new THREE.Group();
 
     // Wall and floor
@@ -56,104 +54,80 @@ export function createOffice4Desks(initDoor) {
     elements.add(wallMesh4);
 
     
-    const loader = new GLTFLoader();
-    const groupDesk1 = new THREE.Group();
-    let loadedCount = 0;
+    let doorPivot = null;
+    let doorOpen = false;
+    let doorProgress = 0;
 
-    function tryClone() {
-        if (loadedCount === 2) {
+    const groupDesk1 = new THREE.Group();
+
+    Promise.all([
+        makeInstance('./assets/models/decoratedDesk.glb').then((desk) => {
+        desk.position.set(-5.43 + 3.5, 0, 2.5);
+        desk.scale.set(1.1, 1.1, 1.1);
+        desk.rotation.y = -Math.PI * 0.5;
+        groupDesk1.add(desk);
+        }),
+        makeInstance('./assets/models/chair.glb').then((chair) => {
+        chair.position.set(-4.7 + 3.5, 0, -9.5);
+        chair.scale.set(0.035, 0.035, 0.035);
+        chair.rotation.y = -Math.PI * 0.5;
+        groupDesk1.add(chair);
+        }),
+    ])
+        .then(() => {
         const groupDesk2 = groupDesk1.clone(true);
         const groupDesk3 = groupDesk1.clone(true);
         const groupDesk4 = groupDesk1.clone(true);
 
-        groupDesk1.position.set(x,0,0)
-        groupDesk3.position.set(x,0,2.25)
+        groupDesk1.position.set(x, 0, 0);
+        groupDesk3.position.set(x, 0, 2.25);
 
         groupDesk2.rotation.y = Math.PI;
-        groupDesk2.position.set(9+x, 0, 4);
+        groupDesk2.position.set(9 + x, 0, 4);
+
         groupDesk4.rotation.y = Math.PI;
-        groupDesk4.position.set(9+x, 0, 6.25);
+        groupDesk4.position.set(9 + x, 0, 6.25);
 
-        elements.add(groupDesk1);
-        elements.add(groupDesk2);
-        elements.add(groupDesk3);
-        elements.add(groupDesk4);
-        }
-    }
-    
-    // Desk
-    loader.load( './assets/models/decoratedDesk.glb', function ( gltf ) {
-        gltf.scene.position.set(-5.43+3.5,0,2.5);
-        gltf.scene.scale.set(1.1, 1.1, 1.1);
-        gltf.scene.rotation.y = -Math.PI * .5;
-        groupDesk1.add( gltf.scene );
-        loadedCount++;
-        tryClone();
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );
-
-    // Chair
-    loader.load( './assets/models/chair.glb', function ( gltf ) {
-        gltf.scene.position.set(-4.7+3.5,0,-9.5);
-        gltf.scene.scale.set(0.035,0.035,0.035);
-        gltf.scene.rotation.y = -Math.PI * .5;
-        groupDesk1.add( gltf.scene );
-        loadedCount++;
-        tryClone();
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );
-
-    
+        elements.add(groupDesk1, groupDesk2, groupDesk3, groupDesk4);
+        })
+        .catch(console.error);
 
     // Message Board
-    loader.load( './assets/models/messageBoard.glb', function ( gltf ) {
-        gltf.scene.position.set(4.5+x,1,0.1);
-        gltf.scene.scale.set(0.02,0.02,0.02);
-        gltf.scene.rotation.y = Math.PI*-.5;
-        elements.add( gltf.scene );
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );
+    makeInstance('./assets/models/messageBoard.glb')
+        .then((board) => {
+        board.position.set(4.5 + x, 1, 0.1);
+        board.scale.set(0.02, 0.02, 0.02);
+        board.rotation.y = Math.PI * -0.5;
+        elements.add(board);
+        })
+        .catch(console.error);
 
     // Shelf
-    loader.load( './assets/models/containerShelf.glb', function ( gltf ) {
-        gltf.scene.position.set(7.6+x,1.14,0.8);
-        gltf.scene.scale.set(0.03,0.03,0.03);
-        gltf.scene.rotation.y = Math.PI*.5;
-        elements.add( gltf.scene );
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );    
+    makeInstance('./assets/models/containerShelf.glb')
+        .then((shelf) => {
+        shelf.position.set(7.6 + x, 1.14, 0.8);
+        shelf.scale.set(0.03, 0.03, 0.03);
+        shelf.rotation.y = Math.PI * 0.5;
+        elements.add(shelf);
+        })
+        .catch(console.error);
 
     // Door
-    let doorPivot = null;
-    let doorOpen = false;
-    let doorProgress = 0;
-    loader.load( './assets/models/door.glb', function ( gltf ) {
-        gltf.scene.scale.set(4,4,4);
+    makeInstance('./assets/models/door.glb')
+        .then((doorObj) => {
+        doorObj.scale.set(4, 4, 4);
+
         doorPivot = new THREE.Group();
-        doorPivot.position.set(1+x,1.5,5.48);
-        gltf.scene.position.set(-0.88,0,0);
-        doorPivot.add(gltf.scene);
-        elements.add( doorPivot );
+        doorPivot.position.set(1 + x, 1.5, 5.48);
+
+        doorObj.position.set(-0.88, 0, 0);
+
+        doorPivot.add(doorObj);
+        elements.add(doorPivot);
+
         initDoor(doorPivot, toggleDoor);
-    }, undefined, function ( error ) {
-        console.error( error );
-    } );
+        })
+        .catch(console.error);
     function openDoor(delta) {
         if (!doorPivot) return; // porte pas encore chargée
 

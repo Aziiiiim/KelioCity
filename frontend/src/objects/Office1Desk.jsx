@@ -1,5 +1,5 @@
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
+import { makeInstance, loadTexture } from '../utils/asset.js';
 
 export function createOffice1Desk(initDoor) {
     const elements = new THREE.Group();
@@ -54,79 +54,57 @@ export function createOffice1Desk(initDoor) {
     wallFrontRight.position.set(x+2.5, 2.5, 1+z);
     elements.add(wallFrontRight);
 
-    const loader = new GLTFLoader();
-
 
     // Desk
-    loader.load( './assets/models/decoratedDesk.glb', function ( gltf ) {
-        gltf.scene.position.set(0.3+x,0,6.7+z);
-        gltf.scene.position.set(0.3+x,0,6.7+z);
-        gltf.scene.scale.set(1.1, 1.1, 1.1);
-        elements.add( gltf.scene );
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );
+    makeInstance('./assets/models/decoratedDesk.glb').then((desk) => {
+        desk.position.set(0.3 + x, 0, 6.7 + z);
+        desk.scale.set(1.1, 1.1, 1.1);
+        elements.add(desk);
+    }).catch(console.error);
 
     // Chair
-    loader.load( './assets/models/chair.glb', function ( gltf ) {
-        gltf.scene.position.set(-11.7+x,0,6+z);
-        gltf.scene.position.set(-11.7+x,0,6+z);
-        gltf.scene.scale.set(0.035,0.035,0.035);
-        elements.add( gltf.scene );
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );
+    makeInstance('./assets/models/chair.glb').then((chair) => {
+        chair.position.set(-11.7 + x, 0, 6 + z);
+        chair.scale.set(0.035, 0.035, 0.035);
+        elements.add(chair);
+    }).catch(console.error);
 
     // Message Board
-    loader.load( './assets/models/messageBoard.glb', function ( gltf ) {
-        gltf.scene.position.set(2,1,-2.9+z);
-        gltf.scene.position.set(2,1,-2.9+z);
-        gltf.scene.scale.set(0.02,0.02,0.02);
-        gltf.scene.rotation.y = Math.PI*-.5;
-        elements.add( gltf.scene );
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );
+    makeInstance('./assets/models/messageBoard.glb').then((board) => {
+        board.position.set(2, 1, -2.9 + z);
+        board.scale.set(0.02, 0.02, 0.02);
+        board.rotation.y = Math.PI * -0.5;
+        elements.add(board);
+    }).catch(console.error);
 
     // Shelf
-    loader.load( './assets/models/containerShelf.glb', function ( gltf ) {
-        gltf.scene.position.set(2.6+x,1.14,-2.2+z);
-        gltf.scene.position.set(2.6+x,1.14,-2.2+z);
-        gltf.scene.scale.set(0.03,0.03,0.03);
-        gltf.scene.rotation.y = Math.PI*.5;
-        elements.add( gltf.scene );
+    makeInstance('./assets/models/containerShelf.glb').then((shelf) => {
+        shelf.position.set(2.6 + x, 1.14, -2.2 + z);
+        shelf.scale.set(0.03, 0.03, 0.03);
+        shelf.rotation.y = Math.PI * 0.5;
+        elements.add(shelf);
+    }).catch(console.error);
 
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );   
-
-    // Door
+    // Door (avec pivot)
     let doorPivot = null;
     let doorOpen = false;
     let doorProgress = 0;
-    loader.load( './assets/models/door.glb', function ( gltf ) {
-        gltf.scene.scale.set(4,4,4);
+    makeInstance('./assets/models/door.glb').then((doorObj) => {
+        doorObj.scale.set(4, 4, 4);
+
         doorPivot = new THREE.Group();
-        doorPivot.position.set(2+x,1.5,0.98+z);
-        gltf.scene.position.set(-0.88,0,0);
-        doorPivot.add(gltf.scene);
-        elements.add( doorPivot );
-        doorPivot.rotation.y = Math.PI/2;
+        doorPivot.position.set(2 + x, 1.5, 0.98 + z);
+
+        // même offset que ton code
+        doorObj.position.set(-0.88, 0, 0);
+
+        doorPivot.add(doorObj);
+        doorPivot.rotation.y = Math.PI / 2;
+
+        elements.add(doorPivot);
         initDoor(doorPivot, toggleDoor);
-    }, undefined, function ( error ) {
-        console.error( error );
-    } );
+    }).catch(console.error);
+
     function openDoor(delta) {
         if (!doorPivot) return; // porte pas encore chargée
 
@@ -137,6 +115,7 @@ export function createOffice1Desk(initDoor) {
 
         doorPivot.rotation.y = doorProgress * Math.PI / 2;
     }
+
     function toggleDoor() {
         doorOpen = !doorOpen;
     }

@@ -1,13 +1,13 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { makeInstance, loadTexture } from '../utils/asset.js';
+
 
 export function createOpenspace(nb_desks) {
   const elements = new THREE.Group();
   let x = 1.28;
   let z = 1.35;
 
-  // We load each element of our openspace desks
-  const loader = new GLTFLoader();
+
 
   // First external wall of the first desk
   let fst_wall_between = new THREE.Mesh(
@@ -20,22 +20,19 @@ export function createOpenspace(nb_desks) {
   // For each desk, we load the desk, its computer, its chair and the wall between 2 desks
   for (let i=0; i<nb_desks; i++) {
     for (let j=-1; j<1; j++) {
-      loader.load('./assets/models/Desk.glb', (gltf) => {
-        const desk = gltf.scene;
+      makeInstance('./assets/models/Desk.glb').then((desk) => {
         desk.scale.set(2, 2, 2);
         desk.position.set(x+2.52 * i - j*1.28, 0, z+1+j*1.25);
         desk.rotation.y = Math.PI * j;
         elements.add(desk);
       });
-      loader.load('./assets/models/Laptop.glb', (gltf) => {
-        const computer = gltf.scene;
+      makeInstance('./assets/models/Laptop.glb').then((computer) => {
         computer.scale.set(0.3,0.3,0.3);
         computer.position.set(x+2.52 * i - j*0.7 +0.37, 0.87, z+1+j*1.25);
         computer.rotation.y = Math.PI * j;
         elements.add(computer);
       });
-      loader.load('./assets/models/OpenChair.glb', (gltf) => {
-        const chair = gltf.scene;
+      makeInstance('./assets/models/OpenChair.glb').then((chair) => {
         chair.scale.set(1.5, 1.5, 1.5);
         chair.position.set(x+2.52 * i - j*0.5 + 0.4, 0.5, z+2.3+j*3.85);
         chair.rotation.y = Math.PI * (1+j);

@@ -1,5 +1,5 @@
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as THREE from 'three';
+import { makeInstance } from '../utils/asset.js'; 
     
 export function createOffice2Desks(initDoor) {
     let x = -1;
@@ -54,105 +54,90 @@ export function createOffice2Desks(initDoor) {
     wallMesh4.position.set(3.5+x,2.5,6);
     elements.add(wallMesh4);
 
-    
-    const loader = new GLTFLoader();
+    let doorPivot = null;
+    let doorOpen = false;
+    let doorProgress = 0;
     
     
 
     // Desk1
-    loader.load( './assets/models/decoratedDesk.glb', function ( gltf ) {
-        gltf.scene.position.set(-5.43+x,0,2.5);
-        gltf.scene.scale.set(1.1, 1.1, 1.1);
-        gltf.scene.rotation.y = -Math.PI * .5;
-        elements.add( gltf.scene );
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );
+    makeInstance('./assets/models/decoratedDesk.glb')
+        .then((desk) => {
+        desk.position.set(-5.43 + x, 0, 2.5);
+        desk.scale.set(1.1, 1.1, 1.1);
+        desk.rotation.y = -Math.PI * 0.5;
+        elements.add(desk);
+        })
+        .catch(console.error);
 
     // Chair1
-    loader.load( './assets/models/chair.glb', function ( gltf ) {
-        gltf.scene.position.set(-4.7+x,0,-9.5);
-        gltf.scene.scale.set(0.035,0.035,0.035);
-        gltf.scene.rotation.y = -Math.PI * .5;
-        elements.add( gltf.scene );
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );
+    makeInstance('./assets/models/chair.glb')
+        .then((chair) => {
+        chair.position.set(-4.7 + x, 0, -9.5);
+        chair.scale.set(0.035, 0.035, 0.035);
+        chair.rotation.y = -Math.PI * 0.5;
+        elements.add(chair);
+        })
+        .catch(console.error);
 
     // Desk2
-    loader.load( './assets/models/decoratedDesk.glb', function ( gltf ) {
-        gltf.scene.position.set(12.43+x,0,3.6);
-        gltf.scene.scale.set(1.1, 1.1, 1.1);
-        gltf.scene.rotation.y = Math.PI * .5;
-        elements.add( gltf.scene );
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );
+    makeInstance('./assets/models/decoratedDesk.glb')
+        .then((desk) => {
+        desk.position.set(12.43 + x, 0, 3.6);
+        desk.scale.set(1.1, 1.1, 1.1);
+        desk.rotation.y = Math.PI * 0.5;
+        elements.add(desk);
+        })
+        .catch(console.error);
 
     // Chair2
-    loader.load( './assets/models/chair.glb', function ( gltf ) {
-        gltf.scene.position.set(11.7+x,0,15.7);
-        gltf.scene.scale.set(0.035,0.035,0.035);
-        gltf.scene.rotation.y = Math.PI * .5;
-        elements.add( gltf.scene );
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );
+    makeInstance('./assets/models/chair.glb')
+        .then((chair) => {
+        chair.position.set(11.7 + x, 0, 15.7);
+        chair.scale.set(0.035, 0.035, 0.035);
+        chair.rotation.y = Math.PI * 0.5;
+        elements.add(chair);
+        })
+        .catch(console.error);
 
     // Message Board
-    loader.load( './assets/models/messageBoard.glb', function ( gltf ) {
-        gltf.scene.position.set(3+x,1,0.1);
-        gltf.scene.scale.set(0.02,0.02,0.02);
-        gltf.scene.rotation.y = Math.PI*-.5;
-        elements.add( gltf.scene );
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );
+    makeInstance('./assets/models/messageBoard.glb')
+        .then((board) => {
+        board.position.set(3 + x, 1, 0.1);
+        board.scale.set(0.02, 0.02, 0.02);
+        board.rotation.y = Math.PI * -0.5;
+        elements.add(board);
+        })
+        .catch(console.error);
 
     // Shelf
-    loader.load( './assets/models/containerShelf.glb', function ( gltf ) {
-        gltf.scene.position.set(5.6+x,1.14,0.8);
-        gltf.scene.scale.set(0.03,0.03,0.03);
-        gltf.scene.rotation.y = Math.PI*.5;
-        elements.add( gltf.scene );
-
-    }, undefined, function ( error ) {
-
-        console.error( error );
-
-    } );    
+    makeInstance('./assets/models/containerShelf.glb')
+        .then((shelf) => {
+        shelf.position.set(5.6 + x, 1.14, 0.8);
+        shelf.scale.set(0.03, 0.03, 0.03);
+        shelf.rotation.y = Math.PI * 0.5;
+        elements.add(shelf);
+        })
+        .catch(console.error);
 
     // Door
-    let doorPivot = null;
-    let doorOpen = false;
-    let doorProgress = 0;
-    loader.load( './assets/models/door.glb', function ( gltf ) {
-        gltf.scene.scale.set(4,4,4);
+    makeInstance('./assets/models/door.glb')
+        .then((doorObj) => {
+        doorObj.scale.set(4, 4, 4);
+
         doorPivot = new THREE.Group();
-        doorPivot.position.set(1+x,1.5,5.48);
-        gltf.scene.position.set(-0.88,0,0);
-        doorPivot.add(gltf.scene);
-        elements.add( doorPivot );
+        doorPivot.position.set(1 + x, 1.5, 5.48);
+
+        doorObj.position.set(-0.88, 0, 0);
+
+        doorPivot.add(doorObj);
         doorPivot.rotation.y = Math.PI;
+
+        elements.add(doorPivot);
         initDoor(doorPivot, toggleDoor);
-    }, undefined, function ( error ) {
-        console.error( error );
-    } );
+        })
+        .catch(console.error);
+
     function openDoor(delta) {
         if (!doorPivot) return; // porte pas encore chargée
 
