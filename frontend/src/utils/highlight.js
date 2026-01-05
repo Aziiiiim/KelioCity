@@ -16,6 +16,10 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
 
         if (highlighted && !filter_highlighted.get(highlighted)) {
             const mats = originalMaterials.get(highlighted);
+            if (!mats) {
+                highlighted = object;
+                return;
+            }
             highlighted.traverse(node => {
                 if (node.isMesh && mats[node.uuid]) {
                     node.material = mats[node.uuid];
@@ -36,7 +40,7 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
                     if (highlighted !== object) return;
                     if (employee.status === "AVAILABLE" && employee.inOffice === "OFFICE" && !in_meeting) {
                         color = 0x00ff00;
-                    } else if (employee.inOffice === "REMOTE" && employee.status !== "ABSENT" && !in_meeting) {
+                    } else if (employee.inOffice === "REMOTE" && employee.status === "AVAILABLE" && !in_meeting) {
                         color = 0xeeff00;
                     } else if (employee.status === "OCCUPIED" || (in_meeting && employee.status !== "ABSENT")) {
                         color = 0xdf8423;
