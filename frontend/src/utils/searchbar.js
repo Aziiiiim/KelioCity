@@ -29,4 +29,20 @@ function selectFilter(btn) {
 
 function search() {
     console.log("to be implemented");
+    // check if the current value exists -> if yes call goToResult, if no send an error msg
+    let objectName = document.getElementsByClassName("search-bar")[0].value;
+    goToResult(null, objectName);
+}
+
+function goToResult(elem, objectName=null) {
+    document.getElementsByClassName("search-bar")[0].value = "";
+    const btns = document.getElementsByClassName("filter-btn");
+    for (let i=0; i<btns.length; i++) {
+        btns[i].classList.remove("active");
+    }
+
+    if (!objectName) {
+        objectName = elem.textContent;
+    }
+    console.log("to be implemented");
 }
