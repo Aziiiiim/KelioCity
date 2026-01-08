@@ -5,23 +5,38 @@
     <title>KelioCity</title>
     <link rel="stylesheet" href="./src/styles/main.css">
     <link rel="stylesheet" href="./src/styles/sidebar.css">
+    <script src="./src/utils/searchbar.js"></script>
   </head>
   <body>
     <div id="root-window">
       <div id="render-target"></div>
         <div class="filter-wrapper">
-          <button class="filter-btn">👤 Employé</button>
-          <button class="filter-btn">🏢 Salle</button>
-          <button class="filter-btn">🪑 Bureau</button>
+          <button class="filter-btn" onclick="selectFilter(this)">👤 Employé</button>
+          <button class="filter-btn" onclick="selectFilter(this)">🏢 Salle</button>
+          <button class="filter-btn" onclick="selectFilter(this)">🪑 Bureau</button>
         </div>
         <div class="search-wrapper">
           <input type="text" class="search-bar" placeholder="Rechercher une personne, un bureau..."/>
-          <button class="search-btn" aria-label="Rechercher">
+          <button class="search-btn" aria-label="Rechercher" onclick="search()">
             <svg viewBox="0 0 24 24">
               <circle cx="11" cy="11" r="7"></circle>
               <line x1="16.5" y1="16.5" x2="21" y2="21"></line>
             </svg>
           </button>
+          <ul class="search-dropdown hidden">
+            <li class="search-item">Jean Dupont</li>
+            <li class="search-item">Bureau A-23</li>
+            <li class="search-item">Salle Neptune</li>
+            <li class="search-item">Salle Mercure</li>
+            <li class="search-item">Salle Saturne</li>
+            <li class="search-item">Salle Uranus</li>
+            <li class="search-item">Jean Dupont</li>
+            <li class="search-item">Bureau A-23</li>
+            <li class="search-item">Salle Neptune</li>
+            <li class="search-item">Salle Mercure</li>
+            <li class="search-item">Salle Saturne</li>
+            <li class="search-item">Salle Uranus</li>
+          </ul>
         </div>
         <button id="reset-camera-btn" class="reset-btn">Reset Camera</button>
         <div id="sidebar" class="sidebar hidden">
