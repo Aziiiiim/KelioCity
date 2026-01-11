@@ -25,7 +25,6 @@ const objectList = [];
 export function createScene(){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
-
     //apiTest();
 
     const { camera, resize: resizeCamera, attachResetButton } = createCamera(gameWindow);
@@ -44,6 +43,7 @@ export function createScene(){
     scene.add(scene.groupRooms);
     scene.groupCharacters = new THREE.Group();
     scene.add(scene.groupCharacters);
+    const objectList = [];
     fetch("/api/rooms")
        .then(res => res.json())
        .then(rooms => {
