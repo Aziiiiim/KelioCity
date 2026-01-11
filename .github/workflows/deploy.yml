@@ -1,0 +1,32 @@
+name: Deploy KelioCity
+
+on:
+  push:
+    branches:
+      - main
+      - deploy-pi
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Write .env
+        run: |
+          cat > .env <<'EOF'
+          ${{ secrets.ENV_FILE }}
+          EOF
+          chmod 600 .env
+
+      - name: Deploy with docker-compose
+        run: |
+          set -e
+          docker-compose -f docker-compose.prod.yml up -d --build --remove-orphans
+
+      - name: Show containers
+        run: docker ps
