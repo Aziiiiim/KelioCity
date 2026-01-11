@@ -36,6 +36,12 @@ public class RoomController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
     }
 
+    // GET /api/rooms/search/{name}
+    @GetMapping("/search/{name}")
+    public List<Room> getByName(@PathVariable String name) {
+        return roomRepo.searchByName(name);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Room create(@RequestBody Room room) {
