@@ -2,6 +2,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const searchbar = document.getElementsByClassName("search-bar")[0];
   searchbar.addEventListener("keypress", function (e) {
     if (e.key === "Enter") {
+        setTimeout(() => dropdown.classList.add('hidden'), 150);
         search();
     }
   });
