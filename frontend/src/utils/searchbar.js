@@ -10,6 +10,7 @@ window.addEventListener("DOMContentLoaded", () => {
   const dropdown = document.getElementsByClassName("search-dropdown")[0];
   searchbar.addEventListener('input', () => {
     dropdown.classList.remove('hidden');
+    showResults();
   });
   searchbar.addEventListener('blur', () => {
     setTimeout(() => dropdown.classList.add('hidden'), 150);
@@ -26,6 +27,10 @@ function selectFilter(btn) {
         }
         btn.classList.add("active");
     }
+}
+
+function showResults() {
+    console.log("to be implemented");
 }
 
 function search() {
