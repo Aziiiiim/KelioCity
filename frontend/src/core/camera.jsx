@@ -40,8 +40,15 @@ export function cameraOn (camera, controls, obj) {
     const center = new THREE.Vector3();
     box.getCenter(center);
 
+    const focus = obj.focusPosition.clone();
+    let angle = 0;
+    if (obj.userData.employee) {
+        angle = (obj.userData.employee.desk.orientationDeg + obj.userData.employee.desk.room.orientationDeg) / 180 * Math.PI;
+    }
+    const rotatedFocus = focus.clone().applyAxisAngle(new THREE.Vector3(0,1,0), angle);
+
     // Position de caméra souhaitée 
-    const camPos = center.clone().add(obj.focusPosition);
+    const camPos = center.clone().add(rotatedFocus);
     const startTarget = controls.target.clone();
 
     const targetProxy = {

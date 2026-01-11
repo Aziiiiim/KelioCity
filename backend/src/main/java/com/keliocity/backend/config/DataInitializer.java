@@ -414,7 +414,7 @@ public class DataInitializer implements CommandLineRunner {
                         .phoneNumber("0681283384")
                         .workingHours("08:00-16:00")
                         .inOffice(WorkLocation.REMOTE)
-                        .status(EmployeeStatus.OCCUPIED)
+                        .status(EmployeeStatus.AVAILABLE)
                         .sprite(Sprite.MAN2)
                         .build()
             );
@@ -428,7 +428,7 @@ public class DataInitializer implements CommandLineRunner {
                         .phoneNumber("0681243384")
                         .workingHours("08:00-16:00")
                         .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.OCCUPIED)
+                        .status(EmployeeStatus.ABSENT)
                         .sprite(Sprite.MAN1)
                         .build()
             );
@@ -470,7 +470,7 @@ public class DataInitializer implements CommandLineRunner {
                         .phoneNumber("0781203384")
                         .workingHours("08:00-16:00")
                         .inOffice(WorkLocation.REMOTE)
-                        .status(EmployeeStatus.OCCUPIED)
+                        .status(EmployeeStatus.AVAILABLE)
                         .sprite(Sprite.MAN3)
                         .build()
             );
@@ -484,7 +484,7 @@ public class DataInitializer implements CommandLineRunner {
                         .phoneNumber("0681201384")
                         .workingHours("08:00-16:00")
                         .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.OCCUPIED)
+                        .status(EmployeeStatus.AVAILABLE)
                         .sprite(Sprite.WOMAN3)
                         .build()
             );
@@ -498,7 +498,7 @@ public class DataInitializer implements CommandLineRunner {
                         .phoneNumber("0681803384")
                         .workingHours("08:00-16:00")
                         .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.OCCUPIED)
+                        .status(EmployeeStatus.AVAILABLE)
                         .sprite(Sprite.MAN4)
                         .build()
             );
@@ -512,7 +512,7 @@ public class DataInitializer implements CommandLineRunner {
                         .phoneNumber("0681243384")
                         .workingHours("08:00-16:00")
                         .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.OCCUPIED)
+                        .status(EmployeeStatus.ABSENT)
                         .sprite(Sprite.MAN1)
                         .build()
             );
@@ -525,8 +525,8 @@ public class DataInitializer implements CommandLineRunner {
                         .email("alphonsine.sauvignon@keliocity.com")
                         .phoneNumber("0631203384")
                         .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.OCCUPIED)
+                        .inOffice(WorkLocation.REMOTE)
+                        .status(EmployeeStatus.AVAILABLE)
                         .sprite(Sprite.WOMAN1)
                         .build()
             );
@@ -644,6 +644,21 @@ public class DataInitializer implements CommandLineRunner {
                         } else {
                             spriteD = "WOMAN"+((i%4)+1);
                         }
+
+                        WorkLocation workLocation;
+                        EmployeeStatus employeeStatus;
+                        if ((i+1)%3 == 0) {
+                            workLocation = WorkLocation.REMOTE;
+                        } else {
+                            workLocation = WorkLocation.OFFICE;
+                        }
+                        if ((i+1)%5 == 0) {
+                            employeeStatus = EmployeeStatus.OCCUPIED;
+                        } else if ((i+1)%7 == 0) {
+                            employeeStatus = EmployeeStatus.ABSENT;
+                        } else {
+                            employeeStatus = EmployeeStatus.AVAILABLE;
+                        }
                         Employee employeeD = employeeRepo.save(
                             Employee.builder()
                                 .firstName(people.get(14*j+2*i).firstname)
@@ -652,8 +667,8 @@ public class DataInitializer implements CommandLineRunner {
                                 .email(people.get(14*j+2*i).firstname.toLowerCase()+"."+people.get(14*j+2*i).lastname.toLowerCase()+"@keliocity.com")
                                 .phoneNumber("068"+j+"28399"+i)
                                 .workingHours("08:00-16:00")
-                                .inOffice(WorkLocation.OFFICE)
-                                .status(EmployeeStatus.AVAILABLE)
+                                .inOffice(workLocation)
+                                .status(employeeStatus)
                                 .sprite(Sprite.valueOf(spriteD))
                                 .build()
                         );
@@ -692,7 +707,7 @@ public class DataInitializer implements CommandLineRunner {
             }
 
             for (int j=0; j<2; j++) {
-                for (int i=0; i<10; i++) {
+                for (int i=0; i<9; i++) {
                     Desk deskD_openspace = deskRepo.save(
                         Desk.builder()
                             .deskName("Desk OA100_00"+(j+4)+" "+(2*i+1))
@@ -708,6 +723,21 @@ public class DataInitializer implements CommandLineRunner {
                     } else {
                         spriteD = "WOMAN"+((i%4)+1);
                     }
+
+                    WorkLocation workLocation;
+                    EmployeeStatus employeeStatus;
+                    if ((i+1)%5 == 0) {
+                        workLocation = WorkLocation.REMOTE;
+                    } else {
+                        workLocation = WorkLocation.OFFICE;
+                    }
+                    if ((i+1)%7 == 0) {
+                        employeeStatus = EmployeeStatus.OCCUPIED;
+                    } else if (i == 2) {
+                        employeeStatus = EmployeeStatus.ABSENT;
+                    } else {
+                        employeeStatus = EmployeeStatus.AVAILABLE;
+                    }
                     Employee employeeD = employeeRepo.save(
                         Employee.builder()
                             .firstName(people.get(20*j+2*i+19).firstname)
@@ -716,8 +746,8 @@ public class DataInitializer implements CommandLineRunner {
                             .email(people.get(20*j+2*i+19).firstname.toLowerCase()+"."+people.get(20*j+2*i+19).lastname.toLowerCase()+"@keliocity.com")
                             .phoneNumber("067"+j+"28399"+i)
                             .workingHours("08:00-16:00")
-                            .inOffice(WorkLocation.OFFICE)
-                            .status(EmployeeStatus.AVAILABLE)
+                            .inOffice(workLocation)
+                            .status(employeeStatus)
                             .sprite(Sprite.valueOf(spriteD))
                             .build()
                     );
@@ -797,8 +827,8 @@ public class DataInitializer implements CommandLineRunner {
                         .room(meetingRooms.get(0))
                         .desk(employee.getDesk())
                         .title("Travail personnel")
-                        .startingHour(today.withHour(14))
-                        .endHour(today.withHour(16))
+                        .startingHour(today.withHour(18))
+                        .endHour(today.withHour(19))
                         .description("Temps de concentration")
                         .build()
                 );
@@ -858,6 +888,7 @@ public class DataInitializer implements CommandLineRunner {
                     Meeting.builder()
                         .room(roomA102)
                         .title("Revue de Projet")
+
                         .startingHour(today.withHour(11).plusMinutes(30))
                         .endHour(today.withHour(14).plusMinutes(30))
                         .description("Revue de projet PROCOM")

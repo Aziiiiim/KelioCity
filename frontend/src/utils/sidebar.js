@@ -21,12 +21,6 @@ export function openSidebar(employee) {
       </div>
     </div>
 
-      <div>
-        <h2>${employee.firstName} ${employee.lastName}</h2>
-        <div class="sidebar-status">${employee.status || "Disponible"}</div>
-      </div>
-    </div>
-
     <div class="sidebar-section card animate">
       <h3>Coordonnées</h3>
       <div class="info-grid">
@@ -48,7 +42,7 @@ export function openSidebar(employee) {
 
         <div class="info-label">Présence</div>
         <div class="info-value">
-          ${employee.inOffice ? "Office" : "Télétravail"}
+          ${employee.inOffice === "OFFICE" ? "Office" : "Télétravail"}
         </div>
       </div>
     </div>

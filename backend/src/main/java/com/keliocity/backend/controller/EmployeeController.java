@@ -1,5 +1,7 @@
 package com.keliocity.backend.controller;
 
+import java.time.ZoneId;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +11,7 @@ import com.keliocity.backend.model.EmployeeStatus;
 import com.keliocity.backend.model.WorkLocation;
 import com.keliocity.backend.model.Desk;
 import com.keliocity.backend.repository.EmployeeRepository;
+import com.keliocity.backend.repository.MeetingEmployeeRepository;
 import com.keliocity.backend.repository.DeskRepository;
 
 import org.springframework.http.HttpStatus;
@@ -20,13 +23,15 @@ import org.springframework.web.server.ResponseStatusException;
 public class EmployeeController {
 
 	private EmployeeRepository employeeRepo;
+	private final MeetingEmployeeRepository meetingEmployeeRepo;
 	private final DeskRepository deskRepo;
 
 	
 	public EmployeeController(EmployeeRepository employeeRepo,
-            DeskRepository deskRepo) {
+            DeskRepository deskRepo, MeetingEmployeeRepository meetingEmployeeRepo) {
 		this.employeeRepo = employeeRepo;
 		this.deskRepo = deskRepo;
+		this.meetingEmployeeRepo = meetingEmployeeRepo;
 	}
 
 
@@ -41,6 +46,12 @@ public class EmployeeController {
         return employeeRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Employee not found"));
+    }
+
+    // GET /api/employees/{id}/in-meeting
+    @GetMapping("/{id}/in-meeting")
+    public boolean getInMeeting(@PathVariable Integer id) {
+        return meetingEmployeeRepo.existsEmployeeInMeetingNow(id, LocalDateTime.now(ZoneId.of("Europe/Paris")));
     }
 
     // POST /api/employees

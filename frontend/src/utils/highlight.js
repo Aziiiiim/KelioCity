@@ -16,6 +16,10 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
 
         if (highlighted && !filter_highlighted.get(highlighted)) {
             const mats = originalMaterials.get(highlighted);
+            if (!mats) {
+                highlighted = object;
+                return;
+            }
             highlighted.traverse(node => {
                 if (node.isMesh && mats[node.uuid]) {
                     node.material = mats[node.uuid];
@@ -29,26 +33,33 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
         if (!onclick) {
             let color = 0xffffff;
             const employee = object.userData.employee;
-            if (employee.status === "AVAILABLE") {
-                color = 0x00ff00;
-            } else if (employee.status === "OCCUPIED") {
-                color = 0xdf8423;
-            } else if (employee.status === "NOT_AVAILABLE") {
-                color = 0xff0000;
-            }
-
-            if (!filter_highlighted.get(highlighted)) {
-                const store = {};
-                object.traverse(node => {
-                    if (node.isMesh) {
-                        store[node.uuid] = node.material;
-                        node.material = node.material.clone();
-                        node.material.color.set(color);
-                        node.material.emissive.set(0x003300);
+            fetch("http://localhost:8080/api/employees/"+employee.id+"/in-meeting")
+                .then(res => res.text())
+                .then(res => res === "true")
+                .then(in_meeting => {
+                    if (highlighted !== object) return;
+                    if (employee.status === "AVAILABLE" && employee.inOffice === "OFFICE" && !in_meeting) {
+                        color = 0x00ff00;
+                    } else if (employee.inOffice === "REMOTE" && employee.status === "AVAILABLE" && !in_meeting) {
+                        color = 0xeeff00;
+                    } else if (employee.status === "OCCUPIED" || (in_meeting && employee.status !== "ABSENT")) {
+                        color = 0xdf8423;
+                    } else if (employee.status === "ABSENT") {
+                        color = 0xff0000;
+                    }
+                    if (!filter_highlighted.get(highlighted)) {
+                        const store = {};
+                        object.traverse(node => {
+                            if (node.isMesh) {
+                                store[node.uuid] = node.material;
+                                node.material = node.material.clone();
+                                node.material.color.set(color);
+                                node.material.emissive.set(0x003300);
+                            }
+                        });
+                        originalMaterials.set(object, store);
                     }
                 });
-                originalMaterials.set(object, store);
-            }
         } else {
             const store = {};
             object.traverse(node => {
@@ -117,7 +128,7 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
 
 
     // FILTER
-    const filter_highlight = (object) => {
+    const filter_highlight = (object, status) => {
 
         if (!object) return;
 
@@ -133,15 +144,16 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
         }
 
         let color = 0xffffff;
-        const employee = object.userData.employee;
-        if (employee.status == "AVAILABLE") {
+        if (status === "AVAILABLE") {
             color = 0x00ff00;
-        } else if (employee.status == "OCCUPIED") {
+        } else if (status === "REMOTE") {
+            color = 0xeeff00;
+        } else if (status === "OCCUPIED") {
             color = 0xdf8423;
-        } else if (employee.status == "NOT_AVAILABLE") {
+        } else if (status === "ABSENT") {
             color = 0xff0000;
-        }   
-        
+        }
+
         const store = {};
         object.traverse(node => {
             if (node.isMesh) {
@@ -163,12 +175,24 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
         }
 
         targetGroup.children.forEach(object => {
-            if (object.userData.employee.status == status) {
-                filter_highlight(object);
-            }
-        }); 
+            const employee = object.userData.employee;
+            fetch("http://localhost:8080/api/employees/"+employee.id+"/in-meeting")
+                .then(res => res.text())
+                .then(res => res === "true")
+                .then(in_meeting => {
+                    if (status === "AVAILABLE" && employee.status === "AVAILABLE" && employee.inOffice === "OFFICE" && !in_meeting) {
+                        filter_highlight(object, "AVAILABLE");
+                    } else if (status === "AVAILABLE" && employee.status === "AVAILABLE" && employee.inOffice === "REMOTE" && !in_meeting) {
+                        filter_highlight(object, "REMOTE");
+                    } else if (status === "OCCUPIED" && (employee.status === "OCCUPIED" || (in_meeting && employee.status !== "ABSENT"))) {
+                        filter_highlight(object, "OCCUPIED");
+                    } else if (status === "OCCUPIED" && employee.status === "ABSENT") {
+                        filter_highlight(object, "ABSENT");
+                    }
+                });
+        });
     }
-    
+
     const bouton_available = document.getElementById("available-btn");
     bouton_available.addEventListener("click", () => {filter_status("AVAILABLE", bouton_available)})
     const bouton_occupied = document.getElementById("occupied-btn");
