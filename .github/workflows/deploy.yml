@@ -16,6 +16,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Write .env
+        run: |
+          cat > .env <<'EOF'
+          ${{ secrets.ENV_FILE }}
+          EOF
+          chmod 600 .env
+
       - name: Deploy with docker-compose
         run: |
           set -e
