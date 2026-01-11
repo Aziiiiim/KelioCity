@@ -11,26 +11,15 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            set -e
+          fetch-depth: 0
 
-            cd /home/deploy
+      - name: Deploy with docker-compose
+        run: |
+          set -e
+          docker-compose -f docker-compose.prod.yml up -d --build --remove-orphans
 
-            if [ ! -d KelioCity/.git ]; then
-              git clone https://github.com/Aziiiiim/KelioCity.git
-            fi
-
-            cd KelioCity
-
-            git fetch origin
-            git checkout ${{ github.ref_name }}
-            git pull origin ${{ github.ref_name }}
-
-            docker-compose -f docker-compose.prod.yml up -d --build --remove-orphans
+      - name: Show containers
+        run: docker ps
