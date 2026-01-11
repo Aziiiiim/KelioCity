@@ -31,6 +31,27 @@ function selectFilter(btn) {
 
 function showResults() {
     console.log("to be implemented");
+    const btnType = document.getElementsByClassName("filter-btn active")[0].dataset.type;
+    const searchContent = document.getElementsByClassName("search-bar")[0].value;
+    if (searchContent === "") {
+        document.getElementsByClassName("search-dropdown")[0].classList.add("hidden");
+    } else {
+        if (btnType === "employee") {
+            fetch("http://localhost:8080/api/employees/search/" + searchContent)
+                .then(res => res.json())
+                .then(results => {
+                    const dropdown = document.getElementsByClassName("search-dropdown")[0];
+                    dropdown.innerHTML = "";
+                    for (let i = 0; i < results.length; i++) {
+                        let li_result = document.createElement("li");
+                        li_result.classList.add("search-item");
+                        li_result.onclick = () => goToResult(li_result);
+                        li_result.textContent = results[i]["firstName"] + " " + results[i]["lastName"];
+                        dropdown.appendChild(li_result);
+                    }
+                });
+        }
+    }
 }
 
 function search() {
