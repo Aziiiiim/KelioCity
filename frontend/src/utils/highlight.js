@@ -33,7 +33,7 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
         if (!onclick) {
             let color = 0xffffff;
             const employee = object.userData.employee;
-            fetch("http://localhost:8080/api/employees/"+employee.id+"/in-meeting")
+            fetch("/api/employees/"+employee.id+"/in-meeting")
                 .then(res => res.text())
                 .then(res => res === "true")
                 .then(in_meeting => {
@@ -176,7 +176,7 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
 
         targetGroup.children.forEach(object => {
             const employee = object.userData.employee;
-            fetch("http://localhost:8080/api/employees/"+employee.id+"/in-meeting")
+            fetch("/api/employees/"+employee.id+"/in-meeting")
                 .then(res => res.text())
                 .then(res => res === "true")
                 .then(in_meeting => {
