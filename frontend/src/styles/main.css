@@ -74,3 +74,140 @@ img.img-btn {
 .btn-active {
   background-color: black;
 }
+
+.search-wrapper {
+  position: fixed;
+  top: 70px;
+  left: 20px;
+  width: 400px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 2px solid gold;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  z-index: 20;
+}
+
+/* Search bar */
+.search-bar {
+  flex: 1;
+  height: 100%;
+  padding: 0 14px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  border-radius: 14px 0 0 14px;
+  background: transparent;
+  color: #222;
+}
+
+.search-bar::placeholder {
+  color: #777;
+}
+
+/* Search button */
+.search-btn {
+  width: 46px;
+  height: 100%;
+  border: none;
+  background: gold;
+  cursor: pointer;
+  border-radius: 0 14px 14px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.search-btn:disabled {
+  cursor: default;
+}
+
+/* Search icon */
+.search-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: black;
+  stroke-width: 2;
+  fill: none;
+}
+
+.filter-wrapper {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  width: 400px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  z-index: 20;
+}
+
+.filter-btn {
+  background-color: gold;
+  border-radius: 10px;
+  height: 40px;
+  width: 100px;
+  margin-left: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.filter-btn.active {
+  background-color: darkgoldenrod;
+  cursor: default;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  max-height: 216px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 6px 0;
+  margin: 0;
+}
+
+.search-dropdown::-webkit-scrollbar {
+  width: 16px;
+}
+.search-dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+.search-dropdown::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+  border: 5px solid transparent;
+  background-clip: content-box;
+}
+
+.search-dropdown::-webkit-scrollbar-thumb:hover {
+  background-color: #aaa;
+}
+
+.search-item {
+  padding: 10px 14px;
+  font-size: 14px;
+  height: 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: "Segoe UI";
+}
+
+.search-item:hover {
+  background: #f3f3f3;
+}
+
+.hidden {
+  display: none;
+}
+

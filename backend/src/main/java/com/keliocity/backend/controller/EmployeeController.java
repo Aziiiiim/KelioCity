@@ -54,6 +54,12 @@ public class EmployeeController {
         return meetingEmployeeRepo.existsEmployeeInMeetingNow(id, LocalDateTime.now(ZoneId.of("Europe/Paris")));
     }
 
+    // GET /api/employees/search/{name}
+    @GetMapping("/search/{name}")
+    public List<Employee> getByName(@PathVariable String name) {
+        return employeeRepo.searchByName(name);
+    }
+
     // POST /api/employees
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

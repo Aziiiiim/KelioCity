@@ -140,9 +140,6 @@ async function loadSchedule() {
   title.innerText = getDayLabel(currentScheduleDate);
   list.innerHTML = "<em>Chargement...</em>";
 
-  console.log("Employee ID:", currentEmployeeId);
-  console.log("Date:", dateStr);
-
   try {
     const res = await fetch(
       `/api/employees/${currentEmployeeId}/schedule?date=${dateStr}`

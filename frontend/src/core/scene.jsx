@@ -17,6 +17,10 @@ import { createHighlighter } from "../utils/highlight.js";
 
 
 let clock = new THREE.Clock();
+let highlighter = null;
+const roomList = [];
+const characters = [];
+const objectList = [];
 
 export function createScene(){
     const gameWindow = document.getElementById('render-target');
@@ -34,10 +38,9 @@ export function createScene(){
     scene.add(createLight(-25,-25,25,25));
     scene.add(createLight(25,25,-25,-25));
 
-    const roomList = [];
+
     scene.groupRooms = new THREE.Group();
     scene.add(scene.groupRooms);
-    const characters = [];
     scene.groupCharacters = new THREE.Group();
     scene.add(scene.groupCharacters);
     const objectList = [];
@@ -93,7 +96,7 @@ export function createScene(){
                            characters.push(character);
                            loadedChars += 1;
                            if (loadedChars === employees.length) {
-                               createHighlighter(camera, controls, renderer, scene.groupCharacters);
+                               highlighter = createHighlighter(camera, controls, renderer, scene.groupCharacters);
                            }
                        });
                    }
@@ -136,4 +139,16 @@ export function createScene(){
         }
 
     return { start, stop, scene, camera, renderer };
+}
+
+export function selectEmployee(employeeId) {
+    let employeeObj = null;
+    for (let i=0; i < characters.length; i++) {
+        if (parseInt(characters[i].scene.userData.employee.id) === parseInt(employeeId)) {
+            employeeObj = characters[i].scene;
+        }
+    }
+    if (employeeObj) {
+        highlighter.onClick(null, employeeObj);
+    }
 }
