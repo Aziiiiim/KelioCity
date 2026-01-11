@@ -44,7 +44,7 @@ export function createScene(){
     scene.add(scene.groupRooms);
     scene.groupCharacters = new THREE.Group();
     scene.add(scene.groupCharacters);
-    fetch("http://localhost:8080/api/rooms")
+    fetch("/api/rooms")
        .then(res => res.json())
        .then(rooms => {
            for (let i=0; i < rooms.length; i++) {
@@ -77,7 +77,7 @@ export function createScene(){
                 roomList.push(roomElements);
                 scene.groupRooms.add(roomElements);
            }
-           fetch("http://localhost:8080/api/employees")
+           fetch("/api/employees")
                .then(res => res.json())
                .then(employees => {
                    let loadedChars = 0;

@@ -142,7 +142,7 @@ async function loadSchedule() {
 
   try {
     const res = await fetch(
-      `http://localhost:8080/api/employees/${currentEmployeeId}/schedule?date=${dateStr}`
+      `/api/employees/${currentEmployeeId}/schedule?date=${dateStr}`
     );
     const items = await res.json();
     renderSchedule(items);
