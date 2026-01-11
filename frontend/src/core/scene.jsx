@@ -21,7 +21,7 @@ let clock = new THREE.Clock();
 export function createScene(){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
-
+    console.log("Caca");
     //apiTest();
 
     const { camera, resize: resizeCamera, attachResetButton } = createCamera(gameWindow);
