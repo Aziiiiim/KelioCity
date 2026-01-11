@@ -95,30 +95,38 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
         }
     };
 
-    const onClick = (e) => {
-        const bounds = renderer.domElement.getBoundingClientRect();
-
-        mouse.x = ((e.clientX - bounds.left) / bounds.width) * 2 - 1;
-        mouse.y = -((e.clientY - bounds.top) / bounds.height) * 2 + 1;
-
-        raycaster.setFromCamera(mouse, camera);
-        const hits = raycaster.intersectObject(targetGroup, true);
-
-        if (hits.length > 0) {
-            let obj = hits[0].object;
-            while (obj.parent && obj.parent !== targetGroup)
-                obj = obj.parent;
-
-            if (!onclick) {
-                const employee = obj.userData.employee;
+    const onClick = (e, employeeObj=null) => {
+        if (employeeObj) {
+            const employee = employeeObj.userData.employee;
+            setTimeout(() => {
                 openSidebar(employee);
-                cameraOn(camera, controls, obj);
-            } else {
-                onclick();
-            }
+                cameraOn(camera, controls, employeeObj);
+            }, 0);
         } else {
-            if (!onclick) {
-                closeSidebar();
+            const bounds = renderer.domElement.getBoundingClientRect();
+
+            mouse.x = ((e.clientX - bounds.left) / bounds.width) * 2 - 1;
+            mouse.y = -((e.clientY - bounds.top) / bounds.height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const hits = raycaster.intersectObject(targetGroup, true);
+
+            if (hits.length > 0) {
+                let obj = hits[0].object;
+                while (obj.parent && obj.parent !== targetGroup)
+                    obj = obj.parent;
+
+                if (!onclick) {
+                    const employee = obj.userData.employee;
+                    openSidebar(employee);
+                    cameraOn(camera, controls, obj);
+                } else {
+                    onclick();
+                }
+            } else {
+                if (!onclick) {
+                    closeSidebar();
+                }
             }
         }
     };
@@ -198,5 +206,5 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
     const bouton_occupied = document.getElementById("occupied-btn");
     bouton_occupied.addEventListener("click", () => {filter_status("OCCUPIED", bouton_occupied)})
 
-    return { highlight };
+    return { highlight, onClick };
 }

@@ -5,7 +5,7 @@
     <title>KelioCity</title>
     <link rel="stylesheet" href="./src/styles/main.css">
     <link rel="stylesheet" href="./src/styles/sidebar.css">
-    <script src="./src/utils/searchbar.js"></script>
+    <script type="module" src="./src/utils/searchbar.js"></script>
   </head>
   <body>
     <div id="root-window">
@@ -24,14 +24,6 @@
             </svg>
           </button>
           <ul class="search-dropdown hidden">
-            <li class="search-item" onclick="goToResult(this)">Jean Dupont</li>
-            <li class="search-item" onclick="goToResult(this)">Bureau A-23</li>
-            <li class="search-item" onclick="goToResult(this)">Salle Neptune</li>
-            <li class="search-item" onclick="goToResult(this)">Salle Mercure</li>
-            <li class="search-item" onclick="goToResult(this)">Salle Saturne</li>
-            <li class="search-item" onclick="goToResult(this)">Salle Uranus</li>
-            <li class="search-item" onclick="goToResult(this)">Jean Dupond</li>
-            <li class="search-item" onclick="goToResult(this)">Bureau A-24</li>
           </ul>
         </div>
         <button id="reset-camera-btn" class="reset-btn">Reset Camera</button>

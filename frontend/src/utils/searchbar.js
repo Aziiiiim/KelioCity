@@ -1,9 +1,11 @@
+import { selectEmployee } from "../core/scene.jsx";
+
 window.addEventListener("DOMContentLoaded", () => {
   const searchbar = document.getElementsByClassName("search-bar")[0];
   searchbar.addEventListener("keypress", function (e) {
     if (e.key === "Enter") {
         setTimeout(() => dropdown.classList.add('hidden'), 150);
-        search();
+        window.search();
     }
   });
 
@@ -19,7 +21,7 @@ window.addEventListener("DOMContentLoaded", () => {
   });
 })
 
-function selectFilter(btn) {
+window.selectFilter = function(btn) {
     if (btn.classList.contains("active")) {
         btn.classList.remove("active");
     } else {
@@ -184,7 +186,7 @@ function showResults() {
     }
 }
 
-function search() {
+window.search = function() {
     const dropdown = document.getElementsByClassName("search-dropdown")[0];
     if (dropdown.children.length === 1 && dropdown.children[0].textContent !== "Aucun Résultat") {
         goToResult(dropdown.children[0]);
@@ -192,10 +194,12 @@ function search() {
 }
 
 function goToResult(elem) {
-    console.log("to be implemented");
     let objectId = elem.dataset.id;
     let objectType = elem.dataset.type;
-
+    if (objectType === "employee") {
+        selectEmployee(objectId);
+    }
+    
     document.getElementsByClassName("search-bar")[0].value = "";
     const dropdown = document.getElementsByClassName("search-dropdown")[0];
     dropdown.innerHTML = "";
