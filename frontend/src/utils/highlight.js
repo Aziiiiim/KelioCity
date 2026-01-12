@@ -10,6 +10,7 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
     let highlighted = null;
     let filter_highlighted = new Map();
     let originalMaterials = new Map();
+    let highlightVersion = 0;
 
     const highlight = (object) => {
         if (highlighted === object) return;
@@ -33,10 +34,12 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
         if (!onclick) {
             let color = 0xffffff;
             const employee = object.userData.employee;
+            const v = ++highlightVersion;
             fetch("/api/employees/"+employee.id+"/in-meeting")
                 .then(res => res.text())
                 .then(res => res === "true")
                 .then(in_meeting => {
+                    if (v !== highlightVersion) return;
                     if (highlighted !== object) return;
                     if (employee.status === "AVAILABLE" && employee.inOffice === "OFFICE" && !in_meeting) {
                         color = 0x00ff00;
