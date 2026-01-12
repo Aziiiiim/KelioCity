@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { clone } from 'three/examples/jsm/utils/SkeletonUtils.js';
+import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
 
 const gltfLoader = new GLTFLoader();
 const textureLoader = new THREE.TextureLoader();
@@ -40,13 +40,27 @@ export async function makeInstance(url) {
  */
 export async function makeSkinnedInstance(url) {
   const gltf = await loadGLTF(url);
-  const obj = clone(gltf.scene);
+  const obj = SkeletonUtils.clone(gltf.scene);
+  obj.updateMatrixWorld(true);
 
   obj.traverse((o) => {
-    if (o.isMesh) {
+    if (o.isSkinnedMesh) {
+      o.frustumCulled = false;
       o.castShadow = false;
       o.receiveShadow = false;
+
+      if (o.skeleton) {
+        o.skeleton.pose();
+        o.bind(o.skeleton, o.bindMatrix);
+      }
     }
+
+    if (o.isMesh && o.geometry) {
+      o.geometry.computeBoundingBox();
+      o.geometry.computeBoundingSphere();
+    }
+    o.visible = true;
+
   });
 
   return { obj, animations: gltf.animations || [] };
