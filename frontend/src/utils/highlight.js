@@ -35,19 +35,19 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
             let color = 0xffffff;
             const employee = object.userData.employee;
             const v = ++highlightVersion;
-            fetch("/api/employees/"+employee.id+"/in-meeting")
+            fetch("/api/employees/"+employee.id+"/global_status")
                 .then(res => res.text())
-                .then(res => res === "true")
-                .then(in_meeting => {
+                .then(global_status => {
                     if (v !== highlightVersion) return;
                     if (highlighted !== object) return;
-                    if (employee.status === "AVAILABLE" && employee.inOffice === "OFFICE" && !in_meeting) {
+                    
+                    if (global_status == "AVAILABLE") {
                         color = 0x00ff00;
-                    } else if (employee.inOffice === "REMOTE" && employee.status === "AVAILABLE" && !in_meeting) {
+                    } else if (global_status == "REMOTE") {
                         color = 0xeeff00;
-                    } else if (employee.status === "OCCUPIED" || (in_meeting && employee.status !== "ABSENT")) {
+                    } else if (global_status == "OCCUPIED") {
                         color = 0xdf8423;
-                    } else if (employee.status === "ABSENT") {
+                    } else if (global_status == "ABSENT") {
                         color = 0xff0000;
                     }
                     if (!filter_highlighted.get(highlighted)) {
@@ -63,6 +63,7 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
                         originalMaterials.set(object, store);
                     }
                 });
+                
         } else {
             const store = {};
             object.traverse(node => {
@@ -187,17 +188,16 @@ export function createHighlighter(camera,controls, renderer, targetGroup, onclic
 
         targetGroup.children.forEach(object => {
             const employee = object.userData.employee;
-            fetch("/api/employees/"+employee.id+"/in-meeting")
+            fetch("/api/employees/"+employee.id+"/global_status")
                 .then(res => res.text())
-                .then(res => res === "true")
-                .then(in_meeting => {
-                    if (status === "AVAILABLE" && employee.status === "AVAILABLE" && employee.inOffice === "OFFICE" && !in_meeting) {
+                .then(global_status => {
+                    if (status === "AVAILABLE" && global_status === "AVAILABLE") {
                         filter_highlight(object, "AVAILABLE");
-                    } else if (status === "AVAILABLE" && employee.status === "AVAILABLE" && employee.inOffice === "REMOTE" && !in_meeting) {
+                    } else if (status === "AVAILABLE" && global_status === "REMOTE") {
                         filter_highlight(object, "REMOTE");
-                    } else if (status === "OCCUPIED" && (employee.status === "OCCUPIED" || (in_meeting && employee.status !== "ABSENT"))) {
+                    } else if (status === "OCCUPIED" && global_status === "OCCUPIED") {
                         filter_highlight(object, "OCCUPIED");
-                    } else if (status === "OCCUPIED" && employee.status === "ABSENT") {
+                    } else if (status === "OCCUPIED" && global_status === "ABSENT") {
                         filter_highlight(object, "ABSENT");
                     }
                 });

@@ -2,11 +2,21 @@ const sidebar = document.getElementById("sidebar");
 
 let currentScheduleDate = new Date();
 let currentEmployeeId = null;
+let globalStatus = null;
 
 export function openSidebar(employee) {
   currentEmployeeId = employee.id;
   currentScheduleDate = new Date();
 
+  fetch("/api/employees/"+employee.id+"/global_status")
+    .then(res => res.text())
+    .then(global_status => {
+      globalStatus = global_status;
+      renderSidebar(employee);
+    });
+}
+
+function renderSidebar(employee) {
   sidebar.innerHTML = `
     <button class="close-btn">&times;</button>
 
@@ -17,7 +27,7 @@ export function openSidebar(employee) {
 
       <div>
         <h2>${employee.firstName} ${employee.lastName}</h2>
-       <div class="sidebar-status ${employee.status === "AVAILABLE" ? "sidebar-available" : (employee.status === "OCCUPIED" ? "sidebar-occupied" : "sidebar-not-available")}">${employee.status}</div>
+       <div class="sidebar-status ${globalStatus === "AVAILABLE" ? "sidebar-available" : (globalStatus === "REMOTE" ? "sidebar-remote" : (globalStatus === "OCCUPIED" ? "sidebar-occupied" : "sidebar-not-available"))}">${employee.status}</div>
       </div>
     </div>
 
@@ -150,6 +160,10 @@ async function loadSchedule() {
     list.innerHTML = "<em>Erreur de chargement</em>";
   }
 }
+
+document.addEventListener("keydown", (event) => {  
+  if (event.key === "Escape") closeSidebar();
+});
 
 
 
