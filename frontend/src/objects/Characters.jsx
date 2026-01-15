@@ -9,7 +9,7 @@ export function initChar(asset, onReady) {
   makeSkinnedInstance(asset)
     .then(({ obj, animations }) => {
       obj.scale.set(0.5, 0.5, 0.5);
-      obj.focusPosition = new THREE.Vector3(0, 7, 4);
+      obj.focusPosition = new THREE.Vector3(0, 2, 0.5);
       
       const mixer = new THREE.AnimationMixer(obj);
 
