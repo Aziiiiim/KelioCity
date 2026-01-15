@@ -1,93 +1,98 @@
 const sidebar = document.getElementById("sidebar");
 
+sidebar.addEventListener("click", (e) => {
+    e.stopPropagation();
+});
+
 let currentScheduleDate = new Date();
 let currentEmployeeId = null;
-let globalStatus = null;
 
 export function openSidebar(employee) {
   currentEmployeeId = employee.id;
   currentScheduleDate = new Date();
 
-  fetch("/api/employees/"+employee.id+"/global_status")
-    .then(res => res.text())
-    .then(global_status => {
-      globalStatus = global_status;
-      renderSidebar(employee);
-    });
-}
-
-function renderSidebar(employee) {
-  sidebar.innerHTML = `
-    <button class="close-btn">&times;</button>
-
-    <div class="sidebar-header animate">
-      <div class="sidebar-avatar">
-        <span class="status-dot ${employee.status?.toLowerCase() || "online"}"></span>
-      </div>
-
-      <div>
-        <h2>${employee.firstName} ${employee.lastName}</h2>
-       <div class="sidebar-status ${globalStatus === "AVAILABLE" ? "sidebar-available" : (globalStatus === "REMOTE" ? "sidebar-remote" : (globalStatus === "OCCUPIED" ? "sidebar-occupied" : "sidebar-not-available"))}">${employee.status}</div>
-      </div>
-    </div>
-
-    <div class="sidebar-section card animate">
-      <h3>Coordonnées</h3>
-      <div class="info-grid">
-        <div class="info-label">Email</div>
-        <div class="info-value">${employee.email}</div>
-
-        <div class="info-label">Téléphone</div>
-        <div class="info-value">${employee.phoneNumber}</div>
-      </div>
-    </div>
-
-    <div class="sidebar-section card animate">
-      <h3>Position</h3>
-      <div class="info-grid">
-        <div class="info-label">Bureau</div>
-        <div class="info-value">
-          ${employee.desk?.room?.roomName ?? "Aucun"}
-        </div>
-
-        <div class="info-label">Présence</div>
-        <div class="info-value">
-          ${employee.inOffice === "OFFICE" ? "Office" : "Télétravail"}
-        </div>
-      </div>
-    </div>
-
-    <div class="sidebar-section card animate">
-      <div class="schedule-header">
-        <button class="nav-btn" id="prev-day">←</button>
-        <h3 id="schedule-date"></h3>
-        <button class="nav-btn" id="next-day">→</button>
-      </div>
-
-      <div class="schedule-list">
-        <em>Chargement...</em>
-      </div>
-    </div>
-  `;
-
   sidebar.classList.remove("hidden");
   sidebar.classList.add("visible");
+  sidebar.innerHTML = `<button class="close-btn">&times;</button><div>Chargement...</div>`;
 
-  sidebar.querySelector(".close-btn")
-    .addEventListener("click", closeSidebar);
+  requestAnimationFrame(() => {
+    sidebar.innerHTML = `
+      <button class="close-btn">&times;</button>
 
-  sidebar.addEventListener("click", (e) => {
-    e.stopPropagation();
+      <div class="sidebar-header animate">
+        <div class="sidebar-avatar">
+          <span class="status-dot ${employee.status?.toLowerCase() || "online"}"></span>
+        </div>
+
+        <div>
+          <h2>${employee.firstName} ${employee.lastName}</h2>
+          <div class="sidebar-status sidebar-not-available" id="sidebar-status">
+            ${employee.status}
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section card animate">
+        <h3>Coordonnées</h3>
+        <div class="info-grid">
+          <div class="info-label">Email</div>
+          <div class="info-value">${employee.email}</div>
+
+          <div class="info-label">Téléphone</div>
+          <div class="info-value">${employee.phoneNumber}</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section card animate">
+        <h3>Position</h3>
+        <div class="info-grid">
+          <div class="info-label">Bureau</div>
+          <div class="info-value">${employee.desk?.room?.roomName ?? "Aucun"}</div>
+
+          <div class="info-label">Présence</div>
+          <div class="info-value">${employee.inOffice === "OFFICE" ? "Office" : "Télétravail"}</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section card animate">
+        <div class="schedule-header">
+          <button class="nav-btn" id="prev-day">←</button>
+          <h3 id="schedule-date"></h3>
+          <button class="nav-btn" id="next-day">→</button>
+        </div>
+
+        <div class="schedule-list">
+          <em>Chargement...</em>
+        </div>
+      </div>
+    `;
+
+    sidebar.querySelector(".close-btn").addEventListener("click", closeSidebar);
+    sidebar.querySelector("#prev-day").addEventListener("click", () => changeDay(-1));
+    sidebar.querySelector("#next-day").addEventListener("click", () => changeDay(1));
+
+    loadSchedule();
+
+    fetch(`/api/employees/${employee.id}/global_status`)
+      .then(res => res.text())
+      .then(globalStatus => {
+        if (String(currentEmployeeId) !== String(employee.id)) return;
+
+        const badge = sidebar.querySelector("#sidebar-status");
+        if (!badge) return;
+
+        badge.textContent = employee.status; // ou globalStatus si tu veux afficher le global
+        badge.className = "sidebar-status " + (
+          globalStatus === "AVAILABLE" ? "sidebar-available" :
+          globalStatus === "REMOTE" ? "sidebar-remote" :
+          globalStatus === "OCCUPIED" ? "sidebar-occupied" :
+          "sidebar-not-available"
+        );
+      })
+      .catch(() => {});
   });
-
-  sidebar.querySelector("#prev-day")
-    .addEventListener("click", () => changeDay(-1));
-
-  sidebar.querySelector("#next-day")
-    .addEventListener("click", () => changeDay(1));
-
-  loadSchedule();
 }
+
 
 export function closeSidebar() {
   sidebar.classList.remove("visible");
@@ -160,10 +165,6 @@ async function loadSchedule() {
     list.innerHTML = "<em>Erreur de chargement</em>";
   }
 }
-
-document.addEventListener("keydown", (event) => {  
-  if (event.key === "Escape") closeSidebar();
-});
 
 
 

@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 import { makeInstance, loadTexture } from '../utils/asset.js';
 
-export function createOffice1Desk(initDoor) {
+export function createOffice1Desk(initDoor = null) {
     const elements = new THREE.Group();
+    elements.userData.kind = "room";
+    elements.userData.roomType = "Office1Desk"; 
     let x = 3;
     let z = 3;
 
@@ -102,7 +104,7 @@ export function createOffice1Desk(initDoor) {
         doorPivot.rotation.y = Math.PI / 2;
 
         elements.add(doorPivot);
-        initDoor(doorPivot, toggleDoor);
+        //initDoor(doorPivot, toggleDoor);
     }).catch(console.error);
 
     function openDoor(delta) {
