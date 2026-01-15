@@ -3,6 +3,8 @@ import { cameraOn } from "../core/camera.jsx";
 
 import * as THREE from "three";
 
+const meetingCache = new Map(); 
+
 export function createInteractionManager({ camera, renderer, targets }) {
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
@@ -48,36 +50,41 @@ export function createInteractionManager({ camera, renderer, targets }) {
     });
   }
 
-  function getMouseHit(e) {
+  function getMouseHits(e, targetsOverride) {
     const bounds = domElement.getBoundingClientRect();
     mouse.x = ((e.clientX - bounds.left) / bounds.width) * 2 - 1;
     mouse.y = -((e.clientY - bounds.top) / bounds.height) * 2 + 1;
 
     raycaster.setFromCamera(mouse, camera);
 
-    const list = Array.isArray(targets) ? targets : [targets];
-    let best = null;
-    for (const t of list) {
-      const hits = raycaster.intersectObject(t, true);
-      if (hits.length && (!best || hits[0].distance < best.distance)) best = hits[0];
+    const list = (targetsOverride ?? targets);
+    const targetList = Array.isArray(list) ? list : [list];
+    const allHits = [];
+    for (const t of targetList) {
+      allHits.push(...raycaster.intersectObject(t, true));
     }
-    return best;
-  }
+    allHits.sort((a, b) => a.distance - b.distance);
+    return allHits;
+    }
 
   let styleVersion = 0;
 
   async function hover(e) {
-    const hit = getMouseHit(e);
+    if (e.target.closest("#sidebar")) return;
 
     let selected = null;
+    let selectedHit = null;
     for (const p of plugins) {
+      const hits = getMouseHits(e, p.targets); 
+      const hit = hits.find(h => p.match(h.object, h));
       if (hit && p.match(hit.object, hit)) {
         selected = p;
+        selectedHit = hit;
         break;
       }
     }
 
-    const newRoot = selected ? selected.getRoot(hit.object, hit) : null;
+    const newRoot = selected ? selected.getRoot(selectedHit.object, selectedHit) : null;
 
     if (hoveredRoot && hoveredRoot !== newRoot) restore(hoveredRoot);
     hoveredRoot = newRoot;
@@ -85,7 +92,8 @@ export function createInteractionManager({ camera, renderer, targets }) {
     if (!selected || !newRoot) return;
 
     const v = ++styleVersion;
-    const style = await selected.getStyle?.(newRoot, hit);
+    const style = await selected.getStyle?.(newRoot, selectedHit);
+
     if (v !== styleVersion) return;
     if (hoveredRoot !== newRoot) return;
 
@@ -93,27 +101,42 @@ export function createInteractionManager({ camera, renderer, targets }) {
   }
 
   function click(e) {
-    const hit = getMouseHit(e);
-    if (!hit) return;
-
+    if (e.target.closest("#sidebar")) return;
     for (const p of plugins) {
-      if (p.match(hit.object, hit)) {
+      const hits = getMouseHits(e, p.targets);
+      const hit = hits.find(h => p.match(h.object, h));
+      if (hit) {
         const root = p.getRoot(hit.object, hit);
         if (root) p.onClick?.(root, hit);
-        return; // important: stop au premier plugin (priority)
+        return;
       }
     }
   }
 
-  window.addEventListener("mousemove", hover);
+  let pendingEvent = null;
+  let rafId = null;
+
+  function onMouseMove(e) {
+    pendingEvent = e;
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = null;
+      if (pendingEvent) hover(pendingEvent);
+    });
+  }
+
+  window.addEventListener("mousemove", onMouseMove);
   window.addEventListener("click", click);
 
   function dispose() {
-    window.removeEventListener("mousemove", hover);
+    window.removeEventListener("mousemove", onMouseMove);
     window.removeEventListener("click", click);
   }
+  function refresh() {
+    if (pendingEvent) hover(pendingEvent);
+  }
 
-  return { addPlugin, dispose };
+  return { addPlugin, dispose, refresh };
 }
 
 
@@ -143,10 +166,29 @@ export function doorPlugin() {
   };
 }
 
-export function employeePlugin({ camera, controls }) {
+async function isInMeeting(id) {
+  const now = performance.now();
+  const cached = meetingCache.get(id);
+  if (cached && now - cached.ts < 5000) return cached.value;
+
+  const res = await fetch(`/api/employees/${id}/in-meeting`);
+  const v = (await res.text()) === "true";
+  meetingCache.set(id, { value: v, ts: performance.now() });
+  return v;
+}
+
+function getInMeetingCached(id) {
+  const now = performance.now();
+  const cached = meetingCache.get(id);
+  if (cached && now - cached.ts < 5000) return cached.value;
+  return null;
+}
+
+export function employeePlugin({ camera, controls, charactersGroup}) {
   return {
     name: "employee",
     priority: 50,
+    targets: [charactersGroup],
     match: (obj) => {
       let cur = obj;
       while (cur) {
@@ -162,9 +204,12 @@ export function employeePlugin({ camera, controls }) {
     },
     getStyle: async (root) => {
       const employee = root.userData.employee;
-      const res = await fetch(`/api/employees/${employee.id}/in-meeting`);
-      const inMeeting = (await res.text()) === "true";
-
+      const cached = getInMeetingCached(employee.id);
+      if (cached === null) {
+        isInMeeting(employee.id) .then(() => interaction.refresh?.()).catch(() => {});
+        return null;
+      }
+      const inMeeting = cached;
       let color = 0xffffff;
       if (employee.status === "AVAILABLE" && employee.inOffice === "OFFICE" && !inMeeting) color = 0x00ff00;
       else if (employee.inOffice === "REMOTE" && employee.status === "AVAILABLE" && !inMeeting) color = 0xeeff00;

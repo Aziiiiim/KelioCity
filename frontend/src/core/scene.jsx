@@ -50,7 +50,7 @@ export function createScene(){
         targets: [scene.groupRooms, scene.groupCharacters],
     });
     interaction.addPlugin(doorPlugin());
-    interaction.addPlugin(employeePlugin({ camera, controls }));
+    interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters }));
     interaction.addPlugin(roomPlugin({ onlyTypes: ["MeetingRoom"] })); 
     fetch("/api/rooms")
        .then(res => res.json())
@@ -155,14 +155,3 @@ export function createScene(){
     return { start, stop, scene, camera, renderer };
 }
 
-export function selectEmployee(employeeId) {
-    let employeeObj = null;
-    for (let i=0; i < characters.length; i++) {
-        if (parseInt(characters[i].scene.userData.employee.id) === parseInt(employeeId)) {
-            employeeObj = characters[i].scene;
-        }
-    }
-    if (employeeObj) {
-        employeeHighlighter.onClick(null, employeeObj);
-    }
-}

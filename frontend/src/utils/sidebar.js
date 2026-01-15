@@ -1,5 +1,9 @@
 const sidebar = document.getElementById("sidebar");
 
+sidebar.addEventListener("click", (e) => {
+    e.stopPropagation();
+});
+
 let currentScheduleDate = new Date();
 let currentEmployeeId = null;
 
@@ -7,76 +11,77 @@ export function openSidebar(employee) {
   currentEmployeeId = employee.id;
   currentScheduleDate = new Date();
 
-  sidebar.innerHTML = `
-    <button class="close-btn">&times;</button>
-
-    <div class="sidebar-header animate">
-      <div class="sidebar-avatar">
-        <span class="status-dot ${employee.status?.toLowerCase() || "online"}"></span>
-      </div>
-
-      <div>
-        <h2>${employee.firstName} ${employee.lastName}</h2>
-       <div class="sidebar-status ${employee.status === "AVAILABLE" ? "sidebar-available" : (employee.status === "OCCUPIED" ? "sidebar-occupied" : "sidebar-not-available")}">${employee.status}</div>
-      </div>
-    </div>
-
-    <div class="sidebar-section card animate">
-      <h3>Coordonnées</h3>
-      <div class="info-grid">
-        <div class="info-label">Email</div>
-        <div class="info-value">${employee.email}</div>
-
-        <div class="info-label">Téléphone</div>
-        <div class="info-value">${employee.phoneNumber}</div>
-      </div>
-    </div>
-
-    <div class="sidebar-section card animate">
-      <h3>Position</h3>
-      <div class="info-grid">
-        <div class="info-label">Bureau</div>
-        <div class="info-value">
-          ${employee.desk?.room?.roomName ?? "Aucun"}
-        </div>
-
-        <div class="info-label">Présence</div>
-        <div class="info-value">
-          ${employee.inOffice === "OFFICE" ? "Office" : "Télétravail"}
-        </div>
-      </div>
-    </div>
-
-    <div class="sidebar-section card animate">
-      <div class="schedule-header">
-        <button class="nav-btn" id="prev-day">←</button>
-        <h3 id="schedule-date"></h3>
-        <button class="nav-btn" id="next-day">→</button>
-      </div>
-
-      <div class="schedule-list">
-        <em>Chargement...</em>
-      </div>
-    </div>
-  `;
-
   sidebar.classList.remove("hidden");
   sidebar.classList.add("visible");
+  sidebar.innerHTML = `<button ...>×</button><div>Chargement...</div>`;
 
-  sidebar.querySelector(".close-btn")
-    .addEventListener("click", closeSidebar);
+  requestAnimationFrame(() => {
+    sidebar.innerHTML = `
+      <button class="close-btn">&times;</button>
 
-  sidebar.addEventListener("click", (e) => {
-    e.stopPropagation();
+      <div class="sidebar-header animate">
+        <div class="sidebar-avatar">
+          <span class="status-dot ${employee.status?.toLowerCase() || "online"}"></span>
+        </div>
+
+        <div>
+          <h2>${employee.firstName} ${employee.lastName}</h2>
+        <div class="sidebar-status ${employee.status === "AVAILABLE" ? "sidebar-available" : (employee.status === "OCCUPIED" ? "sidebar-occupied" : "sidebar-not-available")}">${employee.status}</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section card animate">
+        <h3>Coordonnées</h3>
+        <div class="info-grid">
+          <div class="info-label">Email</div>
+          <div class="info-value">${employee.email}</div>
+
+          <div class="info-label">Téléphone</div>
+          <div class="info-value">${employee.phoneNumber}</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section card animate">
+        <h3>Position</h3>
+        <div class="info-grid">
+          <div class="info-label">Bureau</div>
+          <div class="info-value">
+            ${employee.desk?.room?.roomName ?? "Aucun"}
+          </div>
+
+          <div class="info-label">Présence</div>
+          <div class="info-value">
+            ${employee.inOffice === "OFFICE" ? "Office" : "Télétravail"}
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section card animate">
+        <div class="schedule-header">
+          <button class="nav-btn" id="prev-day">←</button>
+          <h3 id="schedule-date"></h3>
+          <button class="nav-btn" id="next-day">→</button>
+        </div>
+
+        <div class="schedule-list">
+          <em>Chargement...</em>
+        </div>
+      </div>
+    `;
+
+    sidebar.querySelector(".close-btn")
+      .addEventListener("click", closeSidebar);
+
+    sidebar.querySelector("#prev-day")
+      .addEventListener("click", () => changeDay(-1));
+
+    sidebar.querySelector("#next-day")
+      .addEventListener("click", () => changeDay(1));
+
+    loadSchedule();
   });
 
-  sidebar.querySelector("#prev-day")
-    .addEventListener("click", () => changeDay(-1));
-
-  sidebar.querySelector("#next-day")
-    .addEventListener("click", () => changeDay(1));
-
-  loadSchedule();
+  
 }
 
 export function closeSidebar() {
