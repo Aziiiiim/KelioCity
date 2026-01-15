@@ -612,7 +612,7 @@ public class DataInitializer implements CommandLineRunner {
                 new Person("Vidal", "Cédric", "H"),
                 new Person("Hardy", "Solène", "F"),
                 new Person("Oger", "Adrien", "H"),
-                new Person("Couture", "Isabelle", "F"),
+                new Person("Couturier", "Isabelle", "F"),
                 new Person("Legrand", "Fabien", "H"),
                 new Person("Rousseau", "Amélie", "F"),
                 new Person("Monnier", "Samuel", "H"),
@@ -621,7 +621,8 @@ public class DataInitializer implements CommandLineRunner {
                 new Person("Bastien", "Emilie", "F"),
                 new Person("Guyon", "Laurent", "H"),
                 new Person("Poitou", "Aurélie", "F"),
-                new Person("Camus", "Niels", "H")
+                new Person("Camus", "Niels", "H"),
+                new Person("Caillaud", "Georges", "H")
             );
 
             Room[] openspaces = {openspace_1, openspace_2, openspace_3, openspace_4, openspace_5};
@@ -639,7 +640,7 @@ public class DataInitializer implements CommandLineRunner {
                         );
                         deskRepo.flush();
                         String spriteD;
-                        if (people.get(14*j+i).gender.equals("H")) {
+                        if (people.get(14*j+2*i).gender.equals("H")) {
                             spriteD = "MAN"+((i%4)+1);
                         } else {
                             spriteD = "WOMAN"+((i%4)+1);
@@ -718,7 +719,7 @@ public class DataInitializer implements CommandLineRunner {
                     );
                     deskRepo.flush();
                     String spriteD;
-                    if (people.get(20*j+2*i+19).gender.equals("H")) {
+                    if (people.get(20*j+2*i+38).gender.equals("H")) {
                         spriteD = "MAN"+((i%4)+1);
                     } else {
                         spriteD = "WOMAN"+((i%4)+1);
@@ -740,10 +741,10 @@ public class DataInitializer implements CommandLineRunner {
                     }
                     Employee employeeD = employeeRepo.save(
                         Employee.builder()
-                            .firstName(people.get(20*j+2*i+19).firstname)
-                            .lastName(people.get(20*j+2*i+19).lastname)
+                            .firstName(people.get(20*j+2*i+38).firstname)
+                            .lastName(people.get(20*j+2*i+38).lastname)
                             .desk(deskD_openspace)
-                            .email(people.get(20*j+2*i+19).firstname.toLowerCase()+"."+people.get(20*j+2*i+19).lastname.toLowerCase()+"@keliocity.com")
+                            .email(people.get(20*j+2*i+38).firstname.toLowerCase()+"."+people.get(20*j+2*i+38).lastname.toLowerCase()+"@keliocity.com")
                             .phoneNumber("067"+j+"28399"+i)
                             .workingHours("08:00-16:00")
                             .inOffice(workLocation)
@@ -762,17 +763,17 @@ public class DataInitializer implements CommandLineRunner {
                     );
                     deskRepo.flush();
                     String spriteG;
-                    if (people.get(20*j+2*i+20).gender.equals("H")) {
+                    if (people.get(20*j+2*i+39).gender.equals("H")) {
                         spriteG = "MAN"+((i%4)+1);
                     } else {
                         spriteG = "WOMAN"+((i%4)+1);
                     }
                     Employee employeeG = employeeRepo.save(
                         Employee.builder()
-                            .firstName(people.get(20*j+2*i+20).firstname)
-                            .lastName(people.get(20*j+2*i+20).lastname)
+                            .firstName(people.get(20*j+2*i+39).firstname)
+                            .lastName(people.get(20*j+2*i+39).lastname)
                             .desk(deskG_openspace)
-                            .email(people.get(20*j+2*i+20).firstname.toLowerCase()+"."+people.get(20*j+2*i+20).lastname.toLowerCase()+"@keliocity.com")
+                            .email(people.get(20*j+2*i+39).firstname.toLowerCase()+"."+people.get(20*j+2*i+39).lastname.toLowerCase()+"@keliocity.com")
                             .phoneNumber("06"+j+"738999"+i)
                             .workingHours("08:00-16:00")
                             .inOffice(WorkLocation.OFFICE)
