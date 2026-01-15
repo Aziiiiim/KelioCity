@@ -20,19 +20,19 @@ export function createOpenspace(nb_desks) {
   // For each desk, we load the desk, its computer, its chair and the wall between 2 desks
   for (let i=0; i<nb_desks; i++) {
     for (let j=-1; j<1; j++) {
-      makeInstance('./assets/models/Desk.glb').then((desk) => {
+      makeInstance('/assets/models/Desk.glb').then((desk) => {
         desk.scale.set(2, 2, 2);
         desk.position.set(x+2.52 * i - j*1.28, 0, z+1+j*1.25);
         desk.rotation.y = Math.PI * j;
         elements.add(desk);
       });
-      makeInstance('./assets/models/Laptop.glb').then((computer) => {
+      makeInstance('/assets/models/Laptop.glb').then((computer) => {
         computer.scale.set(0.3,0.3,0.3);
         computer.position.set(x+2.52 * i - j*0.7 +0.37, 0.87, z+1+j*1.25);
         computer.rotation.y = Math.PI * j;
         elements.add(computer);
       });
-      makeInstance('./assets/models/OpenChair.glb').then((chair) => {
+      makeInstance('/assets/models/OpenChair.glb').then((chair) => {
         chair.scale.set(1.5, 1.5, 1.5);
         chair.position.set(x+2.52 * i - j*0.5 + 0.4, 0.5, z+2.3+j*3.85);
         chair.rotation.y = Math.PI * (1+j);

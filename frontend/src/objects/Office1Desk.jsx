@@ -56,21 +56,21 @@ export function createOffice1Desk(initDoor) {
 
 
     // Desk
-    makeInstance('./assets/models/decoratedDesk.glb').then((desk) => {
+    makeInstance('/assets/models/decoratedDesk.glb').then((desk) => {
         desk.position.set(0.3 + x, 0, 6.7 + z);
         desk.scale.set(1.1, 1.1, 1.1);
         elements.add(desk);
     }).catch(console.error);
 
     // Chair
-    makeInstance('./assets/models/chair.glb').then((chair) => {
+    makeInstance('/assets/models/chair.glb').then((chair) => {
         chair.position.set(-11.7 + x, 0, 6 + z);
         chair.scale.set(0.035, 0.035, 0.035);
         elements.add(chair);
     }).catch(console.error);
 
     // Message Board
-    makeInstance('./assets/models/messageBoard.glb').then((board) => {
+    makeInstance('/assets/models/messageBoard.glb').then((board) => {
         board.position.set(2, 1, -2.9 + z);
         board.scale.set(0.02, 0.02, 0.02);
         board.rotation.y = Math.PI * -0.5;
@@ -78,7 +78,7 @@ export function createOffice1Desk(initDoor) {
     }).catch(console.error);
 
     // Shelf
-    makeInstance('./assets/models/containerShelf.glb').then((shelf) => {
+    makeInstance('/assets/models/containerShelf.glb').then((shelf) => {
         shelf.position.set(2.6 + x, 1.14, -2.2 + z);
         shelf.scale.set(0.03, 0.03, 0.03);
         shelf.rotation.y = Math.PI * 0.5;
@@ -89,7 +89,7 @@ export function createOffice1Desk(initDoor) {
     let doorPivot = null;
     let doorOpen = false;
     let doorProgress = 0;
-    makeInstance('./assets/models/door.glb').then((doorObj) => {
+    makeInstance('/assets/models/door.glb').then((doorObj) => {
         doorObj.scale.set(4, 4, 4);
 
         doorPivot = new THREE.Group();

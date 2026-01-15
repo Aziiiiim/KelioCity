@@ -61,7 +61,7 @@ export function createOffice2Desks(initDoor) {
     
 
     // Desk1
-    makeInstance('./assets/models/decoratedDesk.glb')
+    makeInstance('/assets/models/decoratedDesk.glb')
         .then((desk) => {
         desk.position.set(-5.43 + x, 0, 2.5);
         desk.scale.set(1.1, 1.1, 1.1);
@@ -71,7 +71,7 @@ export function createOffice2Desks(initDoor) {
         .catch(console.error);
 
     // Chair1
-    makeInstance('./assets/models/chair.glb')
+    makeInstance('/assets/models/chair.glb')
         .then((chair) => {
         chair.position.set(-4.7 + x, 0, -9.5);
         chair.scale.set(0.035, 0.035, 0.035);
@@ -81,7 +81,7 @@ export function createOffice2Desks(initDoor) {
         .catch(console.error);
 
     // Desk2
-    makeInstance('./assets/models/decoratedDesk.glb')
+    makeInstance('/assets/models/decoratedDesk.glb')
         .then((desk) => {
         desk.position.set(12.43 + x, 0, 3.6);
         desk.scale.set(1.1, 1.1, 1.1);
@@ -91,7 +91,7 @@ export function createOffice2Desks(initDoor) {
         .catch(console.error);
 
     // Chair2
-    makeInstance('./assets/models/chair.glb')
+    makeInstance('/assets/models/chair.glb')
         .then((chair) => {
         chair.position.set(11.7 + x, 0, 15.7);
         chair.scale.set(0.035, 0.035, 0.035);
@@ -101,7 +101,7 @@ export function createOffice2Desks(initDoor) {
         .catch(console.error);
 
     // Message Board
-    makeInstance('./assets/models/messageBoard.glb')
+    makeInstance('/assets/models/messageBoard.glb')
         .then((board) => {
         board.position.set(3 + x, 1, 0.1);
         board.scale.set(0.02, 0.02, 0.02);
@@ -111,7 +111,7 @@ export function createOffice2Desks(initDoor) {
         .catch(console.error);
 
     // Shelf
-    makeInstance('./assets/models/containerShelf.glb')
+    makeInstance('/assets/models/containerShelf.glb')
         .then((shelf) => {
         shelf.position.set(5.6 + x, 1.14, 0.8);
         shelf.scale.set(0.03, 0.03, 0.03);
@@ -121,7 +121,7 @@ export function createOffice2Desks(initDoor) {
         .catch(console.error);
 
     // Door
-    makeInstance('./assets/models/door.glb')
+    makeInstance('/assets/models/door.glb')
         .then((doorObj) => {
         doorObj.scale.set(4, 4, 4);
 

@@ -9,26 +9,26 @@ export function createMeetingRoom(initDoor) {
 
     // We load each desk and chair for both row of tables
     for (let i=0; i<5; i++) {
-        makeInstance('./assets/models/StandingDesk.glb').then((desk) => {
+        makeInstance('/assets/models/StandingDesk.glb').then((desk) => {
             desk.scale.set(1, 1, 1);
             desk.position.set(x + i * 1.6, 0.35, z - 2.4);
             elements.add(desk);
         });
 
-        makeInstance('./assets/models/OfficeChair.glb').then((chair) => {
+        makeInstance('/assets/models/OfficeChair.glb').then((chair) => {
             chair.scale.set(1, 1, 1);
             chair.position.set(x + i * 1.6, 0, z - 3);
             elements.add(chair);
         });
 
         // Row 2 (z + 2.4 / chairs z + 3)
-        makeInstance('./assets/models/StandingDesk.glb').then((desk) => {
+        makeInstance('/assets/models/StandingDesk.glb').then((desk) => {
             desk.scale.set(1, 1, 1);
             desk.position.set(x + i * 1.6, 0.35, z + 2.4);
             elements.add(desk);
         });
 
-        makeInstance('./assets/models/OfficeChair.glb').then((chair) => {
+        makeInstance('/assets/models/OfficeChair.glb').then((chair) => {
             chair.scale.set(1, 1, 1);
             chair.position.set(x + i * 1.6, 0, z + 3);
             chair.rotation.y = Math.PI;
@@ -37,13 +37,13 @@ export function createMeetingRoom(initDoor) {
     }
     // We load the last row of tables
     for (let i=0; i<3; i++) {
-        makeInstance('./assets/models/StandingDesk.glb').then((desk) => {
+        makeInstance('/assets/models/StandingDesk.glb').then((desk) => {
             desk.scale.set(1, 1, 1);
             desk.rotation.y = Math.PI/2;
             desk.position.set(x+7.6, 0.35, z-1.65+i*1.6);
             elements.add(desk);
         });
-        makeInstance('./assets/models/OfficeChair.glb').then((chair) => {
+        makeInstance('/assets/models/OfficeChair.glb').then((chair) => {
             chair.scale.set(1, 1, 1);
             chair.position.set(x+8.2, 0, z-1.65+i*1.6);
             chair.rotation.y = -Math.PI/2;
@@ -51,7 +51,7 @@ export function createMeetingRoom(initDoor) {
         });
     }
     // Projector screen
-    makeInstance('./assets/models/ProjectorScreen.glb').then((proj) => {
+    makeInstance('/assets/models/ProjectorScreen.glb').then((proj) => {
         proj.scale.set(2, 3, 4);
         proj.position.set(x - 4.1, 2.35, z);
         elements.add(proj);
@@ -61,7 +61,7 @@ export function createMeetingRoom(initDoor) {
     let doorPivot = null;
     let doorOpen = false;
     let doorProgress = 0;
-    makeInstance('./assets/models/door.glb').then((doorObj) => {
+    makeInstance('/assets/models/door.glb').then((doorObj) => {
         doorObj.scale.set(4, 4, 4);
 
         doorPivot = new THREE.Group();
@@ -77,7 +77,7 @@ export function createMeetingRoom(initDoor) {
         initDoor(doorPivot, toggleDoor);
     });
 
-    loadTexture('./assets/textures/painted_plaster.jpg').then((wallTexture) => {
+    loadTexture('/assets/textures/painted_plaster.jpg').then((wallTexture) => {
         wallTexture.wrapS = THREE.RepeatWrapping;
         wallTexture.wrapT = THREE.RepeatWrapping;
         wallTexture.repeat.set(4, 4);

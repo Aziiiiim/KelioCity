@@ -61,13 +61,13 @@ export function createOffice6Desks(initDoor) {
     const groupDesk1 = new THREE.Group();
 
     Promise.all([
-        makeInstance('./assets/models/decoratedDesk.glb').then((desk) => {
+        makeInstance('/assets/models/decoratedDesk.glb').then((desk) => {
         desk.position.set(-1.93, 0, 3);
         desk.scale.set(1.1, 1.1, 1.1);
         desk.rotation.y = -Math.PI * 0.5;
         groupDesk1.add(desk);
         }),
-        makeInstance('./assets/models/chair.glb').then((chair) => {
+        makeInstance('/assets/models/chair.glb').then((chair) => {
         chair.position.set(-4.7 + 3.5, 0, -9);
         chair.scale.set(0.035, 0.035, 0.035);
         chair.rotation.y = -Math.PI * 0.5;
@@ -99,7 +99,7 @@ export function createOffice6Desks(initDoor) {
         .catch(console.error);
 
     // Message Board
-    makeInstance('./assets/models/messageBoard.glb')
+    makeInstance('/assets/models/messageBoard.glb')
         .then((board) => {
         board.position.set(4.5 + x, 1, 0.1);
         board.scale.set(0.02, 0.02, 0.02);
@@ -109,7 +109,7 @@ export function createOffice6Desks(initDoor) {
         .catch(console.error);
 
     // Shelf
-    makeInstance('./assets/models/containerShelf.glb')
+    makeInstance('/assets/models/containerShelf.glb')
         .then((shelf) => {
         shelf.position.set(7.6 + x, 1.14, 0.8);
         shelf.scale.set(0.03, 0.03, 0.03);
@@ -119,7 +119,7 @@ export function createOffice6Desks(initDoor) {
         .catch(console.error);
 
     // Door
-    makeInstance('./assets/models/door.glb')
+    makeInstance('/assets/models/door.glb')
         .then((doorObj) => {
         doorObj.scale.set(4, 4, 4);
 
