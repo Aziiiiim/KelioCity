@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 import { makeInstance } from '../utils/asset.js'; 
     
-export function createOffice6Desks(initDoor) {
+export function createOffice6Desks(initDoor = null) {
     let x = -1;
 
     const elements = new THREE.Group();
+    elements.userData.kind = "room";
+    elements.userData.roomType = "Office6Desk"; 
 
     // Wall and floor
     const floorGeo = new THREE.PlaneGeometry(7, 9);
@@ -132,7 +134,7 @@ export function createOffice6Desks(initDoor) {
         elements.add(doorPivot);
 
         doorPivot.rotation.y = Math.PI / 2;
-        initDoor(doorPivot, toggleDoor);
+        //initDoor(doorPivot, toggleDoor);
         })
         .catch(console.error);
 

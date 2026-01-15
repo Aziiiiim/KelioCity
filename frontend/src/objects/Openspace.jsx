@@ -4,10 +4,11 @@ import { makeInstance, loadTexture } from '../utils/asset.js';
 
 export function createOpenspace(nb_desks) {
   const elements = new THREE.Group();
+  elements.userData.kind = "room";
+  elements.userData.roomType = "Openspace"; 
+
   let x = 1.28;
   let z = 1.35;
-
-
 
   // First external wall of the first desk
   let fst_wall_between = new THREE.Mesh(

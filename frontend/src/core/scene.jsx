@@ -12,15 +12,15 @@ import { createOffice6Desks } from '../objects/Office6Desks.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
-import { createHighlighter } from "../utils/highlight.js";
+import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin } from "../utils/interactionManager.js";
 //import { apiTest } from "../utils/apiTest.js";
 
 
 let clock = new THREE.Clock();
-let highlighter = null;
 const roomList = [];
 const characters = [];
 const objectList = [];
+let interaction = null;
 
 export function createScene(){
     const gameWindow = document.getElementById('render-target');
@@ -43,37 +43,54 @@ export function createScene(){
     scene.add(scene.groupRooms);
     scene.groupCharacters = new THREE.Group();
     scene.add(scene.groupCharacters);
-    const objectList = [];
+
+    interaction = createInteractionManager({
+        camera,
+        renderer,
+        targets: [scene.groupRooms, scene.groupCharacters],
+    });
+    interaction.addPlugin(doorPlugin());
+    interaction.addPlugin(employeePlugin({ camera, controls }));
+    interaction.addPlugin(roomPlugin({ onlyTypes: ["MeetingRoom"] })); 
     fetch("/api/rooms")
        .then(res => res.json())
        .then(rooms => {
            for (let i=0; i < rooms.length; i++) {
+                const roomType = rooms[i]?.roomType?.roomtypeName;
+                let roomObj = null;
                 let roomElements;
-                if (rooms[i]["roomType"]["roomtypeName"] === "MeetingRoom") {
-                    let meetingRoom = createMeetingRoom(function (doorPivot, toggleDoor) { createHighlighter(camera,controls,renderer, doorPivot, toggleDoor) });
-                    roomElements = meetingRoom.elements;
-                    objectList.push(meetingRoom);
-                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office1Desk") {
-                    let office1desk = createOffice1Desk(function (doorPivot, toggleDoor) { createHighlighter(camera,controls,renderer,doorPivot,toggleDoor) })
-                    roomElements = office1desk.elements;
-                    objectList.push(office1desk);
-                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office2Desks") {
-                    let office2desk = createOffice2Desks(function (doorPivot, toggleDoor) { createHighlighter(camera,controls,renderer,doorPivot,toggleDoor) })
-                    roomElements = office2desk.elements;
-                    objectList.push(office2desk);
-                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office4Desks") {
-                    let office4desk = createOffice4Desks(function (doorPivot, toggleDoor) { createHighlighter(camera,controls,renderer,doorPivot,toggleDoor) })
-                    roomElements = office4desk.elements;
-                    objectList.push(office4desk);
-                } else if (rooms[i]["roomType"]["roomtypeName"] === "Office6Desks") {
-                    let office6desk = createOffice6Desks(function (doorPivot, toggleDoor) { createHighlighter(camera,controls,renderer,doorPivot,toggleDoor) })
-                    roomElements = office6desk.elements;
-                    objectList.push(office6desk);
-                } else if (rooms[i]["roomType"]["roomtypeName"] === "Openspace") {
+
+                if (roomType === "MeetingRoom") {
+                    roomObj = createMeetingRoom();
+                } 
+                else if (roomType === "Office1Desk") {
+                    roomObj = createOffice1Desk();
+                } 
+                else if (roomType === "Office2Desks") {
+                    roomObj = createOffice2Desks();
+                } 
+                else if (roomType === "Office4Desks") {
+                    roomObj = createOffice4Desks();
+                } 
+                else if (roomType === "Office6Desks") {
+                    roomObj = createOffice6Desks();
+                }
+                else if (roomType === "Openspace") {
                     roomElements = createOpenspace(rooms[i]["openspaceNumber"]);
                 }
-                roomElements.rotation.y = rooms[i]["orientationDeg"] / 180 * Math.PI;
+                if (roomObj) {
+                    roomElements = roomObj.elements;
+                    objectList.push(roomObj);
+                }
+                if (!roomElements) continue;
+
+                roomElements.userData.kind = "room";
+                roomElements.userData.roomType = roomType;
+                roomElements.userData.roomId = rooms[i].id;
+
+                roomElements.rotation.y = (rooms[i]["orientationDeg"] / 180) * Math.PI;
                 roomElements.position.set(rooms[i]["coordX1"], 0, rooms[i]["coordZ1"]);
+
                 roomList.push(roomElements);
                 scene.groupRooms.add(roomElements);
            }
@@ -95,9 +112,6 @@ export function createScene(){
                            scene.groupCharacters.add(character.scene);
                            characters.push(character);
                            loadedChars += 1;
-                           if (loadedChars === employees.length) {
-                               highlighter = createHighlighter(camera, controls, renderer, scene.groupCharacters);
-                           }
                        });
                    }
                })
@@ -149,6 +163,6 @@ export function selectEmployee(employeeId) {
         }
     }
     if (employeeObj) {
-        highlighter.onClick(null, employeeObj);
+        employeeHighlighter.onClick(null, employeeObj);
     }
 }

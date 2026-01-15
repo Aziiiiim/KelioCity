@@ -1,9 +1,11 @@
 import * as THREE from 'three';
 import { makeInstance, loadTexture } from '../utils/asset.js';
-import {createHighlighter} from "../utils/highlight.js";
 
-export function createMeetingRoom(initDoor) {
+export function createMeetingRoom() {
     const elements = new THREE.Group();
+    elements.userData.type = "room";
+    elements.userData.roomType = "MeetingRoom";
+
     let  x = 4.3;
     let z = 6;
 
@@ -65,6 +67,11 @@ export function createMeetingRoom(initDoor) {
         doorObj.scale.set(4, 4, 4);
 
         doorPivot = new THREE.Group();
+
+        doorPivot.userData.kind = "door";
+        doorPivot.userData.action = "toggleDoor";
+        doorPivot.userData.toggleDoor = toggleDoor;
+
         doorPivot.position.set(x + 10.7, 1.5, z - 5.88);
 
         // même offset que toi
@@ -74,7 +81,7 @@ export function createMeetingRoom(initDoor) {
         doorPivot.rotation.y = Math.PI / 2;
 
         elements.add(doorPivot);
-        initDoor(doorPivot, toggleDoor);
+        //initDoor(doorPivot, toggleDoor);
     });
 
     loadTexture('/assets/textures/painted_plaster.jpg').then((wallTexture) => {
@@ -130,7 +137,7 @@ export function createMeetingRoom(initDoor) {
     });
 
     function openDoor(delta) {
-        if (!doorPivot) return; // porte pas encore chargée
+        if (!doorPivot) return;
 
         const target = doorOpen ? 1 : 0;
 
