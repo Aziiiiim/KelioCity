@@ -541,7 +541,7 @@ public class DataInitializer implements CommandLineRunner {
                         .workingHours("08:00-16:00")
                         .inOffice(WorkLocation.REMOTE)
                         .status(EmployeeStatus.OCCUPIED)
-                        .sprite(Sprite.WOMAN1)
+                        .sprite(Sprite.MAN1)
                         .build()
             );
 
