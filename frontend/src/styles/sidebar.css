@@ -107,6 +107,10 @@
   color: #4caf50; /* Disponible = vert */
 }
 
+.sidebar-remote {
+  color : #deb600;
+}
+
 .sidebar-occupied {
   color : #df8423;
 }

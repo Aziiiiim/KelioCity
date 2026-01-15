@@ -3,7 +3,32 @@ import { cameraOn } from "../core/camera.jsx";
 
 import * as THREE from "three";
 
-const meetingCache = new Map(); 
+const globalStatusCache = new Map(); // id -> { value, ts }
+const GLOBAL_TTL = 5000;
+
+function colorFromGlobalStatus(gs) {
+  if (gs === "AVAILABLE") return 0x00ff00;
+  if (gs === "REMOTE") return 0xeeff00;
+  if (gs === "OCCUPIED") return 0xdf8423;
+  if (gs === "ABSENT") return 0xff0000;
+  return 0xffffff;
+}
+
+function getGlobalStatusCached(id) {
+  const now = performance.now();
+  const cached = globalStatusCache.get(id);
+  if (cached && now - cached.ts < GLOBAL_TTL) return cached.value;
+  return null;
+}
+
+async function fetchGlobalStatus(id) {
+  const res = await fetch(`/api/employees/${id}/global_status`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  const value = await res.text();
+  globalStatusCache.set(id, { value, ts: performance.now() });
+  return value;
+}
+
 
 export function createInteractionManager({ camera, renderer, targets }) {
   const raycaster = new THREE.Raycaster();
@@ -166,25 +191,7 @@ export function doorPlugin() {
   };
 }
 
-async function isInMeeting(id) {
-  const now = performance.now();
-  const cached = meetingCache.get(id);
-  if (cached && now - cached.ts < 5000) return cached.value;
-
-  const res = await fetch(`/api/employees/${id}/in-meeting`);
-  const v = (await res.text()) === "true";
-  meetingCache.set(id, { value: v, ts: performance.now() });
-  return v;
-}
-
-function getInMeetingCached(id) {
-  const now = performance.now();
-  const cached = meetingCache.get(id);
-  if (cached && now - cached.ts < 5000) return cached.value;
-  return null;
-}
-
-export function employeePlugin({ camera, controls, charactersGroup}) {
+export function employeePlugin({ camera, controls, charactersGroup, refresh }) {
   return {
     name: "employee",
     priority: 50,
@@ -204,19 +211,16 @@ export function employeePlugin({ camera, controls, charactersGroup}) {
     },
     getStyle: async (root) => {
       const employee = root.userData.employee;
-      const cached = getInMeetingCached(employee.id);
-      if (cached === null) {
-        isInMeeting(employee.id) .then(() => interaction.refresh?.()).catch(() => {});
-        return null;
+      const cached = getGlobalStatusCached(employee.id);
+      if (cached !== null) {
+        const color = colorFromGlobalStatus(cached);
+        return { color, emissive: 0x003300 };
       }
-      const inMeeting = cached;
-      let color = 0xffffff;
-      if (employee.status === "AVAILABLE" && employee.inOffice === "OFFICE" && !inMeeting) color = 0x00ff00;
-      else if (employee.inOffice === "REMOTE" && employee.status === "AVAILABLE" && !inMeeting) color = 0xeeff00;
-      else if (employee.status === "OCCUPIED" || (inMeeting && employee.status !== "ABSENT")) color = 0xdf8423;
-      else if (employee.status === "ABSENT") color = 0xff0000;
 
-      return { color, emissive: 0x003300 };
+      fetchGlobalStatus(employee.id)
+      .then(() => refresh?.())
+      .catch((e) => console.error("global_status fetch failed", employee.id, e));
+      return null;
     },
     onClick: (root) => {
       const employee = root.userData.employee;

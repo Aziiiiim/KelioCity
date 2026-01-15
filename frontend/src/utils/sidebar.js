@@ -13,7 +13,7 @@ export function openSidebar(employee) {
 
   sidebar.classList.remove("hidden");
   sidebar.classList.add("visible");
-  sidebar.innerHTML = `<button ...>×</button><div>Chargement...</div>`;
+  sidebar.innerHTML = `<button class="close-btn">&times;</button><div>Chargement...</div>`;
 
   requestAnimationFrame(() => {
     sidebar.innerHTML = `
@@ -26,7 +26,9 @@ export function openSidebar(employee) {
 
         <div>
           <h2>${employee.firstName} ${employee.lastName}</h2>
-        <div class="sidebar-status ${employee.status === "AVAILABLE" ? "sidebar-available" : (employee.status === "OCCUPIED" ? "sidebar-occupied" : "sidebar-not-available")}">${employee.status}</div>
+          <div class="sidebar-status sidebar-not-available" id="sidebar-status">
+            ${employee.status}
+          </div>
         </div>
       </div>
 
@@ -45,14 +47,10 @@ export function openSidebar(employee) {
         <h3>Position</h3>
         <div class="info-grid">
           <div class="info-label">Bureau</div>
-          <div class="info-value">
-            ${employee.desk?.room?.roomName ?? "Aucun"}
-          </div>
+          <div class="info-value">${employee.desk?.room?.roomName ?? "Aucun"}</div>
 
           <div class="info-label">Présence</div>
-          <div class="info-value">
-            ${employee.inOffice === "OFFICE" ? "Office" : "Télétravail"}
-          </div>
+          <div class="info-value">${employee.inOffice === "OFFICE" ? "Office" : "Télétravail"}</div>
         </div>
       </div>
 
@@ -69,20 +67,32 @@ export function openSidebar(employee) {
       </div>
     `;
 
-    sidebar.querySelector(".close-btn")
-      .addEventListener("click", closeSidebar);
-
-    sidebar.querySelector("#prev-day")
-      .addEventListener("click", () => changeDay(-1));
-
-    sidebar.querySelector("#next-day")
-      .addEventListener("click", () => changeDay(1));
+    sidebar.querySelector(".close-btn").addEventListener("click", closeSidebar);
+    sidebar.querySelector("#prev-day").addEventListener("click", () => changeDay(-1));
+    sidebar.querySelector("#next-day").addEventListener("click", () => changeDay(1));
 
     loadSchedule();
-  });
 
-  
+    fetch(`/api/employees/${employee.id}/global_status`)
+      .then(res => res.text())
+      .then(globalStatus => {
+        if (String(currentEmployeeId) !== String(employee.id)) return;
+
+        const badge = sidebar.querySelector("#sidebar-status");
+        if (!badge) return;
+
+        badge.textContent = employee.status; // ou globalStatus si tu veux afficher le global
+        badge.className = "sidebar-status " + (
+          globalStatus === "AVAILABLE" ? "sidebar-available" :
+          globalStatus === "REMOTE" ? "sidebar-remote" :
+          globalStatus === "OCCUPIED" ? "sidebar-occupied" :
+          "sidebar-not-available"
+        );
+      })
+      .catch(() => {});
+  });
 }
+
 
 export function closeSidebar() {
   sidebar.classList.remove("visible");
