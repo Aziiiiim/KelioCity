@@ -54,6 +54,24 @@ public class EmployeeController {
         return meetingEmployeeRepo.existsEmployeeInMeetingNow(id, LocalDateTime.now(ZoneId.of("Europe/Paris")));
     }
 
+    // GET /api/employees/{id}/global_status
+    @GetMapping("/{id}/global_status")
+    public String getGlobalStatus(@PathVariable Integer id) {
+        Employee employee = getById(id);
+        boolean in_meeting = getInMeeting(id);
+        EmployeeStatus status = employee.getStatus();
+        if ( status == EmployeeStatus.AVAILABLE && employee.getInOffice() == WorkLocation.OFFICE && !in_meeting) {
+            return "AVAILABLE";
+        } else if (employee.getInOffice() == WorkLocation.REMOTE && status == EmployeeStatus.AVAILABLE && !in_meeting) {
+            return "REMOTE";
+        } else if (status == EmployeeStatus.OCCUPIED || (in_meeting && employee.getStatus() != EmployeeStatus.ABSENT)) {
+            return "OCCUPIED";
+        } else if (status == EmployeeStatus.ABSENT) {
+            return "ABSENT";
+        }
+        return "";
+    }
+
     // GET /api/employees/search/{name}
     @GetMapping("/search/{name}")
     public List<Employee> getByName(@PathVariable String name) {
