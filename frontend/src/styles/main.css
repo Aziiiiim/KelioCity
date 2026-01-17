@@ -84,10 +84,17 @@ img.img-btn {
   display: flex;
   align-items: center;
   background: #ffffff;
-  border-radius: 14px;
   border: 2px solid gold;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+  border-radius: 6px;
+
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  transition: transform 0.15s ease;
+
   z-index: 20;
+}
+
+.search-wrapper:hover {
+  transform: scale(1.02);
 }
 
 /* Search bar */
@@ -108,24 +115,36 @@ img.img-btn {
 }
 
 /* Search button */
+.search-bar {
+  flex: 1;
+  height: 100%;
+  padding: 0 14px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  background: transparent;
+  color: #222;
+  border-radius: 6px 0 0 6px;
+}
+
 .search-btn {
   width: 46px;
   height: 100%;
   border: none;
   background: gold;
   cursor: pointer;
-  border-radius: 0 14px 14px 0;
+  border-radius: 0 6px 6px 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s ease;
+  transition: transform 0.15s ease;
+  border-left: 1px solid rgba(0,0,0,0.08);
 }
 
-.search-btn:disabled {
-  cursor: default;
+.search-btn:hover {
+  transform: scale(1.05);
 }
 
-/* Search icon */
 .search-btn svg {
   width: 18px;
   height: 18px;
@@ -146,20 +165,29 @@ img.img-btn {
 }
 
 .filter-btn {
-  background-color: gold;
-  border-radius: 10px;
+  background: gold;
+  border: none;
+  border-radius: 6px;
   height: 40px;
   width: 100px;
   margin-left: 5px;
   font-size: 14px;
-  font-weight: bold;
   cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.filter-btn:hover {
+  transform: scale(1.05);
 }
 
 .filter-btn.active {
-  background-color: darkgoldenrod;
+  background-color: grey;
+  color: white;
   cursor: default;
+  transform: none;
 }
+
 
 .search-dropdown {
   position: absolute;

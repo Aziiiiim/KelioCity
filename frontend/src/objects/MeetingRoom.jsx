@@ -81,7 +81,6 @@ export function createMeetingRoom() {
         doorPivot.rotation.y = Math.PI / 2;
 
         elements.add(doorPivot);
-        //initDoor(doorPivot, toggleDoor);
     });
 
     loadTexture('/assets/textures/painted_plaster.jpg').then((wallTexture) => {
@@ -93,11 +92,11 @@ export function createMeetingRoom() {
         new THREE.PlaneGeometry(15, 5),
         wallMaterial
         );
-        wallBack.position.set(x+3.2, 2.45, z-6);
+        wallBack.position.set(x+3.2, 2.45, z-5.99);
         elements.add(wallBack);
 
         const wallFront = wallBack.clone();
-        wallFront.position.z = z+6;
+        wallFront.position.z = z+5.99;
         wallFront.rotation.y = Math.PI;
         elements.add(wallFront);
 
@@ -106,7 +105,7 @@ export function createMeetingRoom() {
         wallMaterial
         );
         wallLeft.rotation.y = Math.PI / 2;
-        wallLeft.position.set(x-4.3, 2.45, z);
+        wallLeft.position.set(x-4.29, 2.45, z);
         elements.add(wallLeft);
 
         /*const wallRight = wallLeft.clone();
@@ -118,21 +117,21 @@ export function createMeetingRoom() {
         wallMaterial
         );
         wallRight1.rotation.y = Math.PI/2;
-        wallRight1.position.set(x+10.7, 2.45, z+0.85);
+        wallRight1.position.set(x+10.69, 2.45, z+0.85);
         elements.add(wallRight1);
         const wallRight2 = new THREE.Mesh(
         new THREE.PlaneGeometry(1.7, 1.9),
         wallMaterial
         );
         wallRight2.rotation.y = Math.PI/2;
-        wallRight2.position.set(x+10.7, 4, z-5.1);
+        wallRight2.position.set(x+10.69, 4, z-5.1);
         elements.add(wallRight2);
         const wallRight3 = new THREE.Mesh(
         new THREE.PlaneGeometry(0.1, 5),
         wallMaterial
         );
         wallRight3.rotation.y = Math.PI/2;
-        wallRight3.position.set(x+10.7, 2.45, z-5.95);
+        wallRight3.position.set(x+10.69, 2.45, z-5.95);
         elements.add(wallRight3);
     });
 

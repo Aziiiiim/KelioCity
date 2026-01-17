@@ -1,11 +1,21 @@
 const sidebar = document.getElementById("sidebar");
-
-sidebar.addEventListener("click", (e) => {
-    e.stopPropagation();
-});
-
 let currentScheduleDate = new Date();
 let currentEmployeeId = null;
+let ignoreNextOutsideClick = false;
+
+function onKeyDown(e) {
+  if (e.key === "Escape") {
+    closeSidebar();
+  }
+}
+
+function onOutsideClick(e) {
+  if (ignoreNextOutsideClick) {
+    ignoreNextOutsideClick = false;
+    return;
+  }
+  if (!sidebar.contains(e.target)) closeSidebar();
+}
 
 export function openSidebar(employee) {
   currentEmployeeId = employee.id;
@@ -68,10 +78,15 @@ export function openSidebar(employee) {
     `;
 
     sidebar.querySelector(".close-btn").addEventListener("click", closeSidebar);
+    sidebar.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
     sidebar.querySelector("#prev-day").addEventListener("click", () => changeDay(-1));
     sidebar.querySelector("#next-day").addEventListener("click", () => changeDay(1));
-
-    loadSchedule();
+    loadSchedule(); 
+    ignoreNextOutsideClick = true;
+    document.addEventListener("click", onOutsideClick);
+    document.addEventListener("keydown", onKeyDown);
 
     fetch(`/api/employees/${employee.id}/global_status`)
       .then(res => res.text())
@@ -81,7 +96,7 @@ export function openSidebar(employee) {
         const badge = sidebar.querySelector("#sidebar-status");
         if (!badge) return;
 
-        badge.textContent = employee.status; // ou globalStatus si tu veux afficher le global
+        badge.textContent = globalStatus;
         badge.className = "sidebar-status " + (
           globalStatus === "AVAILABLE" ? "sidebar-available" :
           globalStatus === "REMOTE" ? "sidebar-remote" :
@@ -97,6 +112,9 @@ export function openSidebar(employee) {
 export function closeSidebar() {
   sidebar.classList.remove("visible");
   sidebar.classList.add("hidden");
+
+  document.removeEventListener("click", onOutsideClick);
+  document.removeEventListener("keydown", onKeyDown);
 }
 
 function changeDay(delta) {

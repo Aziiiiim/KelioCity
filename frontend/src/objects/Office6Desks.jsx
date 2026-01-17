@@ -126,8 +126,11 @@ export function createOffice6Desks(initDoor = null) {
         doorObj.scale.set(4, 4, 4);
 
         doorPivot = new THREE.Group();
-        doorPivot.position.set(1 + x, 1.5, 5.48);
+        doorPivot.userData.kind = "door";
+        doorPivot.userData.action = "toggleDoor";
+        doorPivot.userData.toggleDoor = toggleDoor;
 
+        doorPivot.position.set(1 + x, 1.5, 5.48);
         doorObj.position.set(-0.88, 0, 0);
 
         doorPivot.add(doorObj);
