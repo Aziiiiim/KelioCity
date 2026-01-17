@@ -12,7 +12,7 @@ import { createOffice6Desks } from '../objects/Office6Desks.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
-import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin } from "../utils/interactionManager.js";
+import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin } from "../utils/interactionManager.js";
 //import { apiTest } from "../utils/apiTest.js";
 
 
@@ -52,6 +52,17 @@ export function createScene(){
     interaction.addPlugin(doorPlugin());
     interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters,refresh: interaction.refresh }));
     interaction.addPlugin(roomPlugin({ onlyTypes: ["MeetingRoom"] })); 
+    const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
+
+    const bouton_available = document.getElementById("available-btn");
+    bouton_available.addEventListener("click", () => {
+        toggleAvailable(interaction);
+    });
+    const bouton_occupied = document.getElementById("occupied-btn");
+    bouton_occupied.addEventListener("click", () => {
+        toggleOccupied(interaction);
+    });
+    
     fetch("/api/rooms")
        .then(res => res.json())
        .then(rooms => {

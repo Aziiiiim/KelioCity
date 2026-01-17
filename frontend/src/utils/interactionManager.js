@@ -36,7 +36,8 @@ export function createInteractionManager({ camera, renderer, targets }) {
 
   const domElement = renderer.domElement;
 
-  const originalMaterials = new Map();
+  const originalMaterials = new WeakMap();
+  const persistentStyles = new WeakMap();
   let hoveredRoot = null;
 
   const plugins = [];
@@ -59,7 +60,12 @@ export function createInteractionManager({ camera, renderer, targets }) {
     const mats = originalMaterials.get(root);
     if (!mats) return;
     root.traverse((n) => {
-      if (n.isMesh && mats[n.uuid]) n.material = mats[n.uuid];
+      if (n.isMesh && mats[n.uuid]){
+        if (n.material !== mats[n.uuid]) {
+          n.material.dispose();
+        }
+        n.material = mats[n.uuid];
+      } 
     });
   }
 
@@ -90,7 +96,7 @@ export function createInteractionManager({ camera, renderer, targets }) {
     }
     allHits.sort((a, b) => a.distance - b.distance);
     return allHits;
-    }
+  }
 
   let styleVersion = 0;
 
@@ -102,16 +108,15 @@ export function createInteractionManager({ camera, renderer, targets }) {
     for (const p of plugins) {
       const hits = getMouseHits(e, p.targets); 
       const hit = hits.find(h => p.match(h.object, h));
-      if (hit && p.match(hit.object, hit)) {
+      if (hit) {
         selected = p;
         selectedHit = hit;
         break;
       }
     }
-
     const newRoot = selected ? selected.getRoot(selectedHit.object, selectedHit) : null;
 
-    if (hoveredRoot && hoveredRoot !== newRoot) restore(hoveredRoot);
+    if (hoveredRoot && hoveredRoot !== newRoot) restoreButKeepPersistent(hoveredRoot);
     hoveredRoot = newRoot;
 
     if (!selected || !newRoot) return;
@@ -123,6 +128,29 @@ export function createInteractionManager({ camera, renderer, targets }) {
     if (hoveredRoot !== newRoot) return;
 
     applyStyle(newRoot, style);
+  }
+
+  function applyPersistentIfAny(root) {
+    const st = persistentStyles.get(root);
+    if (st) applyStyle(root, st);
+  }
+
+  function restoreButKeepPersistent(root) {
+    restore(root);
+    applyPersistentIfAny(root);
+  }
+
+  function setPersistentStyle(root, style) {
+    if (!root) return;
+    persistentStyles.set(root, style);
+    restore(root);
+    applyStyle(root, style);
+  }
+
+  function clearPersistentStyle(root) {
+    if (!root) return;
+    persistentStyles.delete(root);
+    restore(root);
   }
 
   function click(e) {
@@ -150,18 +178,18 @@ export function createInteractionManager({ camera, renderer, targets }) {
     });
   }
 
-  window.addEventListener("mousemove", onMouseMove);
-  window.addEventListener("click", click);
+  domElement.addEventListener("pointermove", onMouseMove);
+  domElement.addEventListener("pointerdown", click);
 
   function dispose() {
-    window.removeEventListener("mousemove", onMouseMove);
-    window.removeEventListener("click", click);
+    domElement.removeEventListener("pointermove", onMouseMove);
+    domElement.removeEventListener("pointerdown", click);
   }
   function refresh() {
     if (pendingEvent) hover(pendingEvent);
   }
 
-  return { addPlugin, dispose, refresh };
+    return { addPlugin, dispose, refresh, setPersistentStyle, clearPersistentStyle };
 }
 
 
@@ -255,5 +283,86 @@ export function roomPlugin({ onlyTypes = null } = {}) {
 
     getStyle: () => ({ color: 0x6666ff, emissive: 0x000022 }),
     onClick: () => {},
+  };
+}
+
+export function filtersPlugin(charactersGroup) {
+  const availableHighlighted = new Set();
+  const occupiedHighlighted = new Set();
+
+  let availableOn = false;
+  let occupiedOn = false;
+
+  function getEmployeeRoots() {
+    const roots = [];
+    charactersGroup.traverse((n) => {
+      if (n.userData?.employee) roots.push(n);
+    });
+    return roots;
+  }
+
+  async function highlightByStatus({ interactionManager, wantedStatus, style, storeSet }) {
+    const roots = getEmployeeRoots();
+
+    const jobs = roots.map(async (root) => {
+      const employee = root.userData.employee;
+      if (!employee?.id) return null;
+
+      let gs = getGlobalStatusCached(employee.id);
+      if (gs === null) {
+        try {
+          gs = await fetchGlobalStatus(employee.id);
+        } catch {
+          return null;
+        }
+      }
+
+      if (gs === wantedStatus) return { root, gs };
+      return null;
+    });
+
+    const results = await Promise.all(jobs);
+
+    for (const r of results) {
+      if (!r) continue;
+      const color = colorFromGlobalStatus(r.gs);
+      interactionManager.setPersistentStyle(r.root, { color, emissive: 0x003300 });
+      storeSet.add(r.root);
+    }
+  }
+
+  function clearHighlights({ interactionManager, storeSet }) {
+    for (const root of storeSet) {
+      interactionManager.clearPersistentStyle(root);
+    }
+    storeSet.clear();
+  }
+
+  return {
+    toggleAvailable: async (interactionManager) => {
+      availableOn = !availableOn;
+      if (!availableOn) {
+        clearHighlights({ interactionManager, storeSet: availableHighlighted });
+        return;
+      }
+      await highlightByStatus({
+        interactionManager,
+        wantedStatus: "AVAILABLE",
+        storeSet: availableHighlighted,
+      });
+    },
+
+    toggleOccupied: async (interactionManager) => {
+      occupiedOn = !occupiedOn;
+      if (!occupiedOn) {
+        clearHighlights({ interactionManager, storeSet: occupiedHighlighted });
+        return;
+      }
+      await highlightByStatus({
+        interactionManager,
+        wantedStatus: "OCCUPIED",
+        storeSet: occupiedHighlighted,
+      });
+    },
   };
 }
