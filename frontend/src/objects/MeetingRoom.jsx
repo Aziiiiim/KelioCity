@@ -81,7 +81,6 @@ export function createMeetingRoom() {
         doorPivot.rotation.y = Math.PI / 2;
 
         elements.add(doorPivot);
-        //initDoor(doorPivot, toggleDoor);
     });
 
     loadTexture('/assets/textures/painted_plaster.jpg').then((wallTexture) => {

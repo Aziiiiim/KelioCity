@@ -54,8 +54,8 @@ export function createScene(){
     interaction.addPlugin(doorPlugin());
     interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters,refresh: interaction.refresh }));
     interaction.addPlugin(roomPlugin({ onlyTypes: ["MeetingRoom"] })); 
+    
     const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
-
     const bouton_available = document.getElementById("available-btn");
     bouton_available.addEventListener("click", () => {
         toggleAvailable(interaction);

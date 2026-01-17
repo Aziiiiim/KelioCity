@@ -97,6 +97,10 @@ export function createOffice1Desk(initDoor = null) {
         doorPivot = new THREE.Group();
         doorPivot.position.set(2 + x, 1.5, 0.98 + z);
 
+        doorPivot.userData.kind = "door";
+        doorPivot.userData.action = "toggleDoor";
+        doorPivot.userData.toggleDoor = toggleDoor;
+
         // même offset que ton code
         doorObj.position.set(-0.88, 0, 0);
 

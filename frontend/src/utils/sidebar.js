@@ -96,7 +96,7 @@ export function openSidebar(employee) {
         const badge = sidebar.querySelector("#sidebar-status");
         if (!badge) return;
 
-        badge.textContent = employee.status;
+        badge.textContent = globalStatus;
         badge.className = "sidebar-status " + (
           globalStatus === "AVAILABLE" ? "sidebar-available" :
           globalStatus === "REMOTE" ? "sidebar-remote" :
