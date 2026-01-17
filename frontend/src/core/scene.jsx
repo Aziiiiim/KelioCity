@@ -13,9 +13,11 @@ import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin } from "../utils/interactionManager.js";
+import { openSidebar } from '../utils/sidebar.js';
 //import { apiTest } from "../utils/apiTest.js";
 
-
+let _camera = null;
+let _controls = null;
 let clock = new THREE.Clock();
 const roomList = [];
 const characters = [];
@@ -163,6 +165,9 @@ export function createScene(){
             renderer.setAnimationLoop(null);
         }
 
+        _camera = camera;
+        _controls = controls;
+
     return { start, stop, scene, camera, renderer };
 }
 
@@ -175,7 +180,5 @@ export function selectEmployee(employeeId) {
   if (!character) return;
   const root = character.scene;
   openSidebar(root.userData.employee);
-  cameraOn(camera, controls, root);
-
-  interaction?.refresh?.();
+  cameraOn(_camera, _controls, root);
 }

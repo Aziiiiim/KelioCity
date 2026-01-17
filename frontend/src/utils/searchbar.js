@@ -64,7 +64,10 @@ function showResults() {
                     for (let i = 0; i < results.length; i++) {
                         let li_result = document.createElement("li");
                         li_result.classList.add("search-item");
-                        li_result.onclick = () => goToResult(li_result);
+                        li_result.addEventListener("pointerdown", (e) => {
+                            e.preventDefault(); 
+                            goToResult(li_result);
+                        });
                         li_result.textContent = results[i]["firstName"] + " " + results[i]["lastName"];
                         li_result.dataset.id = results[i]["id"];
                         li_result.dataset.type = "employee";
@@ -93,7 +96,10 @@ function showResults() {
                     for (let i = 0; i < results.length; i++) {
                         let li_result = document.createElement("li");
                         li_result.classList.add("search-item");
-                        li_result.onclick = () => goToResult(li_result);
+                        li_result.addEventListener("pointerdown", (e) => {
+                            e.preventDefault();
+                            goToResult(li_result);
+                        });
                         li_result.textContent = results[i]["roomName"];
                         li_result.dataset.id = results[i]["id"];
                         li_result.dataset.type = "room";
@@ -122,7 +128,10 @@ function showResults() {
                     for (let i = 0; i < results.length; i++) {
                         let li_result = document.createElement("li");
                         li_result.classList.add("search-item");
-                        li_result.onclick = () => goToResult(li_result);
+                        li_result.addEventListener("pointerdown", (e) => {
+                            e.preventDefault();
+                            goToResult(li_result);
+                        });
                         li_result.textContent = results[i]["deskName"];
                         li_result.dataset.id = results[i]["id"];
                         li_result.dataset.type = "desk";
@@ -142,7 +151,10 @@ function showResults() {
                     no_result_found = false;
                     let li_result = document.createElement("li");
                     li_result.classList.add("search-item");
-                    li_result.onclick = () => goToResult(li_result);
+                    li_result.addEventListener("pointerdown", (e) => {
+                        e.preventDefault();
+                        goToResult(li_result);
+                    });
                     li_result.textContent = employees[i]["firstName"] + " " + employees[i]["lastName"];
                     li_result.dataset.id = employees[i]["id"];
                     li_result.dataset.type = "employee";
@@ -152,7 +164,10 @@ function showResults() {
                     no_result_found = false;
                     let li_result = document.createElement("li");
                     li_result.classList.add("search-item");
-                    li_result.onclick = () => goToResult(li_result);
+                    li_result.addEventListener("pointerdown", (e) => {
+                        e.preventDefault();
+                        goToResult(li_result);
+                    });
                     li_result.textContent = rooms[i]["roomName"];
                     li_result.dataset.id = rooms[i]["id"];
                     li_result.dataset.type = "room";
@@ -162,7 +177,10 @@ function showResults() {
                     no_result_found = false;
                     let li_result = document.createElement("li");
                     li_result.classList.add("search-item");
-                    li_result.onclick = () => goToResult(li_result);
+                    li_result.addEventListener("pointerdown", (e) => {
+                        e.preventDefault();
+                        goToResult(li_result);
+                    });
                     li_result.textContent = desks[i]["deskName"];
                     li_result.dataset.id = desks[i]["id"];
                     li_result.dataset.type = "desk";
