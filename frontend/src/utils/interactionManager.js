@@ -301,7 +301,7 @@ export function filtersPlugin(charactersGroup) {
     return roots;
   }
 
-  async function highlightByStatus({ interactionManager, wantedStatus, style, storeSet }) {
+  async function highlightByStatus({ interactionManager, wantedStatuses, style, storeSet }) {
     const roots = getEmployeeRoots();
 
     const jobs = roots.map(async (root) => {
@@ -317,7 +317,7 @@ export function filtersPlugin(charactersGroup) {
         }
       }
 
-      if (gs === wantedStatus) return { root, gs };
+      if (wantedStatuses.includes(gs)) return { root, gs };
       return null;
     });
 
@@ -347,7 +347,7 @@ export function filtersPlugin(charactersGroup) {
       }
       await highlightByStatus({
         interactionManager,
-        wantedStatus: "AVAILABLE",
+        wantedStatuses: ["AVAILABLE", "REMOTE"],
         storeSet: availableHighlighted,
       });
     },
@@ -360,7 +360,7 @@ export function filtersPlugin(charactersGroup) {
       }
       await highlightByStatus({
         interactionManager,
-        wantedStatus: "OCCUPIED",
+        wantedStatuses: ["OCCUPIED", "ABSENT"],
         storeSet: occupiedHighlighted,
       });
     },
