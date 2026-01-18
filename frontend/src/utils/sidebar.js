@@ -155,6 +155,15 @@ export function openMeetingRoomSidebar(room) {
       </div>
 
       <div class="sidebar-section card animate">
+        <div class="actions-row">
+          <h3 style="margin:0;">Réunions</h3>
+          <button class="primary-btn" id="btn-add-meeting">+ Ajouter</button>
+        </div>
+
+        <div id="meeting-form-container" class="hidden"></div>
+      </div>
+
+      <div class="sidebar-section card animate">
         <div class="schedule-header">
           <button class="nav-btn" id="prev-day">←</button>
           <h3 id="schedule-date"></h3>
@@ -168,6 +177,7 @@ export function openMeetingRoomSidebar(room) {
     `;
 
     bindCommonSidebarListeners();
+    bindMeetingRoomActions();   
     loadRoomSchedule();
   });
 }
@@ -389,5 +399,271 @@ async function loadOfficeOccupants(roomType) {
     `).join("");
   } catch (e) {
     list.innerHTML = "<em>Erreur de chargement</em>";
+  }
+}
+
+
+let meetingFormState = {
+  open: false,
+  selectedParticipants: [], // {id, firstName, lastName}
+  searchTimer: null,
+};
+
+function bindMeetingRoomActions() {
+  const btn = sidebar.querySelector("#btn-add-meeting");
+  if (!btn) return;
+
+  btn.addEventListener("click", () => {
+    const container = sidebar.querySelector("#meeting-form-container");
+    if (!container) return;
+
+    meetingFormState.open = !meetingFormState.open;
+    container.classList.toggle("hidden", !meetingFormState.open);
+
+    if (meetingFormState.open) {
+      renderMeetingForm(container);
+      bindMeetingForm(container);
+    } else {
+      container.innerHTML = "";
+    }
+  });
+}
+
+function renderMeetingForm(container) {
+  const dateStr = currentScheduleDate.toISOString().split("T")[0];
+
+  container.innerHTML = `
+    <form id="meeting-form" class="meeting-form">
+      <div class="form-row">
+        <label>Titre</label>
+        <input type="text" id="meeting-title" placeholder="Ex: Point hebdo" required />
+      </div>
+
+      <div class="form-row">
+        <label>Date</label>
+        <input type="date" id="meeting-date" value="${dateStr}" required />
+      </div>
+
+      <div class="form-grid-2">
+        <div class="form-row">
+          <label>Début</label>
+          <input type="time" id="meeting-start" required />
+        </div>
+
+        <div class="form-row">
+          <label>Fin</label>
+          <input type="time" id="meeting-end" required />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label>Participants</label>
+
+        <div class="participant-search">
+          <input type="text" id="participant-q" placeholder="Rechercher un employé..." autocomplete="off" />
+          <div class="participant-dropdown hidden" id="participant-dropdown"></div>
+        </div>
+
+        <div class="participant-chips" id="participant-chips"></div>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="secondary-btn" id="meeting-cancel">Annuler</button>
+        <button type="submit" class="primary-btn">Créer la réunion</button>
+      </div>
+
+      <div class="form-hint" id="meeting-hint"></div>
+    </form>
+  `;
+
+  meetingFormState.selectedParticipants = [];
+  renderParticipantChips();
+}
+
+function bindMeetingForm(container) {
+  const form = container.querySelector("#meeting-form");
+  const cancelBtn = container.querySelector("#meeting-cancel");
+  const qInput = container.querySelector("#participant-q");
+  const dropdown = container.querySelector("#participant-dropdown");
+
+  cancelBtn?.addEventListener("click", () => {
+    meetingFormState.open = false;
+    container.classList.add("hidden");
+    container.innerHTML = "";
+  });
+
+  // Recherche participants (debounce léger)
+  qInput?.addEventListener("input", () => {
+    const q = qInput.value.trim();
+    clearTimeout(meetingFormState.searchTimer);
+
+    if (!q) {
+      dropdown.classList.add("hidden");
+      dropdown.innerHTML = "";
+      return;
+    }
+
+    meetingFormState.searchTimer = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/employees/search/${encodeURIComponent(q)}`);
+        const results = await res.json();
+        renderParticipantDropdown(results || [], dropdown, qInput);
+      } catch {
+        dropdown.classList.add("hidden");
+        dropdown.innerHTML = "";
+      }
+    }, 200);
+  });
+
+  // Fermer dropdown si blur (avec petit délai pour laisser le click passer)
+  qInput?.addEventListener("blur", () => {
+    setTimeout(() => dropdown.classList.add("hidden"), 150);
+  });
+
+  qInput?.addEventListener("focus", () => {
+    if (dropdown.innerHTML.trim() !== "") dropdown.classList.remove("hidden");
+  });
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await submitMeetingForm(container);
+  });
+}
+
+function renderParticipantDropdown(results, dropdown, qInput) {
+  dropdown.innerHTML = "";
+  dropdown.classList.remove("hidden");
+
+  // Filtrer ceux déjà sélectionnés
+  const selectedIds = new Set(meetingFormState.selectedParticipants.map(p => Number(p.id)));
+  const filtered = (results || []).filter(r => !selectedIds.has(Number(r.id)));
+
+  if (filtered.length === 0) {
+    dropdown.innerHTML = `<div class="participant-item muted">Aucun résultat</div>`;
+    return;
+  }
+
+  filtered.slice(0, 10).forEach(emp => {
+    const item = document.createElement("div");
+    item.className = "participant-item";
+    item.textContent = `${emp.firstName} ${emp.lastName}`;
+    item.addEventListener("pointerdown", (ev) => {
+      ev.preventDefault();
+      meetingFormState.selectedParticipants.push({
+        id: emp.id,
+        firstName: emp.firstName,
+        lastName: emp.lastName,
+      });
+      qInput.value = "";
+      dropdown.classList.add("hidden");
+      dropdown.innerHTML = "";
+      renderParticipantChips();
+    });
+    dropdown.appendChild(item);
+  });
+}
+
+function renderParticipantChips() {
+  const chips = sidebar.querySelector("#participant-chips");
+  if (!chips) return;
+
+  if (meetingFormState.selectedParticipants.length === 0) {
+    chips.innerHTML = `<span class="muted">Aucun participant ajouté</span>`;
+    return;
+  }
+
+  chips.innerHTML = meetingFormState.selectedParticipants.map(p => `
+    <span class="chip">
+      ${p.firstName} ${p.lastName}
+      <button type="button" class="chip-x" data-id="${p.id}" aria-label="remove">×</button>
+    </span>
+  `).join("");
+
+  chips.querySelectorAll(".chip-x").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = Number(btn.dataset.id);
+      meetingFormState.selectedParticipants = meetingFormState.selectedParticipants.filter(p => Number(p.id) !== id);
+      renderParticipantChips();
+    });
+  });
+}
+
+async function submitMeetingForm(container) {
+  const hint = container.querySelector("#meeting-hint");
+  const title = container.querySelector("#meeting-title")?.value?.trim();
+  const date = container.querySelector("#meeting-date")?.value;
+  const start = container.querySelector("#meeting-start")?.value;
+  const end = container.querySelector("#meeting-end")?.value;
+
+  const setHint = (msg, ok=false) => {
+    if (!hint) return;
+    hint.textContent = msg || "";
+    hint.classList.toggle("ok", !!ok);
+    hint.classList.toggle("err", !ok);
+  };
+
+  if (!currentRoomId) return setHint("Aucune salle sélectionnée.");
+  if (!title) return setHint("Le titre est obligatoire.");
+  if (!date || !start || !end) return setHint("Date / heures obligatoires.");
+
+  if (start >= end) return setHint("L'heure de fin doit être après l'heure de début.");
+
+  const startDT = `${date}T${start}:00`;
+  const endDT = `${date}T${end}:00`;
+
+  setHint("Création en cours...", true);
+
+  try {
+    const meetingRes = await fetch("/api/meetings", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title,
+        startingHour: startDT,
+        endHour: endDT,
+        description: "",
+        room: { id: Number(currentRoomId) },
+        desk: null,
+      }),
+    });
+
+    if (!meetingRes.ok) {
+      setHint("Erreur lors de la création de la réunion.");
+      return;
+    }
+
+    const meeting = await meetingRes.json();
+    const meetingId = meeting?.id;
+    if (!meetingId) {
+      setHint("Réunion créée, mais ID manquant.");
+      return;
+    }
+
+    const participants = meetingFormState.selectedParticipants || [];
+    for (const p of participants) {
+      await fetch("/api/meeting-participants", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          meeting: { id: Number(meetingId) },
+          employee: { id: Number(p.id) },
+          present: true,
+          remote: false,
+        }),
+      });
+    }
+
+    setHint("Réunion créée", true);
+
+    await loadRoomSchedule();
+
+    setTimeout(() => {
+      meetingFormState.open = false;
+      container.classList.add("hidden");
+      container.innerHTML = "";
+    }, 600);
+
+  } catch (e) {
+    setHint("Erreur réseau.");
   }
 }
