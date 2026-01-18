@@ -1,4 +1,4 @@
-import { selectEmployee } from "../core/scene.jsx";
+import { selectObject } from "../core/scene.jsx";
 
 window.addEventListener("DOMContentLoaded", () => {
   const searchbar = document.getElementsByClassName("search-bar")[0];
@@ -214,9 +214,8 @@ window.search = function() {
 function goToResult(elem) {
     let objectId = elem.dataset.id;
     let objectType = elem.dataset.type;
-    if (objectType === "employee") {
-        selectEmployee(objectId);
-    }
+    console.log(objectType);
+    selectObject(objectType, objectId);
     
     document.getElementsByClassName("search-bar")[0].value = "";
     const dropdown = document.getElementsByClassName("search-dropdown")[0];
