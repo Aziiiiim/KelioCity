@@ -210,3 +210,143 @@
   font-weight: 600;
   color: #333;
 }
+
+/* ACTIONS / BUTTONS */
+.actions-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.primary-btn, .secondary-btn{
+  border:none;
+  border-radius:10px;
+  padding:10px 12px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.primary-btn{
+  background:#111;
+  color:#fff;
+}
+
+.primary-btn:hover{ opacity:0.9; }
+
+.secondary-btn{
+  background:rgba(0,0,0,0.08);
+  color:#111;
+}
+
+.secondary-btn:hover{ background:rgba(0,0,0,0.12); }
+
+/* MEETING FORM */
+.meeting-form .form-row{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin-bottom:12px;
+}
+
+.meeting-form label{
+  font-size:13px;
+  font-weight:600;
+  color:#555;
+}
+
+.meeting-form input{
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:10px 12px;
+  font-size:14px;
+  outline:none;
+  background:#fff;
+}
+
+.meeting-form input:focus{
+  border-color:#aaa;
+}
+
+.form-grid-2{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap:12px;
+}
+
+.form-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top:8px;
+}
+
+.form-hint{
+  margin-top:10px;
+  font-size:13px;
+}
+
+.form-hint.ok{ color:#2e7d32; }
+.form-hint.err{ color:#c62828; }
+
+.muted{ color:#777; font-style:italic; }
+
+/* PARTICIPANTS */
+.participant-search{
+  position:relative;
+}
+
+.participant-dropdown{
+  position:absolute;
+  top:44px;
+  left:0;
+  right:0;
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:10px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  z-index:50;
+  overflow:hidden;
+}
+
+.participant-item{
+  padding:10px 12px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.participant-item:hover{
+  background:rgba(0,0,0,0.06);
+}
+
+.participant-item.muted{
+  cursor:default;
+}
+
+.participant-chips{
+  margin-top:10px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+.chip{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:rgba(0,0,0,0.06);
+  font-size:13px;
+}
+
+.chip-x{
+  border:none;
+  background:none;
+  cursor:pointer;
+  font-size:16px;
+  line-height:1;
+  padding:0;
+  color:#333;
+}
