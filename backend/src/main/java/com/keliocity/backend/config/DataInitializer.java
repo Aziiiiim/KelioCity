@@ -795,115 +795,81 @@ public class DataInitializer implements CommandLineRunner {
                     .filter(r -> r.getRoomType().getRoomtypeName().equals("MeetingRoom"))
                     .toList();
 
-            int meetingIndex = 0;
-            for (Employee employee : employees) {
+            // --- 1 réunion par salle aujourd'hui ---
+            java.util.Map<Room, Meeting> todayMeetingsByRoom = new java.util.HashMap<>();
 
-                // --- Réunion aujourd’hui ---
-                LocalDateTime startToday = today.withHour(9 + (meetingIndex % 4));
-                LocalDateTime endToday = startToday.plusHours(1);
+            for (int i = 0; i < meetingRooms.size(); i++) {
+                Room room = meetingRooms.get(i);
 
-                Meeting meetingToday = meetingRepo.save(
-                    Meeting.builder()
-                        .room(meetingRooms.get(meetingIndex % meetingRooms.size()))
-                        .title("Réunion – " + employee.getFirstName())
-                        .startingHour(startToday)
-                        .endHour(endToday)
-                        .description("Réunion projet")
-                        .build()
+                // horaires différents selon la salle
+                LocalDateTime start = today.withHour(9 + i).withMinute(0);
+                LocalDateTime end = start.plusHours(1);
+
+                Meeting m = meetingRepo.save(
+                        Meeting.builder()
+                                .room(room)
+                                .title("Réunion quotidienne - " + room.getRoomName())
+                                .startingHour(start)
+                                .endHour(end)
+                                .description("Réunion planifiée (1 par salle / jour)")
+                                .build()
                 );
                 meetingRepo.flush();
-
-                meetingEmployeeRepo.save(
-                    new MeetingEmployee(
-                        meetingToday,
-                        employee,
-                        true,
-                        employee.getInOffice() == WorkLocation.REMOTE
-                    )
-                );
-
-                // --- Travail individuel aujourd’hui (focus) ---
-                Meeting focusToday = meetingRepo.save(
-                    Meeting.builder()
-                        .room(meetingRooms.get(0))
-                        .desk(employee.getDesk())
-                        .title("Travail personnel")
-                        .startingHour(today.withHour(18))
-                        .endHour(today.withHour(19))
-                        .description("Temps de concentration")
-                        .build()
-                );
-                meetingRepo.flush();
-
-                meetingEmployeeRepo.save(
-                    new MeetingEmployee(
-                        focusToday,
-                        employee,
-                        true,
-                        employee.getInOffice() == WorkLocation.REMOTE
-                    )
-                );
-
-                // --- Réunion demain ---
-                LocalDateTime startTomorrow = tomorrow.withHour(10 + (meetingIndex % 3));
-
-                Meeting meetingTomorrow = meetingRepo.save(
-                    Meeting.builder()
-                        .room(meetingRooms.get((meetingIndex + 1) % meetingRooms.size()))
-                        .title("Point équipe")
-                        .startingHour(startTomorrow)
-                        .endHour(startTomorrow.plusMinutes(45))
-                        .description("Synchronisation équipe")
-                        .build()
-                );
-                meetingRepo.flush();
-
-                meetingEmployeeRepo.save(
-                    new MeetingEmployee(
-                        meetingTomorrow,
-                        employee,
-                        true,
-                        employee.getInOffice() == WorkLocation.REMOTE
-                    )
-                );
-
-                meetingIndex++;
+                todayMeetingsByRoom.put(room, m);
             }
-            // - - - MEETINGS - - -
-            Meeting meeting1 = meetingRepo.save(
-                    Meeting.builder()
-                        .room(roomA101)
-                        .title("Réunion de rentrée")
-                        .startingHour(today.withHour(9).plusMinutes(30))
-                        .endHour(today.withHour(10).plusMinutes(30))
-                        .description("Première réunion")
-                        .build()
-            );
-            meetingRepo.flush();
 
-            meetingEmployeeRepo.save(new MeetingEmployee(meeting1, jade, true, false));
+            // --- 1 réunion par salle demain ---
+            java.util.Map<Room, Meeting> tomorrowMeetingsByRoom = new java.util.HashMap<>();
 
-            meetingEmployeeRepo.save(new MeetingEmployee(meeting1, bob, true, false));
+            for (int i = 0; i < meetingRooms.size(); i++) {
+                Room room = meetingRooms.get(i);
 
-            Meeting meeting2 = meetingRepo.save(
-                    Meeting.builder()
-                        .room(roomA102)
-                        .title("Revue de Projet")
+                LocalDateTime start = tomorrow.withHour(10 + i).withMinute(0);
+                LocalDateTime end = start.plusMinutes(45);
 
-                        .startingHour(today.withHour(11).plusMinutes(30))
-                        .endHour(today.withHour(14).plusMinutes(30))
-                        .description("Revue de projet PROCOM")
-                        .build()
-            );
-            meetingRepo.flush();
+                Meeting m = meetingRepo.save(
+                        Meeting.builder()
+                                .room(room)
+                                .title("Point équipe - " + room.getRoomName())
+                                .startingHour(start)
+                                .endHour(end)
+                                .description("Réunion planifiée (1 par salle / jour)")
+                                .build()
+                );
+                meetingRepo.flush();
+                tomorrowMeetingsByRoom.put(room, m);
+            }
 
-            meetingEmployeeRepo.save(new MeetingEmployee(meeting2, alice, true, false));
+            // --- Répartition des employés comme participants (round-robin) ---
+            // Chaque employé participe à 1 meeting aujourd'hui + 1 meeting demain,
+            // sans créer de meetings supplémentaires (donc pas de conflit salle/jour).
+            for (int idx = 0; idx < employees.size(); idx++) {
+                Employee employee = employees.get(idx);
 
-            meetingEmployeeRepo.save(new MeetingEmployee(meeting2, paul, true, true));
+                Room roomToday = meetingRooms.get(idx % meetingRooms.size());
+                Meeting meetingToday = todayMeetingsByRoom.get(roomToday);
 
-            meetingEmployeeRepo.save(new MeetingEmployee(meeting2, jade, false, false));
+                meetingEmployeeRepo.save(
+                        new MeetingEmployee(
+                                meetingToday,
+                                employee,
+                                true,
+                                employee.getInOffice() == WorkLocation.REMOTE
+                        )
+                );
 
-            meetingEmployeeRepo.save(new MeetingEmployee(meeting2, bob, true, false));
+                Room roomTomorrow = meetingRooms.get((idx + 1) % meetingRooms.size());
+                Meeting meetingTomorrow = tomorrowMeetingsByRoom.get(roomTomorrow);
+
+                meetingEmployeeRepo.save(
+                        new MeetingEmployee(
+                                meetingTomorrow,
+                                employee,
+                                true,
+                                employee.getInOffice() == WorkLocation.REMOTE
+                        )
+                );
+            }
             meetingEmployeeRepo.flush();
 
             System.out.println("✔ Base de données initialisée !");
