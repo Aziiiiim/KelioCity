@@ -1,5 +1,6 @@
-import { openSidebar, closeSidebar } from "./sidebar.js";
+import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar, closeSidebar } from "./sidebar.js";
 import { cameraOn } from "../core/camera.jsx";
+
 
 import * as THREE from "three";
 
@@ -258,7 +259,7 @@ export function employeePlugin({ camera, controls, charactersGroup, refresh }) {
   };
 }
 
-export function roomPlugin({ onlyTypes = null } = {}) {
+export function roomPlugin({camera, controls, onlyTypes = null } = {}) {
   return {
     name: "room",
     priority: 10,
@@ -282,7 +283,11 @@ export function roomPlugin({ onlyTypes = null } = {}) {
     },
 
     getStyle: () => ({ color: 0x6666ff, emissive: 0x000022 }),
-    onClick: () => {},
+    onClick: (root) => {
+      if(root.userData.roomType == "MeetingRoom") openMeetingRoomSidebar(root);
+      if(root.userData.roomType.toLowerCase().includes("desk")) openOfficeSidebar(root);
+      cameraOn(camera, controls, root);
+    },
   };
 }
 
@@ -366,3 +371,4 @@ export function filtersPlugin(charactersGroup) {
     },
   };
 }
+

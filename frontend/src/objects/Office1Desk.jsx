@@ -26,12 +26,12 @@ export function createOffice1Desk(initDoor = null) {
 
     const wallMesh2 = new THREE.Mesh(wallGeo2, wallMat);
     wallMesh2.rotation.y = Math.PI * -.5;
-    wallMesh2.position.set(3+x,2.5,-1+z);
+    wallMesh2.position.set(2.99+x,2.5,-0.99+z);
     elements.add(wallMesh2);
 
     const wallMesh3 = new THREE.Mesh(wallGeo2, wallMat);
     wallMesh3.rotation.y = Math.PI * .5;
-    wallMesh3.position.set(-3+x,2.5,-1+z);
+    wallMesh3.position.set(-2.99+x,2.5,-1+z);
     elements.add(wallMesh3);
 
     const wallFrontLeft = new THREE.Mesh(
@@ -39,21 +39,21 @@ export function createOffice1Desk(initDoor = null) {
         wallMat
     );
     wallFrontLeft.rotation.y = Math.PI;
-    wallFrontLeft.position.set(x-1.31, 2.5, 1+z);
+    wallFrontLeft.position.set(x-1.31, 2.5, 0.99+z);
     elements.add(wallFrontLeft);
     const wallFrontTop = new THREE.Mesh(
         new THREE.PlaneGeometry(2, 1.98),
         wallMat
     );
     wallFrontTop.rotation.y = Math.PI;
-    wallFrontTop.position.set(x+1, 4.01, 1+z);
+    wallFrontTop.position.set(x+1, 4.01, 0.99+z);
     elements.add(wallFrontTop);
     const wallFrontRight = new THREE.Mesh(
         new THREE.PlaneGeometry(1, 5),
         wallMat
     );
     wallFrontRight.rotation.y = Math.PI;
-    wallFrontRight.position.set(x+2.5, 2.5, 1+z);
+    wallFrontRight.position.set(x+2.5, 2.5, 0.99+z);
     elements.add(wallFrontRight);
 
 

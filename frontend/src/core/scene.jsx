@@ -13,7 +13,7 @@ import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin } from "../utils/interactionManager.js";
-import { openSidebar } from '../utils/sidebar.js';
+import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar  } from '../utils/sidebar.js';
 //import { apiTest } from "../utils/apiTest.js";
 
 let _camera = null;
@@ -53,7 +53,7 @@ export function createScene(){
     });
     interaction.addPlugin(doorPlugin());
     interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters,refresh: interaction.refresh }));
-    interaction.addPlugin(roomPlugin({ onlyTypes: ["MeetingRoom"] })); 
+    interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks"] })); 
     
     const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
     const bouton_available = document.getElementById("available-btn");
@@ -100,7 +100,7 @@ export function createScene(){
                 roomElements.userData.kind = "room";
                 roomElements.userData.roomType = roomType;
                 roomElements.userData.roomId = rooms[i].id;
-
+                roomElements.userData.roomName = rooms[i]["roomName"];
                 roomElements.rotation.y = (rooms[i]["orientationDeg"] / 180) * Math.PI;
                 roomElements.position.set(rooms[i]["coordX1"], 0, rooms[i]["coordZ1"]);
 
@@ -172,13 +172,69 @@ export function createScene(){
 }
 
 export function selectEmployee(employeeId) {
-  const id = Number(employeeId);
-  const character = characters.find(
-    c => Number(c.scene.userData?.employee?.id) === id
-  );
+    const id = Number(employeeId);
+    const character = characters.find(
+        c => Number(c.scene.userData?.employee?.id) === id
+    );
 
-  if (!character) return;
-  const root = character.scene;
-  openSidebar(root.userData.employee);
-  cameraOn(_camera, _controls, root);
+    if (!character) return;
+    const root = character.scene;
+    openSidebar(root.userData.employee);
+    cameraOn(_camera, _controls, root);
 }
+
+function findRoomById(roomId) {
+    const id = Number(roomId);
+    return roomList.find(r => Number(r.userData?.roomId) === id) || null;
+}
+
+async function findEmployeeByDeskId(deskId) {
+  // Option la plus simple: charger tous les employés et filtrer
+  // (si tu as un endpoint /api/desks/{id}/employee, remplace par ça)
+  const res = await fetch("/api/employees");
+  const employees = await res.json();
+  return (employees || []).find(e => Number(e?.desk?.id) === Number(deskId)) || null;
+}
+
+export async function selectDesk(deskId) {
+  try {
+    const dres = await fetch(`/api/desks/${deskId}`);
+    if (!dres.ok) return;
+    const desk = await dres.json();
+    const employee = await findEmployeeByDeskId(desk.id);
+    if (!employee) {
+      const roomId = desk?.room?.id;
+      if (roomId) selectObject("room", roomId);
+      return;
+    }
+    selectEmployee(employee.id);
+  } catch (e) {
+  }
+}
+
+export function selectObject(type, id) {
+    if (type === "employee") {
+        selectEmployee(id);
+        return;
+    }
+    if (type === "room") {
+        const roomObj = findRoomById(id);
+        if (!roomObj) return;
+    
+        const roomType = roomObj.userData?.roomType;
+        if (roomType === "MeetingRoom") {
+            openMeetingRoomSidebar(roomObj);
+        }
+        else{
+            openOfficeSidebar(roomObj);
+        }
+
+        cameraOn(_camera, _controls, roomObj);
+    }
+    if(type === "desk"){
+        selectDesk(id);
+        return;
+    }
+    return;
+}
+
