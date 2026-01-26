@@ -78,10 +78,10 @@ public class EmployeeController {
         return employeeRepo.searchByName(name);
     }
 
-    // GET /api/employees/floor/{floorName}
-    @GetMapping("/floor/{floorName}")
-    public List<Employee> getByFloorName(@PathVariable String floorName) {
-        return employeeRepo.findByDesk_Room_Floor_floorName(floorName);
+    // GET /api/employees/floor/{floorId}
+    @GetMapping("/floor/{floorId}")
+    public List<Employee> getByFloorId(@PathVariable Integer floorId) {
+        return employeeRepo.findByDesk_Room_Floor_id(floorId);
     }
 
     // POST /api/employees

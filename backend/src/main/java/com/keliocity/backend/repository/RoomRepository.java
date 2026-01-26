@@ -20,5 +20,5 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
     """)
     List<Room> searchByName(@Param("name") String name);
 
-    List<Room> findByFloor_floorName(String floorName);
+    List<Room> findByFloor_id(Integer floorId);
 }

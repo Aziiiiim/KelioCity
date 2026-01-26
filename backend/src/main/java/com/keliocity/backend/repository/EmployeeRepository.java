@@ -21,7 +21,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     List<Employee> findByDesk_Room_Id(Integer roomId);
 
-    List<Employee> findByDesk_Room_Floor_floorName(String floorName);
+    List<Employee> findByDesk_Room_Floor_id(Integer floorId);
 
     @Query("""
     SELECT e
