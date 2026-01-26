@@ -17,19 +17,22 @@ public class DataInitializer implements CommandLineRunner {
     private final RoomTypeRepository roomTypeRepo;
     private final MeetingRepository meetingRepo;
     private final MeetingEmployeeRepository meetingEmployeeRepo;
+    private final FloorRepository floorRepo;
 
     public DataInitializer(RoomRepository roomRepo,
                            DeskRepository deskRepo,
                            EmployeeRepository employeeRepo,
                            RoomTypeRepository roomTypeRepo,
                            MeetingRepository meetingRepo,
-                           MeetingEmployeeRepository meetingEmployeeRepo) {
+                           MeetingEmployeeRepository meetingEmployeeRepo,
+                           FloorRepository floorRepo) {
         this.roomRepo = roomRepo;
         this.deskRepo = deskRepo;
         this.employeeRepo = employeeRepo;
         this.roomTypeRepo = roomTypeRepo;
         this.meetingRepo = meetingRepo;
         this.meetingEmployeeRepo = meetingEmployeeRepo;
+        this.floorRepo = floorRepo;
     }
 
     @Override
@@ -38,6 +41,15 @@ public class DataInitializer implements CommandLineRunner {
 
         if (roomRepo.count() == 0) {
             System.out.println("➡️ Initialisation de la base de données…");
+
+            // --- FLOOR ---
+            Floor floor1 = floorRepo.save(
+                    Floor.builder()
+                        .floorName("1")
+                        .lengthX(50f)
+                        .lengthZ(50f)
+                        .build()
+            );
 
             // --- ROOM TYPE ---
             RoomType meetingRoom = roomTypeRepo.save(
@@ -95,6 +107,7 @@ public class DataInitializer implements CommandLineRunner {
                         .roomName("A101")
                         .coordX1(-25f).coordZ1(-25f)
                         .orientationDeg(0f)
+                        .floor(floor1)
                         .build()
             );
 
@@ -104,6 +117,7 @@ public class DataInitializer implements CommandLineRunner {
                         .roomName("A102")
                         .coordX1(-25f).coordZ1(-13f)
                         .orientationDeg(0f)
+                        .floor(floor1)
                         .build()
             );
 
@@ -113,6 +127,7 @@ public class DataInitializer implements CommandLineRunner {
                         .roomName("A103")
                         .coordX1(13f).coordZ1(25f)
                         .orientationDeg(90f)
+                        .floor(floor1)
                         .build()
             );
 
@@ -122,6 +137,7 @@ public class DataInitializer implements CommandLineRunner {
                         .roomName("A104")
                         .coordX1(1f).coordZ1(25f)
                         .orientationDeg(90f)
+                        .floor(floor1)
                         .build()
             );
 
@@ -131,6 +147,7 @@ public class DataInitializer implements CommandLineRunner {
                         .roomName("A105")
                         .coordX1(19f).coordZ1(-25f)
                         .orientationDeg(0f)
+                        .floor(floor1)
                         .build()
             );
 
@@ -140,6 +157,7 @@ public class DataInitializer implements CommandLineRunner {
                         .roomName("A106")
                         .coordX1(13f).coordZ1(-25f)
                         .orientationDeg(0f)
+                        .floor(floor1)
                         .build()
             );
 
@@ -149,6 +167,7 @@ public class DataInitializer implements CommandLineRunner {
                         .roomName("A107")
                         .coordX1(6.99f).coordZ1(-20f)
                         .orientationDeg(90f)
+                        .floor(floor1)
                         .build()
             );
 
@@ -158,6 +177,7 @@ public class DataInitializer implements CommandLineRunner {
                         .roomName("A108")
                         .coordX1(-0.02f).coordZ1(-25f)
                         .orientationDeg(0f)
+                        .floor(floor1)
                         .build()
             );
 
@@ -167,6 +187,7 @@ public class DataInitializer implements CommandLineRunner {
                         .roomName("A109")
                         .coordX1(-2.99f).coordZ1(-1f)
                         .orientationDeg(180f)
+                        .floor(floor1)
                         .build()
             );
 
@@ -177,6 +198,7 @@ public class DataInitializer implements CommandLineRunner {
                         .coordX1(-22f).coordZ1(18f)
                         .orientationDeg(0f)
                         .openspaceNumber(7)
+                        .floor(floor1)
                         .build()
             );
 
@@ -187,6 +209,7 @@ public class DataInitializer implements CommandLineRunner {
                         .coordX1(-22f).coordZ1(10f)
                         .orientationDeg(0f)
                         .openspaceNumber(7)
+                        .floor(floor1)
                         .build()
             );
 
@@ -197,6 +220,7 @@ public class DataInitializer implements CommandLineRunner {
                         .coordX1(-22f).coordZ1(2f)
                         .orientationDeg(0f)
                         .openspaceNumber(5)
+                        .floor(floor1)
                         .build()
             );
 
@@ -207,6 +231,7 @@ public class DataInitializer implements CommandLineRunner {
                         .coordX1(16f).coordZ1(8f)
                         .orientationDeg(90f)
                         .openspaceNumber(10)
+                        .floor(floor1)
                         .build()
             );
 
@@ -217,6 +242,7 @@ public class DataInitializer implements CommandLineRunner {
                         .coordX1(4f).coordZ1(8f)
                         .orientationDeg(90f)
                         .openspaceNumber(10)
+                        .floor(floor1)
                         .build()
             );
 

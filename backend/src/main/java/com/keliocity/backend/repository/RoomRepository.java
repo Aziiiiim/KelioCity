@@ -19,4 +19,6 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
       LOWER(r.roomName) LIKE LOWER(CONCAT('%', :name, '%'))
     """)
     List<Room> searchByName(@Param("name") String name);
+
+    List<Room> findByFloor_floorName(String floorName);
 }

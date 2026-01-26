@@ -35,4 +35,8 @@ public class Room {
 
     @Column(name = "openspace_number", nullable = true)
     private Integer openspaceNumber;
+
+    @ManyToOne
+    @JoinColumn(name = "floor_name", nullable = false)
+    private Floor floor;
 }

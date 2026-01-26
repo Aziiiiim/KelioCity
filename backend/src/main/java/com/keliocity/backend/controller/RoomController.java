@@ -42,6 +42,12 @@ public class RoomController {
         return roomRepo.searchByName(name);
     }
 
+    // GET /api/rooms/floor/{floorName}
+    @GetMapping("/floor/{floorName}")
+    public List<Room> getByFloorName(@PathVariable String floorName) {
+        return roomRepo.findByFloor_floorName(floorName);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Room create(@RequestBody Room room) {
