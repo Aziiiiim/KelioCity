@@ -34,11 +34,16 @@ export function createScene(){
     const controls = createControls(camera,gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
-    const ground = createGround();
 
-    scene.add(ground);
-    scene.add(createLight(-25,-25,25,25));
-    scene.add(createLight(25,25,-25,-25));
+    let floorName = "1";
+    fetch('/api/floors/'+floorName)
+        .then(res => res.json())
+        .then(floor => {
+            const ground = createGround(floor["lengthX"],floor["lengthZ"]);
+            scene.add(ground);
+            scene.add(createLight(-floor["lengthX"]/2,-floor["lengthZ"]/2,floor["lengthX"]/2,floor["lengthZ"]/2));
+            scene.add(createLight(floor["lengthX"]/2,floor["lengthZ"]/2,-floor["lengthX"]/2,-floor["lengthZ"]/2));
+        }).catch(err => console.error("Erreur API:", err));
 
 
     scene.groupRooms = new THREE.Group();
@@ -65,7 +70,7 @@ export function createScene(){
         toggleOccupied(interaction);
     });
     
-    fetch("/api/rooms")
+    fetch("/api/rooms/floor/"+floorName)
        .then(res => res.json())
        .then(rooms => {
            for (let i=0; i < rooms.length; i++) {
@@ -107,7 +112,7 @@ export function createScene(){
                 roomList.push(roomElements);
                 scene.groupRooms.add(roomElements);
            }
-           fetch("/api/employees")
+           fetch("/api/employees/floor/"+floorName)
                .then(res => res.json())
                .then(employees => {
                    let loadedChars = 0;
