@@ -35,8 +35,8 @@ export function createScene(){
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
 
-    let floorName = "1";
-    fetch('/api/floors/'+floorName)
+    let floorId = "1";
+    fetch('/api/floors/'+floorId)
         .then(res => res.json())
         .then(floor => {
             const ground = createGround(floor["lengthX"],floor["lengthZ"]);
@@ -70,7 +70,7 @@ export function createScene(){
         toggleOccupied(interaction);
     });
     
-    fetch("/api/rooms/floor/"+floorName)
+    fetch("/api/rooms/floor/"+floorId)
        .then(res => res.json())
        .then(rooms => {
            for (let i=0; i < rooms.length; i++) {
@@ -112,7 +112,7 @@ export function createScene(){
                 roomList.push(roomElements);
                 scene.groupRooms.add(roomElements);
            }
-           fetch("/api/employees/floor/"+floorName)
+           fetch("/api/employees/floor/"+floorId)
                .then(res => res.json())
                .then(employees => {
                    let loadedChars = 0;
