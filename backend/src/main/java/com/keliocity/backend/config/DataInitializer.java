@@ -51,6 +51,14 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
+            Floor floor2 = floorRepo.save(
+                    Floor.builder()
+                        .floorName("Etage2")
+                        .lengthX(60f)
+                        .lengthZ(24f)
+                        .build()
+            );
+
             // --- ROOM TYPE ---
             RoomType meetingRoom = roomTypeRepo.save(
                     RoomType.builder()
@@ -246,6 +254,126 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
+
+            Room roomA201 = roomRepo.save(
+                    Room.builder()
+                        .roomType(meetingRoom)
+                        .roomName("A201")
+                        .coordX1(-30f).coordZ1(-12f)
+                        .orientationDeg(0f)
+                        .floor(floor2)
+                        .build()
+            );
+
+            Room roomA202 = roomRepo.save(
+                    Room.builder()
+                        .roomType(meetingRoom)
+                        .roomName("A202")
+                        .coordX1(-30f).coordZ1(0f)
+                        .orientationDeg(0f)
+                        .floor(floor2)
+                        .build()
+            );
+
+            Room roomA203 = roomRepo.save(
+                    Room.builder()
+                        .roomType(meetingRoom)
+                        .roomName("A203")
+                        .coordX1(30f).coordZ1(12f)
+                        .orientationDeg(180f)
+                        .floor(floor2)
+                        .build()
+            );
+
+            Room roomA204 = roomRepo.save(
+                    Room.builder()
+                        .roomType(meetingRoom)
+                        .roomName("A204")
+                        .coordX1(30f).coordZ1(0f)
+                        .orientationDeg(180f)
+                        .floor(floor2)
+                        .build()
+            );
+
+            Room roomA205 = roomRepo.save(
+                    Room.builder()
+                        .roomType(office2Desks)
+                        .roomName("A205")
+                        .coordX1(-9f).coordZ1(-7f)
+                        .orientationDeg(90f)
+                        .floor(floor2)
+                        .build()
+            );
+
+            Room roomA206 = roomRepo.save(
+                    Room.builder()
+                        .roomType(office2Desks)
+                        .roomName("A206")
+                        .coordX1(-3f).coordZ1(-7f)
+                        .orientationDeg(90f)
+                        .floor(floor2)
+                        .build()
+            );
+
+            Room roomA207 = roomRepo.save(
+                    Room.builder()
+                        .roomType(office2Desks)
+                        .roomName("A207")
+                        .coordX1(3f).coordZ1(-7f)
+                        .orientationDeg(90f)
+                        .floor(floor2)
+                        .build()
+            );
+
+            Room roomA208 = roomRepo.save(
+                    Room.builder()
+                        .roomType(office2Desks)
+                        .roomName("A208")
+                        .coordX1(9f).coordZ1(-7f)
+                        .orientationDeg(90f)
+                        .floor(floor2)
+                        .build()
+            );
+
+            Room roomA209 = roomRepo.save(
+                    Room.builder()
+                        .roomType(office1Desk)
+                        .roomName("A209")
+                        .coordX1(-9f).coordZ1(12f)
+                        .orientationDeg(180f)
+                        .floor(floor2)
+                        .build()
+            );
+
+            Room roomA210 = roomRepo.save(
+                    Room.builder()
+                        .roomType(office1Desk)
+                        .roomName("A210")
+                        .coordX1(-3f).coordZ1(12f)
+                        .orientationDeg(180f)
+                        .floor(floor2)
+                        .build()
+            );
+
+            Room roomA211 = roomRepo.save(
+                    Room.builder()
+                        .roomType(office1Desk)
+                        .roomName("A211")
+                        .coordX1(3f).coordZ1(12f)
+                        .orientationDeg(180f)
+                        .floor(floor2)
+                        .build()
+            );
+
+            Room roomA212 = roomRepo.save(
+                    Room.builder()
+                        .roomType(office1Desk)
+                        .roomName("A212")
+                        .coordX1(9f).coordZ1(12f)
+                        .orientationDeg(180f)
+                        .floor(floor2)
+                        .build()
+            );
 
             // --- DESKS ---
             Desk deskA105 = deskRepo.save(
