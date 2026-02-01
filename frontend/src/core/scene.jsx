@@ -10,6 +10,7 @@ import { createOffice2Desks } from '../objects/Office2Desks.jsx';
 import { createOffice4Desks } from '../objects/Office4Desks.jsx';
 import { createOffice6Desks } from '../objects/Office6Desks.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
+import { createStairs } from '../objects/Stairs.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin } from "../utils/interactionManager.js";
@@ -95,6 +96,9 @@ export function createScene(){
                 }
                 else if (roomType === "Openspace") {
                     roomElements = createOpenspace(rooms[i]["openspaceNumber"]);
+                }
+                else if (roomType === "Stairs") {
+                    roomObj = createStairs();
                 }
                 if (roomObj) {
                     roomElements = roomObj.elements;

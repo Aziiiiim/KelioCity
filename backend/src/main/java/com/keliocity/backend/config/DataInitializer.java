@@ -108,6 +108,14 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
+            RoomType stairs = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Stairs")
+                        .lengthX(5f)
+                        .lengthZ(2f)
+                        .build()
+            );
+
             // --- ROOMS ---
             Room roomA101 = roomRepo.save(
                     Room.builder()
@@ -371,6 +379,16 @@ public class DataInitializer implements CommandLineRunner {
                         .roomName("A212")
                         .coordX1(9f).coordZ1(12f)
                         .orientationDeg(180f)
+                        .floor(floor2)
+                        .build()
+            );
+
+            Room stairsA200 = roomRepo.save(
+                    Room.builder()
+                        .roomType(stairs)
+                        .roomName("Escalier A200")
+                        .coordX1(-9f).coordZ1(-7f)
+                        .orientationDeg(-90f)
                         .floor(floor2)
                         .build()
             );
