@@ -21,12 +21,12 @@ export function createOffice2Desks(initDoor = null) {
     const wallMat = new THREE.MeshBasicMaterial( { color: 0x335c67, side: THREE.DoubleSide } );
 
     const wallMesh1 = new THREE.Mesh(wallGeo1, wallMat);
-    wallMesh1.position.set(3.5+x,2.5,0);
+    wallMesh1.position.set(3.5+x,2.5,0.01);
     elements.add(wallMesh1);
 
     const wallMesh2 = new THREE.Mesh(wallGeo2, wallMat);
     wallMesh2.rotation.y = Math.PI * -.5;
-    wallMesh2.position.set(6+x,2.5,3);
+    wallMesh2.position.set(5.99+x,2.5,3);
     elements.add(wallMesh2);
 
     const wallFrontLeft = new THREE.Mesh(
@@ -34,26 +34,26 @@ export function createOffice2Desks(initDoor = null) {
         wallMat
     );
     wallFrontLeft.rotation.y = Math.PI * 0.5;
-    wallFrontLeft.position.set(1 + x, 2.5, 1.925);
+    wallFrontLeft.position.set(1.01 + x, 2.5, 1.925);
     elements.add(wallFrontLeft);
     const wallFrontTop = new THREE.Mesh(
         new THREE.PlaneGeometry(2.1, 1.96),
         wallMat
     );
     wallFrontTop.rotation.y = Math.PI * 0.5;
-    wallFrontTop.position.set(1 + x, 4.02, 4.5);
+    wallFrontTop.position.set(1.01 + x, 4.02, 4.5);
     elements.add(wallFrontTop);
     const wallFrontRight = new THREE.Mesh(
         new THREE.PlaneGeometry(0.52, 5),
         wallMat
     );
     wallFrontRight.rotation.y = Math.PI * 0.5;
-    wallFrontRight.position.set(1 + x, 2.5, 5.74);
+    wallFrontRight.position.set(1.01 + x, 2.5, 5.74);
     elements.add(wallFrontRight);
 
     const wallMesh4 = new THREE.Mesh(wallGeo1, wallMat);
     wallMesh4.rotation.y = Math.PI ;
-    wallMesh4.position.set(3.5+x,2.5,6);
+    wallMesh4.position.set(3.5+x,2.5,5.99);
     elements.add(wallMesh4);
 
     let doorPivot = null;

@@ -35,7 +35,7 @@ export function createScene(){
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
 
-    let floorId = "1";
+    let floorId = "2";
     fetch('/api/floors/'+floorId)
         .then(res => res.json())
         .then(floor => {
