@@ -24,12 +24,7 @@ public class Desk {
     @JoinColumn(name = "room_id", nullable = false)
     private Room room;
 
-    @Column(name = "coord_x", nullable = false)
-    private Float coordX;
-
-    @Column(name = "coord_z", nullable = false)
-    private Float coordZ;
-
-    @Column(name = "orientation_deg", nullable = false)
-    private Float orientationDeg;
+    @ManyToOne
+    @JoinColumn(name = "desk_type", nullable = false)
+    private DeskType deskType;
 }

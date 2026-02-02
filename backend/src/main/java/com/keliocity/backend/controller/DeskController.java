@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.keliocity.backend.model.Desk;
 import com.keliocity.backend.model.Room;
+import com.keliocity.backend.model.RoomType;
 import com.keliocity.backend.repository.DeskRepository;
 import com.keliocity.backend.repository.RoomRepository;
 
@@ -66,8 +67,7 @@ public class DeskController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Desk not found"));
 
         existing.setDeskName(updated.getDeskName());
-        existing.setCoordX(updated.getCoordX());
-        existing.setCoordZ(updated.getCoordZ());
+        existing.setDeskType(updated.getDeskType());
 
         if (updated.getRoom() != null && updated.getRoom().getId() != null) {
             Room room = roomRepo.findById(updated.getRoom().getId())
