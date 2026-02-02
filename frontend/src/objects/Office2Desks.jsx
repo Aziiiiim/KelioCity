@@ -34,21 +34,21 @@ export function createOffice2Desks(initDoor = null) {
         wallMat
     );
     wallFrontLeft.rotation.y = Math.PI * 0.5;
-    wallFrontLeft.position.set(1.01 + x, 2.5, 1.925);
+    wallFrontLeft.position.set(1 + x, 2.5, 1.925);
     elements.add(wallFrontLeft);
     const wallFrontTop = new THREE.Mesh(
         new THREE.PlaneGeometry(2.1, 1.96),
         wallMat
     );
     wallFrontTop.rotation.y = Math.PI * 0.5;
-    wallFrontTop.position.set(1.01 + x, 4.02, 4.5);
+    wallFrontTop.position.set(1 + x, 4.02, 4.5);
     elements.add(wallFrontTop);
     const wallFrontRight = new THREE.Mesh(
         new THREE.PlaneGeometry(0.52, 5),
         wallMat
     );
     wallFrontRight.rotation.y = Math.PI * 0.5;
-    wallFrontRight.position.set(1.01 + x, 2.5, 5.74);
+    wallFrontRight.position.set(1 + x, 2.5, 5.74);
     elements.add(wallFrontRight);
 
     const wallMesh4 = new THREE.Mesh(wallGeo1, wallMat);

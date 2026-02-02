@@ -636,6 +636,102 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
+            Desk deskA205_1 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A205 1")
+                        .room(roomA205)
+                        .deskType(desk1office2desks)
+                        .build()
+            );
+
+            Desk deskA205_2 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A205 2")
+                        .room(roomA205)
+                        .deskType(desk2office2desks)
+                        .build()
+            );
+
+            Desk deskA206_1 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A206 1")
+                        .room(roomA206)
+                        .deskType(desk1office2desks)
+                        .build()
+            );
+
+            Desk deskA206_2 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A206 2")
+                        .room(roomA206)
+                        .deskType(desk2office2desks)
+                        .build()
+            );
+
+            Desk deskA207_1 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A207 1")
+                        .room(roomA207)
+                        .deskType(desk1office2desks)
+                        .build()
+            );
+
+            Desk deskA207_2 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A207 2")
+                        .room(roomA207)
+                        .deskType(desk2office2desks)
+                        .build()
+            );
+
+            Desk deskA208_1 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A208 1")
+                        .room(roomA208)
+                        .deskType(desk1office2desks)
+                        .build()
+            );
+
+            Desk deskA208_2 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A208 2")
+                        .room(roomA208)
+                        .deskType(desk2office2desks)
+                        .build()
+            );
+
+            Desk deskA209 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A209")
+                        .room(roomA209)
+                        .deskType(desk1office1desk)
+                        .build()
+            );
+
+            Desk deskA210 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A210")
+                        .room(roomA210)
+                        .deskType(desk1office1desk)
+                        .build()
+            );
+
+            Desk deskA211 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A211")
+                        .room(roomA211)
+                        .deskType(desk1office1desk)
+                        .build()
+            );
+
+            Desk deskA212 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk A212")
+                        .room(roomA212)
+                        .deskType(desk1office1desk)
+                        .build()
+            );
+
             // --- EMPLOYEES ---
             Employee alice = employeeRepo.save(
                     Employee.builder()
@@ -780,9 +876,9 @@ public class DataInitializer implements CommandLineRunner {
             Employee matthieu = employeeRepo.save(
                     Employee.builder()
                         .firstName("Matthieu")
-                        .lastName("Ness")
+                        .lastName("Bess")
                         .desk(deskA109_3)
-                        .email("matthieu.ness@keliocity.com")
+                        .email("matthieu.bess@keliocity.com")
                         .phoneNumber("0681803384")
                         .workingHours("08:00-16:00")
                         .inOffice(WorkLocation.OFFICE)
@@ -830,6 +926,174 @@ public class DataInitializer implements CommandLineRunner {
                         .inOffice(WorkLocation.REMOTE)
                         .status(EmployeeStatus.OCCUPIED)
                         .sprite(Sprite.MAN1)
+                        .build()
+            );
+
+            Employee Jackson = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Jackson")
+                        .lastName("Smith")
+                        .desk(deskA205_1)
+                        .email("jackson.smith@keliocity.com")
+                        .phoneNumber("0681001384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.AVAILABLE)
+                        .sprite(Sprite.MAN1)
+                        .build()
+            );
+
+            Employee Bruce = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Bruce")
+                        .lastName("Lice")
+                        .desk(deskA205_2)
+                        .email("bruce.lice@keliocity.com")
+                        .phoneNumber("0681501384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.MAN2)
+                        .build()
+            );
+
+            Employee Jackie = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Jackie")
+                        .lastName("Champs")
+                        .desk(deskA206_1)
+                        .email("jackie.champs@keliocity.com")
+                        .phoneNumber("0641501384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.AVAILABLE)
+                        .sprite(Sprite.WOMAN2)
+                        .build()
+            );
+
+            Employee Martha = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Martha")
+                        .lastName("Saoss")
+                        .desk(deskA206_2)
+                        .email("martha.saoss@keliocity.com")
+                        .phoneNumber("0681501784")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.REMOTE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.WOMAN4)
+                        .build()
+            );
+
+            Employee Ali = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Ali")
+                        .lastName("gateur")
+                        .desk(deskA207_1)
+                        .email("ai.gateur@keliocity.com")
+                        .phoneNumber("0781501384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.AVAILABLE)
+                        .sprite(Sprite.MAN4)
+                        .build()
+            );
+
+            Employee Nathalie = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Nathalie")
+                        .lastName("Havre")
+                        .desk(deskA207_2)
+                        .email("nathalie.havre@keliocity.com")
+                        .phoneNumber("0611501384")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.AVAILABLE)
+                        .sprite(Sprite.WOMAN1)
+                        .build()
+            );
+
+            Employee James = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("James")
+                        .lastName("Bord")
+                        .desk(deskA208_1)
+                        .email("james.bord@keliocity.com")
+                        .phoneNumber("0681501386")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.MAN2)
+                        .build()
+            );
+
+            Employee Mel = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Mel")
+                        .lastName("heire")
+                        .desk(deskA208_2)
+                        .email("mel.heir@keliocity.com")
+                        .phoneNumber("0681501380")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.AVAILABLE)
+                        .sprite(Sprite.WOMAN3)
+                        .build()
+            );
+
+            Employee Antoine = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Antoine")
+                        .lastName("Rase")
+                        .desk(deskA209)
+                        .email("antoine.rase@keliocity.com")
+                        .phoneNumber("0611293344")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.AVAILABLE)
+                        .sprite(Sprite.MAN1)
+                        .build()
+            );
+
+            Employee Rose = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Rose")
+                        .lastName("Bornart")
+                        .desk(deskA210)
+                        .email("rose.bornart@keliocity.com")
+                        .phoneNumber("0671293344")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.AVAILABLE)
+                        .sprite(Sprite.WOMAN1)
+                        .build()
+            );
+
+            Employee Pierre = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Pierre")
+                        .lastName("Raux")
+                        .desk(deskA211)
+                        .email("pierre.raux@keliocity.com")
+                        .phoneNumber("0611293364")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.REMOTE)
+                        .status(EmployeeStatus.AVAILABLE)
+                        .sprite(Sprite.MAN2)
+                        .build()
+            );
+
+            Employee Moly = employeeRepo.save(
+                    Employee.builder()
+                        .firstName("Moly")
+                        .lastName("golie")
+                        .desk(deskA212)
+                        .email("moly.golie@keliocity.com")
+                        .phoneNumber("0611793344")
+                        .workingHours("08:00-16:00")
+                        .inOffice(WorkLocation.OFFICE)
+                        .status(EmployeeStatus.OCCUPIED)
+                        .sprite(Sprite.WOMAN1)
                         .build()
             );
 

@@ -89,10 +89,10 @@ export function createMeetingRoom() {
         wallTexture.repeat.set(4, 4);
         const wallMaterial = new THREE.MeshPhongMaterial({ map: wallTexture, side: THREE.DoubleSide });
         const wallBack = new THREE.Mesh(
-        new THREE.PlaneGeometry(15, 5),
+        new THREE.PlaneGeometry(14.97, 5),
         wallMaterial
         );
-        wallBack.position.set(x+3.2, 2.45, z-5.99);
+        wallBack.position.set(x+3.2, 2.45, z-6);
         elements.add(wallBack);
 
         const wallFront = wallBack.clone();
