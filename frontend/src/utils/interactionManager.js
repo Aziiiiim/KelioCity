@@ -49,12 +49,17 @@ export function createInteractionManager({ camera, renderer, targets }) {
   }
 
   function storeOriginal(root) {
-    if (originalMaterials.has(root)) return;
-    const store = {};
+    let store = originalMaterials.get(root);
+    if (!store) {
+      store = {};
+      originalMaterials.set(root, store);
+    }
     root.traverse((n) => {
-      if (n.isMesh) store[n.uuid] = n.material;
+      if (!n.isMesh) return;
+      if (!store[n.uuid]) {
+        store[n.uuid] = n.material;
+      }
     });
-    originalMaterials.set(root, store);
   }
 
   function restore(root) {
