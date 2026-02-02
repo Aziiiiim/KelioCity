@@ -36,7 +36,7 @@ export function createScene(){
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
 
-    let floorId = "2";
+    let floorId = "1";
     fetch('/api/floors/'+floorId)
         .then(res => res.json())
         .then(floor => {
@@ -127,8 +127,11 @@ export function createScene(){
                            pos_y = 0.4;
                        }
                        initChar("/assets/characters/"+spriteName+".glb", function(character) {
-                           character.scene.rotation.y = (employees[i]["desk"]["orientationDeg"]+employees[i]["desk"]["room"]["orientationDeg"])/180*Math.PI;
-                           character.scene.position.set(employees[i]["desk"]["coordX"], pos_y, employees[i]["desk"]["coordZ"]);
+                           const roomOrientationRad = -employees[i]["desk"]["room"]["orientationDeg"]/180*Math.PI;
+                           const newRelativeCoordX = employees[i]["desk"]["deskType"]["coordX"]*Math.cos(roomOrientationRad)-employees[i]["desk"]["deskType"]["coordZ"]*Math.sin(roomOrientationRad);
+                           const newRelativeCoordZ = employees[i]["desk"]["deskType"]["coordX"]*Math.sin(roomOrientationRad)+employees[i]["desk"]["deskType"]["coordZ"]*Math.cos(roomOrientationRad);
+                           character.scene.rotation.y = (employees[i]["desk"]["deskType"]["orientationDeg"]+employees[i]["desk"]["room"]["orientationDeg"])/180*Math.PI;
+                           character.scene.position.set(newRelativeCoordX+employees[i]["desk"]["room"]["coordX1"], pos_y, newRelativeCoordZ+employees[i]["desk"]["room"]["coordZ1"]);
                            character.play("Sitting");
                            character.scene.userData.employee = employees[i];
                            scene.groupCharacters.add(character.scene);
