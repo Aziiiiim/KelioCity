@@ -258,7 +258,7 @@ export function createScene(floorId){
             floorId = floor;
             loadFloor();
             camera.position.set(10,20,20);
-            camera.lookAt(new THREE.Vector3(0,0,0));
+            controls.reset();
         }
 
         _camera = camera;
