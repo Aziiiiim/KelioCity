@@ -20,14 +20,14 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AccountDTO accDTO){
-        String token = authService.register(accDTO);
+        String token = authService.login(accDTO);
         return new AuthResponse(token, "Bearer");
     }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public AuthResponse  register(@RequestBody AccountDTO accDTO) {
-        String token = authService.login(accDTO);
+        String token = authService.register(accDTO);
         return new AuthResponse(token, "Bearer");
     }
 }

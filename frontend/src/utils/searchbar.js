@@ -1,4 +1,5 @@
 import { selectObject } from "../core/scene.jsx";
+import { apiFetch } from "./apiFetch.js";
 
 window.addEventListener("DOMContentLoaded", () => {
   const searchbar = document.getElementsByClassName("search-bar")[0];
@@ -43,7 +44,7 @@ function showResults() {
         document.getElementsByClassName("search-dropdown")[0].classList.add("hidden");
     } else {
         if (btnType === "employee") {
-            fetch("/api/employees/search/" + searchContent)
+            apiFetch("/api/employees/search/" + searchContent)
                 .then(res => res.json())
                 .then(results => {
                     const dropdown = document.getElementsByClassName("search-dropdown")[0];
@@ -76,7 +77,7 @@ function showResults() {
                     }
                 });
         } else if (btnType === "room") {
-            fetch("/api/rooms/search/" + searchContent)
+            apiFetch("/api/rooms/search/" + searchContent)
                 .then(res => res.json())
                 .then(results => {
                     const dropdown = document.getElementsByClassName("search-dropdown")[0];
@@ -109,7 +110,7 @@ function showResults() {
                     }
                 });
         } else if (btnType === "desk") {
-            fetch("/api/desks/search/" + searchContent)
+            apiFetch("/api/desks/search/" + searchContent)
                 .then(res => res.json())
                 .then(results => {
                     const dropdown = document.getElementsByClassName("search-dropdown")[0];
@@ -143,9 +144,9 @@ function showResults() {
                 });
         } else if (btnType === "") {
             Promise.all([
-                fetch("/api/employees/search/" + searchContent).then(r => r.json()),
-                fetch("/api/rooms/search/" + searchContent).then(r => r.json()),
-                fetch("/api/desks/search/" + searchContent).then(r => r.json())
+                apiFetch("/api/employees/search/" + searchContent).then(r => r.json()),
+                apiFetch("/api/rooms/search/" + searchContent).then(r => r.json()),
+                apiFetch("/api/desks/search/" + searchContent).then(r => r.json())
             ]).then(([employees, rooms, desks]) => {
                 const dropdown = document.getElementsByClassName("search-dropdown")[0];
                 dropdown.innerHTML = "";

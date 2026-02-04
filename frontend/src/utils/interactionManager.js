@@ -1,6 +1,6 @@
 import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar, closeSidebar } from "./sidebar.js";
 import { cameraOn } from "../core/camera.jsx";
-
+import { apiFetch } from "./apiFetch.js";
 
 import * as THREE from "three";
 
@@ -23,7 +23,7 @@ function getGlobalStatusCached(id) {
 }
 
 async function fetchGlobalStatus(id) {
-  const res = await fetch(`/api/employees/${id}/global_status`);
+  const res = await apiFetch(`/api/employees/${id}/global_status`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   const value = await res.text();
   globalStatusCache.set(id, { value, ts: performance.now() });

@@ -15,6 +15,7 @@ import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin } from "../utils/interactionManager.js";
 import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar  } from '../utils/sidebar.js';
+import { apiFetch } from "../utils/apiFetch.js";
 //import { apiTest } from "../utils/apiTest.js";
 
 let _camera = null;
@@ -60,7 +61,7 @@ export function createScene(floorId){
         if (scene.groupRooms) scene.groupRooms.clear();
         if (scene.groupCharacters) scene.groupCharacters.clear();
 
-        fetch('/api/floors/'+floorId)
+        apiFetch('/api/floors/'+floorId)
             .then(res => res.json())
             .then(floor => {
                 currentGround = createGround(floor["lengthX"],floor["lengthZ"]);
@@ -115,7 +116,7 @@ export function createScene(floorId){
             toggleOccupied(interaction);
         });
         
-        fetch("/api/rooms/floor/"+floorId)
+        apiFetch("/api/rooms/floor/"+floorId)
         .then(res => res.json())
         .then(rooms => {
             for (let i=0; i < rooms.length; i++) {
@@ -160,7 +161,7 @@ export function createScene(floorId){
                     roomList.push(roomElements);
                     scene.groupRooms.add(roomElements);
             }
-            fetch("/api/employees/floor/"+floorId)
+            apiFetch("/api/employees/floor/"+floorId)
                 .then(res => res.json())
                 .then(employees => {
                     let loadedChars = 0;
@@ -254,14 +255,14 @@ function findRoomById(roomId) {
 async function findEmployeeByDeskId(deskId) {
   // Option la plus simple: charger tous les employés et filtrer
   // (si tu as un endpoint /api/desks/{id}/employee, remplace par ça)
-  const res = await fetch("/api/employees");
+  const res = await apiFetch("/api/employees");
   const employees = await res.json();
   return (employees || []).find(e => Number(e?.desk?.id) === Number(deskId)) || null;
 }
 
 export async function selectDesk(deskId) {
   try {
-    const dres = await fetch(`/api/desks/${deskId}`);
+    const dres = await apiFetch(`/api/desks/${deskId}`);
     if (!dres.ok) return;
     const desk = await dres.json();
     const employee = await findEmployeeByDeskId(desk.id);
