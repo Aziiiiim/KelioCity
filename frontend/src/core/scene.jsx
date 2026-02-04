@@ -155,7 +155,24 @@ export function createScene(floorId){
                     roomElements.userData.roomId = rooms[i].id;
                     roomElements.userData.roomName = rooms[i]["roomName"];
                     roomElements.rotation.y = (rooms[i]["orientationDeg"] / 180) * Math.PI;
-                    roomElements.position.set(rooms[i]["coordX1"], 0, rooms[i]["coordZ1"]);
+                    let newX, newZ;
+                    const cosAngle = Math.cos(rooms[i]["orientationDeg"] / 180 * Math.PI);
+                    const sinAngle = Math.sin(rooms[i]["orientationDeg"] / 180 * Math.PI);
+                    const tanAngle = Math.tan(rooms[i]["orientationDeg"] / 180 * Math.PI)
+                    if ((rooms[i]["orientationDeg"] >= -45 && rooms[i]["orientationDeg"]<45) || (rooms[i]["orientationDeg"] >= -360 && rooms[i]["orientationDeg"]<-315) || (rooms[i]["orientationDeg"] >= 315 && rooms[i]["orientationDeg"]<360)) {
+                        newX = rooms[i]["coordX1"];
+                        newZ = rooms[i]["coordZ1"];
+                    } else if ((rooms[i]["orientationDeg"] >= 45 && rooms[i]["orientationDeg"]<135) || (rooms[i]["orientationDeg"] >= -315 && rooms[i]["orientationDeg"]<-225)) {
+                        newX = rooms[i]["coordX1"] - rooms[i]["roomType"]["lengthX"]*cosAngle;
+                        newZ = rooms[i]["coordZ1"] + rooms[i]["roomType"]["lengthX"]*sinAngle;
+                    } else if ((rooms[i]["orientationDeg"] >= 135 && rooms[i]["orientationDeg"]<225) || (rooms[i]["orientationDeg"] >= -225 && rooms[i]["orientationDeg"]<-135)) {
+                        newX = rooms[i]["coordX1"] - (rooms[i]["roomType"]["lengthX"]+rooms[i]["roomType"]["lengthZ"]*tanAngle)*cosAngle;
+                        newZ = rooms[i]["coordZ1"] + (-rooms[i]["roomType"]["lengthZ"]/cosAngle+(rooms[i]["roomType"]["lengthX"]+rooms[i]["roomType"]["lengthZ"]*tanAngle)*sinAngle);
+                    } else if ((rooms[i]["orientationDeg"] >= 225 && rooms[i]["orientationDeg"]<315) || (rooms[i]["orientationDeg"] >= -135 && rooms[i]["orientationDeg"]<-45)) {
+                        newX = rooms[i]["coordX1"] - rooms[i]["roomType"]["lengthZ"]*sinAngle;
+                        newZ = rooms[i]["coordZ1"] - rooms[i]["roomType"]["lengthZ"]*cosAngle;
+                    }
+                    roomElements.position.set(newX, 0, newZ);
 
                     roomList.push(roomElements);
                     scene.groupRooms.add(roomElements);
@@ -175,7 +192,21 @@ export function createScene(floorId){
                             const newRelativeCoordX = employees[i]["desk"]["deskType"]["coordX"]*Math.cos(roomOrientationRad)-employees[i]["desk"]["deskType"]["coordZ"]*Math.sin(roomOrientationRad);
                             const newRelativeCoordZ = employees[i]["desk"]["deskType"]["coordX"]*Math.sin(roomOrientationRad)+employees[i]["desk"]["deskType"]["coordZ"]*Math.cos(roomOrientationRad);
                             character.scene.rotation.y = (employees[i]["desk"]["deskType"]["orientationDeg"]+employees[i]["desk"]["room"]["orientationDeg"])/180*Math.PI;
-                            character.scene.position.set(newRelativeCoordX+employees[i]["desk"]["room"]["coordX1"], pos_y, newRelativeCoordZ+employees[i]["desk"]["room"]["coordZ1"]);
+                            let newX, newZ;
+                            if ((employees[i]["desk"]["room"]["orientationDeg"] >= -45 && employees[i]["desk"]["room"]["orientationDeg"]<45) || (employees[i]["desk"]["room"]["orientationDeg"] >= -360 && employees[i]["desk"]["room"]["orientationDeg"]<-315) || (employees[i]["desk"]["room"]["orientationDeg"] >= 315 && employees[i]["desk"]["room"]["orientationDeg"]<360)) {
+                                newX = employees[i]["desk"]["room"]["coordX1"];
+                                newZ = employees[i]["desk"]["room"]["coordZ1"];
+                            } else if ((employees[i]["desk"]["room"]["orientationDeg"] >= 45 && employees[i]["desk"]["room"]["orientationDeg"]<135) || (employees[i]["desk"]["room"]["orientationDeg"] >= -315 && employees[i]["desk"]["room"]["orientationDeg"]<-225)) {
+                                newX = employees[i]["desk"]["room"]["coordX1"];
+                                newZ = employees[i]["desk"]["room"]["coordZ1"] + employees[i]["desk"]["room"]["roomType"]["lengthX"];
+                            } else if ((employees[i]["desk"]["room"]["orientationDeg"] >= 135 && employees[i]["desk"]["room"]["orientationDeg"]<225) || (employees[i]["desk"]["room"]["orientationDeg"] >= -225 && employees[i]["desk"]["room"]["orientationDeg"]<-135)) {
+                                newX = employees[i]["desk"]["room"]["coordX1"] + employees[i]["desk"]["room"]["roomType"]["lengthX"];
+                                newZ = employees[i]["desk"]["room"]["coordZ1"] + employees[i]["desk"]["room"]["roomType"]["lengthZ"];
+                            } else if ((employees[i]["desk"]["room"]["orientationDeg"] >= 225 && employees[i]["desk"]["room"]["orientationDeg"]<315) || (employees[i]["desk"]["room"]["orientationDeg"] >= -135 && employees[i]["desk"]["room"]["orientationDeg"]<-45)) {
+                                newX = employees[i]["desk"]["room"]["coordX1"] + employees[i]["desk"]["room"]["roomType"]["lengthZ"];
+                                newZ = employees[i]["desk"]["room"]["coordZ1"];
+                            }
+                            character.scene.position.set(newRelativeCoordX+newX, pos_y, newRelativeCoordZ+newZ);
                             character.play("Sitting");
                             character.scene.userData.employee = employees[i];
                             scene.groupCharacters.add(character.scene);
@@ -227,7 +258,7 @@ export function createScene(floorId){
             floorId = floor;
             loadFloor();
             camera.position.set(10,20,20);
-            camera.lookAt(new THREE.Vector3(0,0,0))
+            camera.lookAt(new THREE.Vector3(0,0,0));
         }
 
         _camera = camera;
