@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.keliocity.backend.model.Desk;
 import com.keliocity.backend.model.Room;
-import com.keliocity.backend.model.RoomType;
 import com.keliocity.backend.repository.DeskRepository;
 import com.keliocity.backend.repository.RoomRepository;
 
