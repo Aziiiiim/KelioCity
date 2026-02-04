@@ -35,6 +35,7 @@ window.selectFilter = function(btn) {
 
 function showResults() {
     let btnType = "";
+    const floorId = document.getElementsByClassName("select-floor")[0].value;
     if (document.getElementsByClassName("filter-btn active")[0]) {
         btnType = document.getElementsByClassName("filter-btn active")[0].dataset.type;
     }
@@ -43,7 +44,7 @@ function showResults() {
         document.getElementsByClassName("search-dropdown")[0].classList.add("hidden");
     } else {
         if (btnType === "employee") {
-            fetch("/api/employees/search/" + searchContent)
+            fetch("/api/employees/search/" + floorId.toString() + '/' + searchContent)
                 .then(res => res.json())
                 .then(results => {
                     const dropdown = document.getElementsByClassName("search-dropdown")[0];
@@ -76,7 +77,7 @@ function showResults() {
                     }
                 });
         } else if (btnType === "room") {
-            fetch("/api/rooms/search/" + searchContent)
+            fetch("/api/rooms/search/" + floorId.toString() + '/' + searchContent)
                 .then(res => res.json())
                 .then(results => {
                     const dropdown = document.getElementsByClassName("search-dropdown")[0];
@@ -109,7 +110,7 @@ function showResults() {
                     }
                 });
         } else if (btnType === "desk") {
-            fetch("/api/desks/search/" + searchContent)
+            fetch("/api/desks/search/" + floorId.toString() + '/' + searchContent)
                 .then(res => res.json())
                 .then(results => {
                     const dropdown = document.getElementsByClassName("search-dropdown")[0];
@@ -143,9 +144,9 @@ function showResults() {
                 });
         } else if (btnType === "") {
             Promise.all([
-                fetch("/api/employees/search/" + searchContent).then(r => r.json()),
-                fetch("/api/rooms/search/" + searchContent).then(r => r.json()),
-                fetch("/api/desks/search/" + searchContent).then(r => r.json())
+                fetch("/api/employees/search/" + floorId.toString() + '/' + searchContent).then(r => r.json()),
+                fetch("/api/rooms/search/" + floorId.toString() + '/' + searchContent).then(r => r.json()),
+                fetch("/api/desks/search/" + floorId.toString() + '/' + searchContent).then(r => r.json())
             ]).then(([employees, rooms, desks]) => {
                 const dropdown = document.getElementsByClassName("search-dropdown")[0];
                 dropdown.innerHTML = "";
@@ -243,6 +244,7 @@ function goToResult(elem) {
     document.getElementsByClassName("search-bar")[0].value = "";
     const dropdown = document.getElementsByClassName("search-dropdown")[0];
     dropdown.innerHTML = "";
+    dropdown.classList.add("hidden");
     const btns = document.getElementsByClassName("filter-btn");
     for (let i=0; i<btns.length; i++) {
         btns[i].classList.remove("active");
