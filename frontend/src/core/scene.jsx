@@ -226,6 +226,8 @@ export function createScene(floorId){
         function updateFloor(floor) {
             floorId = floor;
             loadFloor();
+            camera.position.set(10,20,20);
+            camera.lookAt(new THREE.Vector3(0,0,0))
         }
 
         _camera = camera;
