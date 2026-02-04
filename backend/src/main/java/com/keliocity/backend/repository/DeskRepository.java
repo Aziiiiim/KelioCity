@@ -19,8 +19,12 @@ public interface DeskRepository extends JpaRepository<Desk, Integer> {
     @Query("""
     SELECT d
     FROM Desk d
+    LEFT JOIN d.room r
+    LEFT JOIN r.floor f
     WHERE
+      f.id = :floorId
+      AND
       LOWER(d.deskName) LIKE LOWER(CONCAT('%', :name, '%'))
     """)
-    List<Desk> searchByName(@Param("name") String name);
+    List<Desk> searchByName(@Param("floorId") Integer floorId, @Param("name") String name);
 }

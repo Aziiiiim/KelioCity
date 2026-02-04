@@ -15,10 +15,16 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
     @Query("""
     SELECT r
     FROM Room r
+    LEFT JOIN r.floor f
+    LEFT JOIN r.roomType rt
     WHERE
+      f.id = :floorId
+      AND
       LOWER(r.roomName) LIKE LOWER(CONCAT('%', :name, '%'))
+      AND
+      rt.roomtypeName != 'Stairs'
     """)
-    List<Room> searchByName(@Param("name") String name);
+    List<Room> searchByName(@Param("floorId") Integer floorId, @Param("name") String name);
 
     List<Room> findByFloor_id(Integer floorId);
 }
