@@ -71,6 +71,7 @@ function showResults() {
                         li_result.textContent = results[i]["firstName"] + " " + results[i]["lastName"];
                         li_result.dataset.id = results[i]["id"];
                         li_result.dataset.type = "employee";
+                        li_result.dataset.floorId = results[i]["desk"]["room"]["floor"]["id"];
                         dropdown.appendChild(li_result);
                     }
                 });
@@ -103,6 +104,7 @@ function showResults() {
                         li_result.textContent = results[i]["roomName"];
                         li_result.dataset.id = results[i]["id"];
                         li_result.dataset.type = "room";
+                        li_result.dataset.floorId = results[i]["floor"]["id"];
                         dropdown.appendChild(li_result);
                     }
                 });
@@ -135,6 +137,7 @@ function showResults() {
                         li_result.textContent = results[i]["deskName"];
                         li_result.dataset.id = results[i]["id"];
                         li_result.dataset.type = "desk";
+                        li_result.dataset.floorId = results[i]["room"]["floor"]["id"];
                         dropdown.appendChild(li_result);
                     }
                 });
@@ -158,6 +161,7 @@ function showResults() {
                     li_result.textContent = employees[i]["firstName"] + " " + employees[i]["lastName"];
                     li_result.dataset.id = employees[i]["id"];
                     li_result.dataset.type = "employee";
+                    li_result.dataset.floorId = employees[i]["desk"]["room"]["floor"]["id"];
                     dropdown.appendChild(li_result);
                 }
                 for (let i = 0; i < rooms.length; i++) {
@@ -171,6 +175,7 @@ function showResults() {
                     li_result.textContent = rooms[i]["roomName"];
                     li_result.dataset.id = rooms[i]["id"];
                     li_result.dataset.type = "room";
+                    li_result.dataset.floorId = rooms[i]["floor"]["id"];
                     dropdown.appendChild(li_result);
                 }
                 for (let i = 0; i < desks.length; i++) {
@@ -184,6 +189,7 @@ function showResults() {
                     li_result.textContent = desks[i]["deskName"];
                     li_result.dataset.id = desks[i]["id"];
                     li_result.dataset.type = "desk";
+                    li_result.dataset.floorId = desks[i]["room"]["floor"]["id"];
                     dropdown.appendChild(li_result);
                 }
                 if (no_result_found) {
@@ -214,8 +220,25 @@ window.search = function() {
 function goToResult(elem) {
     let objectId = elem.dataset.id;
     let objectType = elem.dataset.type;
-    console.log(objectType);
-    selectObject(objectType, objectId);
+    let objectFloorId = elem.dataset.floorId;
+    console.log(elem.dataset);
+
+    if (window.floorId != objectFloorId) {
+        window.floorId = objectFloorId; 
+
+        window.scene.updateFloor(window.floorId);
+        // Attendre que les assets et employés soient chargés (environ 500-800ms)
+        setTimeout(() => {
+            selectObject(objectType, objectId);
+
+            const select = document.getElementsByClassName("select-floor")[0];
+            if (select) {
+                select.value = window.floorId;
+            }
+        }, 600);
+    } else {
+        selectObject(objectType, objectId);
+    }
     
     document.getElementsByClassName("search-bar")[0].value = "";
     const dropdown = document.getElementsByClassName("search-dropdown")[0];

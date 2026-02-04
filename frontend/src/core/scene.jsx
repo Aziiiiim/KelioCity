@@ -27,7 +27,7 @@ let interaction = null;
 let currentGround = null;
 const currentLights = [];
 
-export function createScene(){
+export function createScene(floorId){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
     //apiTest();
@@ -37,8 +37,6 @@ export function createScene(){
     const controls = createControls(camera,gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
-
-    let floorId = 1;
 
     function loadFloor() {
         // Vider les anciennes données

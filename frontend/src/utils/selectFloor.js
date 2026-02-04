@@ -8,13 +8,17 @@ window.addEventListener("DOMContentLoaded", () => {
         .then (listFloors => {
             for (let i=0; i<listFloors.length; i++){
                 var option = new Option(listFloors[i]["floorName"], listFloors[i]["id"]);
+                //option.setAttribute('id', 'option-floor'+listFloors[i]["id"]);
                 select.appendChild(option);
             }
+            select.value = window.floorId;
         }) 
         
     select.addEventListener("change", updateFloor)
 
 })
+
+/// Note: utiliser optgroup pour faire des sous catégories ex Bat 1, Bat 2
 
 function updateFloor() {
     const select = document.getElementsByClassName("select-floor")[0];
