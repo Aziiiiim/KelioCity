@@ -8,7 +8,7 @@
     <script>
       const token = localStorage.getItem("token");
       if (!token) {
-        window.location.href = "/auth/welcome.html";
+        window.location.href = "/auth/html/welcome.html";
       }
     </script>
     <script type="module" src="./src/utils/searchbar.js"></script>
@@ -59,7 +59,7 @@
 
       logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("token");
-        window.location.href = "/auth/welcome.html";
+        window.location.href = "/auth/html/welcome.html";
       });
     </script>
   </body>
