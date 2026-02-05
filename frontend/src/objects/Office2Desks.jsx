@@ -21,12 +21,12 @@ export function createOffice2Desks(initDoor = null) {
     const wallMat = new THREE.MeshBasicMaterial( { color: 0x335c67, side: THREE.DoubleSide } );
 
     const wallMesh1 = new THREE.Mesh(wallGeo1, wallMat);
-    wallMesh1.position.set(3.5+x,2.5,0);
+    wallMesh1.position.set(3.5+x,2.5,0.01);
     elements.add(wallMesh1);
 
     const wallMesh2 = new THREE.Mesh(wallGeo2, wallMat);
     wallMesh2.rotation.y = Math.PI * -.5;
-    wallMesh2.position.set(6+x,2.5,3);
+    wallMesh2.position.set(5.99+x,2.5,3);
     elements.add(wallMesh2);
 
     const wallFrontLeft = new THREE.Mesh(
@@ -53,7 +53,7 @@ export function createOffice2Desks(initDoor = null) {
 
     const wallMesh4 = new THREE.Mesh(wallGeo1, wallMat);
     wallMesh4.rotation.y = Math.PI ;
-    wallMesh4.position.set(3.5+x,2.5,6);
+    wallMesh4.position.set(3.5+x,2.5,5.99);
     elements.add(wallMesh4);
 
     let doorPivot = null;

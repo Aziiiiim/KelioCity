@@ -10,6 +10,7 @@ import { createOffice2Desks } from '../objects/Office2Desks.jsx';
 import { createOffice4Desks } from '../objects/Office4Desks.jsx';
 import { createOffice6Desks } from '../objects/Office6Desks.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
+import { createStairs } from '../objects/Stairs.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin } from "../utils/interactionManager.js";
@@ -23,8 +24,10 @@ const roomList = [];
 const characters = [];
 const objectList = [];
 let interaction = null;
+let currentGround = null;
+const currentLights = [];
 
-export function createScene(){
+export function createScene(floorId){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
     //apiTest();
@@ -34,104 +37,193 @@ export function createScene(){
     const controls = createControls(camera,gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
-    const ground = createGround();
 
-    scene.add(ground);
-    scene.add(createLight(-25,-25,25,25));
-    scene.add(createLight(25,25,-25,-25));
+    function loadFloor() {
+        // Vider les anciennes données
+        characters.forEach(char => {
+            scene.groupCharacters.remove(char.scene);
+        });
+        characters.length = 0;
+        roomList.length = 0;
+        objectList.length = 0;
+        
+        // Supprimer l'ancien sol
+        if (currentGround) {
+            scene.remove(currentGround);
+            currentGround = null;
+        }
+        
+        // Supprimer les anciennes lumières
+        currentLights.forEach(light => scene.remove(light));
+        currentLights.length = 0;
+        
+        if (scene.groupRooms) scene.groupRooms.clear();
+        if (scene.groupCharacters) scene.groupCharacters.clear();
+
+        fetch('/api/floors/'+floorId)
+            .then(res => res.json())
+            .then(floor => {
+                currentGround = createGround(floor["lengthX"],floor["lengthZ"]);
+                scene.add(currentGround);
+                const light1 = createLight(-floor["lengthX"]/2,-floor["lengthZ"]/2,floor["lengthX"]/2,floor["lengthZ"]/2);
+                const light2 = createLight(floor["lengthX"]/2,floor["lengthZ"]/2,-floor["lengthX"]/2,-floor["lengthZ"]/2);
+                scene.add(light1);
+                scene.add(light2);
+                currentLights.push(light1, light2);
+            }).catch(err => console.error("Erreur API:", err));
 
 
-    scene.groupRooms = new THREE.Group();
-    scene.add(scene.groupRooms);
-    scene.groupCharacters = new THREE.Group();
-    scene.add(scene.groupCharacters);
+        if (!scene.groupRooms) {
+            scene.groupRooms = new THREE.Group();
+            scene.add(scene.groupRooms);
+        }
+        if (!scene.groupCharacters) {
+            scene.groupCharacters = new THREE.Group();
+            scene.add(scene.groupCharacters);
+        }
 
-    interaction = createInteractionManager({
-        camera,
-        renderer,
-        targets: [scene.groupRooms, scene.groupCharacters],
-    });
-    interaction.addPlugin(doorPlugin());
-    interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters,refresh: interaction.refresh }));
-    interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks"] })); 
-    
-    const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
-    const bouton_available = document.getElementById("available-btn");
-    bouton_available.addEventListener("click", () => {
-        toggleAvailable(interaction);
-    });
-    const bouton_occupied = document.getElementById("occupied-btn");
-    bouton_occupied.addEventListener("click", () => {
-        toggleOccupied(interaction);
-    });
-    
-    fetch("/api/rooms")
-       .then(res => res.json())
-       .then(rooms => {
-           for (let i=0; i < rooms.length; i++) {
-                const roomType = rooms[i]?.roomType?.roomtypeName;
-                let roomObj = null;
-                let roomElements;
+        // Nettoyer l'ancienne interaction
+        if (interaction) {
+            interaction.dispose?.();
+        }
 
-                if (roomType === "MeetingRoom") {
-                    roomObj = createMeetingRoom();
-                } 
-                else if (roomType === "Office1Desk") {
-                    roomObj = createOffice1Desk();
-                } 
-                else if (roomType === "Office2Desks") {
-                    roomObj = createOffice2Desks();
-                } 
-                else if (roomType === "Office4Desks") {
-                    roomObj = createOffice4Desks();
-                } 
-                else if (roomType === "Office6Desks") {
-                    roomObj = createOffice6Desks();
-                }
-                else if (roomType === "Openspace") {
-                    roomElements = createOpenspace(rooms[i]["openspaceNumber"]);
-                }
-                if (roomObj) {
-                    roomElements = roomObj.elements;
-                    objectList.push(roomObj);
-                }
-                if (!roomElements) continue;
+        interaction = createInteractionManager({
+            camera,
+            renderer,
+            targets: [scene.groupRooms, scene.groupCharacters],
+        });
+        interaction.addPlugin(doorPlugin());
+        interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters,refresh: interaction.refresh }));
+        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks"] })); 
+        
+        const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
+        const bouton_available = document.getElementById("available-btn");
+        const bouton_occupied = document.getElementById("occupied-btn");
+        
+        // Nettoyer les anciens listeners
+        bouton_available.replaceWith(bouton_available.cloneNode(true));
+        bouton_occupied.replaceWith(bouton_occupied.cloneNode(true));
+        
+        // Réattacher les éléments
+        const new_bouton_available = document.getElementById("available-btn");
+        const new_bouton_occupied = document.getElementById("occupied-btn");
+        
+        new_bouton_available.addEventListener("click", () => {
+            toggleAvailable(interaction);
+        });
+        new_bouton_occupied.addEventListener("click", () => {
+            toggleOccupied(interaction);
+        });
+        
+        fetch("/api/rooms/floor/"+floorId)
+        .then(res => res.json())
+        .then(rooms => {
+            for (let i=0; i < rooms.length; i++) {
+                    const roomType = rooms[i]?.roomType?.roomtypeName;
+                    let roomObj = null;
+                    let roomElements;
 
-                roomElements.userData.kind = "room";
-                roomElements.userData.roomType = roomType;
-                roomElements.userData.roomId = rooms[i].id;
-                roomElements.userData.roomName = rooms[i]["roomName"];
-                roomElements.rotation.y = (rooms[i]["orientationDeg"] / 180) * Math.PI;
-                roomElements.position.set(rooms[i]["coordX1"], 0, rooms[i]["coordZ1"]);
+                    if (roomType === "MeetingRoom") {
+                        roomObj = createMeetingRoom();
+                    } 
+                    else if (roomType === "Office1Desk") {
+                        roomObj = createOffice1Desk();
+                    } 
+                    else if (roomType === "Office2Desks") {
+                        roomObj = createOffice2Desks();
+                    } 
+                    else if (roomType === "Office4Desks") {
+                        roomObj = createOffice4Desks();
+                    } 
+                    else if (roomType === "Office6Desks") {
+                        roomObj = createOffice6Desks();
+                    }
+                    else if (roomType === "Openspace") {
+                        roomElements = createOpenspace(rooms[i]["openspaceNumber"]);
+                    }
+                    else if (roomType === "Stairs") {
+                        roomObj = createStairs();
+                    }
+                    if (roomObj) {
+                        roomElements = roomObj.elements;
+                        objectList.push(roomObj);
+                    }
+                    if (!roomElements) continue;
 
-                roomList.push(roomElements);
-                scene.groupRooms.add(roomElements);
-           }
-           fetch("/api/employees")
-               .then(res => res.json())
-               .then(employees => {
-                   let loadedChars = 0;
-                   for (let i=0; i < employees.length; i++) {
-                       let spriteName = employees[i]["sprite"].charAt(0) + employees[i]["sprite"].slice(1).toLowerCase();
-                       let pos_y = 0;
-                       if (employees[i]["desk"]["room"]["roomType"]["roomtypeName"] === "Openspace") {
-                           pos_y = 0.4;
-                       }
-                       initChar("/assets/characters/"+spriteName+".glb", function(character) {
-                           character.scene.rotation.y = (employees[i]["desk"]["orientationDeg"]+employees[i]["desk"]["room"]["orientationDeg"])/180*Math.PI;
-                           character.scene.position.set(employees[i]["desk"]["coordX"], pos_y, employees[i]["desk"]["coordZ"]);
-                           character.play("Sitting");
-                           character.scene.userData.employee = employees[i];
-                           scene.groupCharacters.add(character.scene);
-                           characters.push(character);
-                           loadedChars += 1;
-                       });
-                   }
-               })
-               .catch(err => console.error("Erreur API:", err));
-       })
-       .catch(err => console.error("Erreur API:", err));
+                    roomElements.userData.kind = "room";
+                    roomElements.userData.roomType = roomType;
+                    roomElements.userData.roomId = rooms[i].id;
+                    roomElements.userData.roomName = rooms[i]["roomName"];
+                    roomElements.rotation.y = (rooms[i]["orientationDeg"] / 180) * Math.PI;
+                    let newX, newZ;
+                    const cosAngle = Math.cos(rooms[i]["orientationDeg"] / 180 * Math.PI);
+                    const sinAngle = Math.sin(rooms[i]["orientationDeg"] / 180 * Math.PI);
+                    const tanAngle = Math.tan(rooms[i]["orientationDeg"] / 180 * Math.PI);
+                    if ((rooms[i]["orientationDeg"] >= -45 && rooms[i]["orientationDeg"]<45) || (rooms[i]["orientationDeg"] >= -360 && rooms[i]["orientationDeg"]<-315) || (rooms[i]["orientationDeg"] >= 315 && rooms[i]["orientationDeg"]<360)) {
+                        newX = rooms[i]["coordX1"];
+                        newZ = rooms[i]["coordZ1"];
+                    } else if ((rooms[i]["orientationDeg"] >= 45 && rooms[i]["orientationDeg"]<135) || (rooms[i]["orientationDeg"] >= -315 && rooms[i]["orientationDeg"]<-225)) {
+                        newX = rooms[i]["coordX1"] - rooms[i]["roomType"]["lengthX"]*cosAngle;
+                        newZ = rooms[i]["coordZ1"] + rooms[i]["roomType"]["lengthX"]*sinAngle;
+                    } else if ((rooms[i]["orientationDeg"] >= 135 && rooms[i]["orientationDeg"]<225) || (rooms[i]["orientationDeg"] >= -225 && rooms[i]["orientationDeg"]<-135)) {
+                        newX = rooms[i]["coordX1"] - (rooms[i]["roomType"]["lengthX"]+rooms[i]["roomType"]["lengthZ"]*tanAngle)*cosAngle;
+                        newZ = rooms[i]["coordZ1"] + (-rooms[i]["roomType"]["lengthZ"]/cosAngle+(rooms[i]["roomType"]["lengthX"]+rooms[i]["roomType"]["lengthZ"]*tanAngle)*sinAngle);
+                    } else if ((rooms[i]["orientationDeg"] >= 225 && rooms[i]["orientationDeg"]<315) || (rooms[i]["orientationDeg"] >= -135 && rooms[i]["orientationDeg"]<-45)) {
+                        newX = rooms[i]["coordX1"] - rooms[i]["roomType"]["lengthZ"]*sinAngle;
+                        newZ = rooms[i]["coordZ1"] - rooms[i]["roomType"]["lengthZ"]*cosAngle;
+                    }
+                    roomElements.position.set(newX, 0, newZ);
 
+                    roomList.push(roomElements);
+                    scene.groupRooms.add(roomElements);
+            }
+            fetch("/api/employees/floor/"+floorId)
+                .then(res => res.json())
+                .then(employees => {
+                    let loadedChars = 0;
+                    for (let i=0; i < employees.length; i++) {
+                        let spriteName = employees[i]["sprite"].charAt(0) + employees[i]["sprite"].slice(1).toLowerCase();
+                        let pos_y = 0;
+                        if (employees[i]["desk"]["room"]["roomType"]["roomtypeName"] === "Openspace") {
+                            pos_y = 0.4;
+                        }
+                        initChar("/assets/characters/"+spriteName+".glb", function(character) {
+                            const roomOrientationRad = -employees[i]["desk"]["room"]["orientationDeg"]/180*Math.PI;
+                            const newRelativeCoordX = employees[i]["desk"]["deskType"]["coordX"]*Math.cos(roomOrientationRad)-employees[i]["desk"]["deskType"]["coordZ"]*Math.sin(roomOrientationRad);
+                            const newRelativeCoordZ = employees[i]["desk"]["deskType"]["coordX"]*Math.sin(roomOrientationRad)+employees[i]["desk"]["deskType"]["coordZ"]*Math.cos(roomOrientationRad);
+                            character.scene.rotation.y = (employees[i]["desk"]["deskType"]["orientationDeg"]+employees[i]["desk"]["room"]["orientationDeg"])/180*Math.PI;
+                            let newX, newZ;
+                            const cosAngle = Math.cos(employees[i]["desk"]["room"]["orientationDeg"] / 180 * Math.PI);
+                            const sinAngle = Math.sin(employees[i]["desk"]["room"]["orientationDeg"] / 180 * Math.PI);
+                            const tanAngle = Math.tan(employees[i]["desk"]["room"]["orientationDeg"] / 180 * Math.PI);
+                            if ((employees[i]["desk"]["room"]["orientationDeg"] >= -45 && employees[i]["desk"]["room"]["orientationDeg"]<45) || (employees[i]["desk"]["room"]["orientationDeg"] >= -360 && employees[i]["desk"]["room"]["orientationDeg"]<-315) || (employees[i]["desk"]["room"]["orientationDeg"] >= 315 && employees[i]["desk"]["room"]["orientationDeg"]<360)) {
+                                newX = employees[i]["desk"]["room"]["coordX1"];
+                                newZ = employees[i]["desk"]["room"]["coordZ1"];
+                            } else if ((employees[i]["desk"]["room"]["orientationDeg"] >= 45 && employees[i]["desk"]["room"]["orientationDeg"]<135) || (employees[i]["desk"]["room"]["orientationDeg"] >= -315 && employees[i]["desk"]["room"]["orientationDeg"]<-225)) {
+                                newX = employees[i]["desk"]["room"]["coordX1"] - employees[i]["desk"]["room"]["roomType"]["lengthX"]*cosAngle;
+                                newZ = employees[i]["desk"]["room"]["coordZ1"] + employees[i]["desk"]["room"]["roomType"]["lengthX"]*sinAngle;
+                            } else if ((employees[i]["desk"]["room"]["orientationDeg"] >= 135 && employees[i]["desk"]["room"]["orientationDeg"]<225) || (employees[i]["desk"]["room"]["orientationDeg"] >= -225 && employees[i]["desk"]["room"]["orientationDeg"]<-135)) {
+                                newX = employees[i]["desk"]["room"]["coordX1"] - (employees[i]["desk"]["room"]["roomType"]["lengthX"]+employees[i]["desk"]["room"]["roomType"]["lengthZ"]*tanAngle)*cosAngle;
+                                newZ = employees[i]["desk"]["room"]["coordZ1"] + (-employees[i]["desk"]["room"]["roomType"]["lengthZ"]/cosAngle+(employees[i]["desk"]["room"]["roomType"]["lengthX"]+employees[i]["desk"]["room"]["roomType"]["lengthZ"]*tanAngle)*sinAngle);
+                            } else if ((employees[i]["desk"]["room"]["orientationDeg"] >= 225 && employees[i]["desk"]["room"]["orientationDeg"]<315) || (employees[i]["desk"]["room"]["orientationDeg"] >= -135 && employees[i]["desk"]["room"]["orientationDeg"]<-45)) {
+                                newX = employees[i]["desk"]["room"]["coordX1"] - employees[i]["desk"]["room"]["roomType"]["lengthZ"]*sinAngle;
+                                newZ = employees[i]["desk"]["room"]["coordZ1"] - employees[i]["desk"]["room"]["roomType"]["lengthZ"]*cosAngle;
+                            }
+                            character.scene.position.set(newRelativeCoordX+newX, pos_y, newRelativeCoordZ+newZ);
+                            character.play("Sitting");
+                            character.scene.userData.employee = employees[i];
+                            scene.groupCharacters.add(character.scene);
+                            characters.push(character);
+                            loadedChars += 1;
+                        });
+                    }
+                })
+                .catch(err => console.error("Erreur API:", err));
+        })
+        .catch(err => console.error("Erreur API:", err));
+    };
+
+    loadFloor();
     const lights = createSetupLight();
     for (let i=0; i<lights.length; i++) {           
         scene.add(lights[i]);
@@ -165,10 +257,17 @@ export function createScene(){
             renderer.setAnimationLoop(null);
         }
 
+        function updateFloor(floor) {
+            floorId = floor;
+            loadFloor();
+            camera.position.set(10,20,20);
+            controls.reset();
+        }
+
         _camera = camera;
         _controls = controls;
 
-    return { start, stop, scene, camera, renderer };
+    return { start, stop, updateFloor, scene, camera, renderer };
 }
 
 export function selectEmployee(employeeId) {

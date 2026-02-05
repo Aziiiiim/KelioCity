@@ -7,24 +7,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "DESKS")
+@Table(name = "FLOOR")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Desk {
+public class Floor {
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "desk_name", nullable = false)
-    private String deskName;
+    @Column(name = "floor_name", nullable = false)
+    private String floorName;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "room_id", nullable = false)
-    private Room room;
+    @Column(name = "length_x", nullable = false)
+    private Float lengthX;
 
-    @ManyToOne
-    @JoinColumn(name = "desk_type", nullable = false)
-    private DeskType deskType;
+    @Column(name = "length_z", nullable = false)
+    private Float lengthZ;
 }

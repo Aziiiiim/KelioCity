@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.keliocity.backend.model.Desk;
 import com.keliocity.backend.model.Room;
+import com.keliocity.backend.model.RoomType;
 import com.keliocity.backend.repository.DeskRepository;
 import com.keliocity.backend.repository.RoomRepository;
 
@@ -41,10 +42,10 @@ public class DeskController {
         return deskRepo.findByRoom_Id(roomId);
     }
 
-    // GET /api/desks/search/{name}
-    @GetMapping("/search/{name}")
-    public List<Desk> getByName(@PathVariable String name) {
-        return deskRepo.searchByName(name);
+    // GET /api/desks/search/{floorId}/{name}
+    @GetMapping("/search/{floorId}/{name}")
+    public List<Desk> getByName(@PathVariable Integer floorId, @PathVariable String name) {
+        return deskRepo.searchByName(floorId, name);
     }
 
     @PostMapping
@@ -66,8 +67,7 @@ public class DeskController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Desk not found"));
 
         existing.setDeskName(updated.getDeskName());
-        existing.setCoordX(updated.getCoordX());
-        existing.setCoordZ(updated.getCoordZ());
+        existing.setDeskType(updated.getDeskType());
 
         if (updated.getRoom() != null && updated.getRoom().getId() != null) {
             Room room = roomRepo.findById(updated.getRoom().getId())

@@ -21,13 +21,20 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
 
     List<Employee> findByDesk_Room_Id(Integer roomId);
 
+    List<Employee> findByDesk_Room_Floor_id(Integer floorId);
+
     @Query("""
     SELECT e
     FROM Employee e
+    LEFT JOIN e.desk d
+    LEFT JOIN d.room r
+    LEFT JOIN r.floor f
     WHERE
-      LOWER(CONCAT(e.firstName, ' ', e.lastName)) LIKE LOWER(CONCAT('%', :name, '%'))
+      f.id = :floorId
+      AND
+      (LOWER(CONCAT(e.firstName, ' ', e.lastName)) LIKE LOWER(CONCAT('%', :name, '%'))
       OR
-      LOWER(CONCAT(e.lastName, ' ', e.firstName)) LIKE LOWER(CONCAT('%', :name, '%'))
+      LOWER(CONCAT(e.lastName, ' ', e.firstName)) LIKE LOWER(CONCAT('%', :name, '%')))
     """)
-    List<Employee> searchByName(@Param("name") String name);
+    List<Employee> searchByName(@Param("floorId") Integer floorId, @Param("name") String name);
 }
