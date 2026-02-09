@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login - KelioCity</title>
-  <link rel="stylesheet" href="../css/login.css" />
+  <title>Register - KelioCity</title>
+  <link rel="stylesheet" href="../css/register.css" />
 </head>
 <body>
 
@@ -15,12 +15,22 @@
       <header class="head">
         <div class="logo">K</div>
         <div>
-          <h2>Connexion</h2>
-          <p>Accédez à votre espace KelioCity.</p>
+          <h2>Inscription</h2>
+          <p>Créez votre compte KelioCity.</p>
         </div>
       </header>
 
-      <form id="login-form" novalidate>
+      <form id="register-form" novalidate>
+        <label>
+          <span>Prénom(s)</span>
+          <input type="text" id="firstName" placeholder="Prénom" required />
+        </label>
+        
+        <label>
+          <span>Nom</span>
+          <input type="text" id="lastName" placeholder="Nom" required />
+        </label>
+
         <label>
           <span>Email</span>
           <input type="email" id="email" placeholder="ex: nom@domaine.com" required />
@@ -31,17 +41,17 @@
           <input type="password" id="password" placeholder="••••••••" required />
         </label>
 
-        <button class="btn" type="submit">Se connecter</button>
+        <button class="btn" type="submit">Créer un compte</button>
       </form>
 
       <p id="error" class="error" aria-live="polite"></p>
 
       <p class="switch">
-        Pas de compte ? <a href="register.html">Créer un compte</a>
+        Déjà inscrit ? <a href="login.html">Se connecter</a>
       </p>
     </section>
   </main>
 
-  <script type="module" src="../js/auth.js"></script>
+  <script type="module" src="../js/register.js"></script>
 </body>
 </html>

@@ -3,12 +3,13 @@ package com.keliocity.backend.model;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "EMPLOYEES")
-@Data
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -47,4 +48,8 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     @Column(name = "sprite", nullable = false)
     private Sprite sprite;
+    
+    /*@OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "account_id", unique = true)
+    private Account account;*/
 }

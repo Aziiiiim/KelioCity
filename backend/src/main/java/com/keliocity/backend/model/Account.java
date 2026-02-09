@@ -15,19 +15,24 @@ public class Account {
     @Column(name = "email", nullable = false)
     private String email;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private AccountRole role;
 
     @Column(name = "password", nullable = false)
     private String password;
 
+    //@OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    //private Employee employee;
+    
     public Account(){
         this.role = AccountRole.USER;
     }
 
-    public Account(String email, String password){
+    public Account(String email, String password, Employee employee){
         this.email = email;
         this.password = password;
         this.role = AccountRole.USER;
+        //this.employee = employee;
     }
 }

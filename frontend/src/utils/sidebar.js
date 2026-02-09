@@ -74,7 +74,7 @@ export function openSidebar(employee) {
         <h3>Position</h3>
         <div class="info-grid">
           <div class="info-label">Bureau</div>
-          <div class="info-value">${employee.desk?.room?.roomName ?? "Aucun"}</div>
+          <div class="info-value">${employee.desk?.deskName ?? "Aucun"}</div>
 
           <div class="info-label">Présence</div>
           <div class="info-value">${employee.inOffice === "OFFICE" ? "Office" : "Télétravail"}</div>
