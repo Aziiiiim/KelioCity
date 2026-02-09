@@ -28,7 +28,7 @@ if (loginForm) {
     localStorage.setItem("token", data.token);
     localStorage.setItem("email", email);
 
-    window.location.href = "../index.html";
+    window.location.href = "/index.html";
   });
 }
 
@@ -54,6 +54,6 @@ if (registerForm) {
     localStorage.setItem("token", data.token);
     localStorage.setItem("email", email);
 
-    window.location.href = "../index.html";
+    window.location.href = "/index.html";
   });
 }
