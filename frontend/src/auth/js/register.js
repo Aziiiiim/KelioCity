@@ -23,12 +23,17 @@ registerForm.addEventListener("submit", async (e) => {
     localStorage.setItem("token", data.token);
     localStorage.setItem("email", email);*/
 
-    sessionStorage.setItem("pendingRegister", JSON.stringify({
+    /*sessionStorage.setItem("userData", JSON.stringify({
       firstName,
       lastName,
       email,
       password
-    }));
+    }));*/
 
-    window.location.href = "../html/spriteChoice.html";
+    sessionStorage.setItem("firstName",firstName);
+    sessionStorage.setItem("lastName",lastName);
+    sessionStorage.setItem("email",email);
+    sessionStorage.setItem("password",password);
+
+    window.location.href = "../html/genderChoice.html";
 });

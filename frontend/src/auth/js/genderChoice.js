@@ -3,11 +3,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { initChar } from '../../objects/Characters.jsx';
 
 const scenes = document.querySelectorAll(".scene-wrap");
-
-const gender = sessionStorage.getItem("gender");
-const SPRITES = {M: {1: "Man1", 2: "Man2",3: "Man3",},F: {1: "Woman1",2: "Woman2",3: "Woman3",}};
 let selectedScene = null;
-let selectedSpriteName = null;
 
 document.addEventListener("click", (e) => {
     if (e.target.closest(".scene-wrap")) return;
@@ -16,10 +12,12 @@ document.addEventListener("click", (e) => {
     deselectScene();
 });
 
+
 scenes.forEach(sceneWrap => {
     const id = sceneWrap.dataset.scene;
     const canvas = sceneWrap.querySelector("canvas");
     initCharScene(canvas, id);
+
     sceneWrap.addEventListener("click", () => {
         selectScene(sceneWrap);
     });
@@ -27,11 +25,11 @@ scenes.forEach(sceneWrap => {
 
 function selectScene(sceneWrap) {
     selectedScene = sceneWrap.dataset.scene;
-    selectedSpriteName = SPRITES[gender][selectedScene];
 
     scenes.forEach(s => s.classList.remove("selected"));
     sceneWrap.classList.add("selected");
 }
+
 
 function deselectScene() {
     selectedScene = null;
@@ -63,9 +61,13 @@ export default function initCharScene(canvas, id){
     dir.position.set(2, 3, 2);
     scene.add(dir);
 
-    
-    let spriteName = SPRITES[gender][id];
-
+    let spriteName = "";
+    if(id=="M"){
+        spriteName = "Man1";
+    }
+    else if(id=="F"){
+        spriteName = "Woman1";
+    }
     const clock = new THREE.Clock();
     let characterRef = null;
     let idx = 0;
@@ -113,19 +115,17 @@ export default function initCharScene(canvas, id){
 }
 
 
-const createBtn = document.getElementById("btn-create");
+const nextBtn = document.getElementById("btn-next");
 const backBtn = document.getElementById("btn-back");
 
-createBtn.addEventListener("click", () => {
+nextBtn.addEventListener("click", () => {
     if(!selectedScene) return;
-    
-    console.log("AAAAAAAAAAAAA");
-    // créer compte
-    sessionStorage.setItem("sprite", selectedSpriteName);
 
-    //window.location.href = "../html/spriteChoice.html";
+    sessionStorage.setItem("gender", selectedScene);
+
+    window.location.href = "../html/spriteChoice.html";
 });
 
 backBtn.addEventListener("click", () => {
-    window.location.href = "../html/genderChoice.html";
+    window.location.href = "../html/register.html";
 });
