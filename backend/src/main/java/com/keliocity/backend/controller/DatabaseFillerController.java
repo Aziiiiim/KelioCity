@@ -17,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 @CrossOrigin(origins = "*")
 public class DatabaseFillerController {
     private final DeskRepository deskRepo;
+    private final DeskTypeRepository deskTypeRepo;
     private final EmployeeRepository employeeRepo;
     private final FloorRepository floorRepo;
     private final MeetingEmployeeRepository meetingEmployeeRepo;
@@ -25,8 +26,9 @@ public class DatabaseFillerController {
     private final RoomTypeRepository roomTypeRepo;
 
 
-    public DatabaseFillerController(DeskRepository deskRepo, EmployeeRepository employeeRepo, FloorRepository floorRepo, MeetingEmployeeRepository meetingEmployeeRepo, MeetingRepository meetingRepo, RoomRepository roomRepo, RoomTypeRepository roomTypeRepo) {
+    public DatabaseFillerController(DeskRepository deskRepo, EmployeeRepository employeeRepo, FloorRepository floorRepo, MeetingEmployeeRepository meetingEmployeeRepo, MeetingRepository meetingRepo, RoomRepository roomRepo, RoomTypeRepository roomTypeRepo, DeskTypeRepository deskTypeRepo) {
         this.deskRepo = deskRepo;
+        this.deskTypeRepo = deskTypeRepo;
         this.employeeRepo = employeeRepo;
         this.floorRepo = floorRepo;
         this.meetingEmployeeRepo = meetingEmployeeRepo;
@@ -43,61 +45,11 @@ public class DatabaseFillerController {
         for (int i=0; i<roomTypeList.size(); i++) {
             roomTypes.put(roomTypeList.get(i).getRoomtypeName(), roomTypeList.get(i));
         }
-        /*roomTypes.put("MeetingRoom", roomTypeRepo.save(
-            RoomType.builder()
-                .roomtypeName("MeetingRoom")
-                .lengthX(15f)
-                .lengthZ(12f)
-                .build()
-        ));
-
-        roomTypes.put("Office1Desk", roomTypeRepo.save(
-            RoomType.builder()
-                .roomtypeName("Office1Desk")
-                .lengthX(6f)
-                .lengthZ(4f)
-                .build()
-        ));
-
-        roomTypes.put("Office2Desks", roomTypeRepo.save(
-            RoomType.builder()
-                .roomtypeName("Office2Desks")
-                .lengthX(5f)
-                .lengthZ(6f)
-                .build()
-        ));
-
-        roomTypes.put("Office4Desks", roomTypeRepo.save(
-            RoomType.builder()
-                .roomtypeName("Office4Desks")
-                .lengthX(7f)
-                .lengthZ(6f)
-                .build()
-        ));
-
-        roomTypes.put("Office6Desks", roomTypeRepo.save(
-            RoomType.builder()
-                .roomtypeName("Office6Desks")
-                .lengthX(7f)
-                .lengthZ(9f)
-                .build()
-        ));
-
-        roomTypes.put("Openspace", roomTypeRepo.save(
-            RoomType.builder()
-                .roomtypeName("Openspace")
-                .lengthX(2.52f)
-                .lengthZ(3.85f)
-                .build()
-        ));
-
-        roomTypes.put("Stairs", roomTypeRepo.save(
-            RoomType.builder()
-                .roomtypeName("Stairs")
-                .lengthX(5f)
-                .lengthZ(3f)
-                .build()
-        ));*/
+        HashMap<String, DeskType> deskTypes = new HashMap<String, DeskType>();
+        List<DeskType> deskTypeList = deskTypeRepo.findAll();
+        for (int i=0; i<deskTypeList.size(); i++) {
+            deskTypes.put(deskTypeList.get(i).getRoomType().getRoomtypeName()+"_"+deskTypeList.get(i).getDeskNumber(), deskTypeList.get(i));
+        }
 
         HashMap<String, Floor> floors = new HashMap<String, Floor>();
         List<Floor> floorList = floorRepo.findAll();
@@ -115,8 +67,13 @@ public class DatabaseFillerController {
         }
         floorRepo.flush();
 
+        HashMap<String, Room> rooms = new HashMap<String, Room>();
+        List<Room> roomList = roomRepo.findAll();
+        for (int i=0; i<roomList.size(); i++) {
+            rooms.put(roomList.get(i).getRoomName(), roomList.get(i));
+        }
         for (int i=0; i<dbFillerDTO.getRooms().size(); i++) {
-            roomRepo.save(
+            rooms.put(dbFillerDTO.getRooms().get(i).getRoomName(), roomRepo.save(
                 Room.builder()
                     .roomType(roomTypes.get(dbFillerDTO.getRooms().get(i).getRoomType()))
                     .roomName(dbFillerDTO.getRooms().get(i).getRoomName())
@@ -125,9 +82,25 @@ public class DatabaseFillerController {
                     .openspaceNumber(dbFillerDTO.getRooms().get(i).getOpenspaceNumber())
                     .floor(floors.get(dbFillerDTO.getRooms().get(i).getFloorName()))
                     .build()
-            );
+            ));
         }
         roomRepo.flush();
+
+        HashMap<String, Desk> desks = new HashMap<String, Desk>();
+        List<Desk> deskList = deskRepo.findAll();
+        for (int i=0; i<deskList.size(); i++) {
+            desks.put(deskList.get(i).getDeskName(), deskList.get(i));
+        }
+        for (int i=0; i<dbFillerDTO.getDesks().size(); i++) {
+            desks.put(dbFillerDTO.getDesks().get(i).getDeskName(), deskRepo.save(
+                Desk.builder()
+                    .deskName(dbFillerDTO.getDesks().get(i).getDeskName())
+                    .room(rooms.get(dbFillerDTO.getDesks().get(i).getRoomName()))
+                    .deskType(deskTypes.get(rooms.get(dbFillerDTO.getDesks().get(i).getRoomName()).getRoomType().getRoomtypeName()+"_"+dbFillerDTO.getDesks().get(i).getDeskNumber()))
+                    .build()
+            ));
+        }
+        deskRepo.flush();
 
         return "done";
     }
