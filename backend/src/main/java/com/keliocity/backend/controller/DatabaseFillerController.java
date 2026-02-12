@@ -102,6 +102,28 @@ public class DatabaseFillerController {
         }
         deskRepo.flush();
 
+        HashMap<String, Employee> employees = new HashMap<String, Employee>();
+        List<Employee> employeeList = employeeRepo.findAll();
+        for (int i=0; i<employeeList.size(); i++) {
+            employees.put(employeeList.get(i).getFirstName()+"_"+employeeList.get(i).getLastName(), employeeList.get(i));
+        }
+        for (int i=0; i<dbFillerDTO.getEmployees().size(); i++) {
+            employees.put(dbFillerDTO.getEmployees().get(i).getFirstName()+"_"+dbFillerDTO.getEmployees().get(i).getLastName(), employeeRepo.save(
+                    Employee.builder()
+                        .firstName(dbFillerDTO.getEmployees().get(i).getFirstName())
+                        .lastName(dbFillerDTO.getEmployees().get(i).getLastName())
+                        .desk(desks.get(dbFillerDTO.getEmployees().get(i).getDeskName()))
+                        .email(dbFillerDTO.getEmployees().get(i).getEmail())
+                        .phoneNumber(dbFillerDTO.getEmployees().get(i).getPhoneNumber())
+                        .workingHours(dbFillerDTO.getEmployees().get(i).getWorkingHours())
+                        .inOffice(WorkLocation.valueOf(dbFillerDTO.getEmployees().get(i).getInOffice().trim().toUpperCase()))
+                        .status(EmployeeStatus.valueOf(dbFillerDTO.getEmployees().get(i).getStatus().trim().toUpperCase()))
+                        .sprite(Sprite.valueOf(dbFillerDTO.getEmployees().get(i).getSprite().trim().toUpperCase()))
+                        .build()
+            ));
+        }
+        deskRepo.flush();
+
         return "done";
     }
 }
