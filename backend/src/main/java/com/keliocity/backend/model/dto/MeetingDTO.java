@@ -6,6 +6,7 @@ public class MeetingDTO {
 
     private String roomName;
     private Integer deskNumber; // optional
+    private String deskName;
     private String title;
     private LocalDateTime startingHour;
     private LocalDateTime endHour;
@@ -17,6 +18,10 @@ public class MeetingDTO {
 
     public Integer getDeskNumber() {
         return deskNumber;
+    }
+
+    public String getDeskName() {
+        return deskName;
     }
 
     public String getTitle() {

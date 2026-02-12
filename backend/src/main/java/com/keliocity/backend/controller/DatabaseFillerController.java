@@ -122,7 +122,42 @@ public class DatabaseFillerController {
                         .build()
             ));
         }
-        deskRepo.flush();
+        employeeRepo.flush();
+
+        HashMap<String, Meeting> meetings = new HashMap<String, Meeting>();
+        List<Meeting> meetingList = meetingRepo.findAll();
+        for (int i=0; i<meetingList.size(); i++) {
+            meetings.put(meetingList.get(i).getTitle(), meetingList.get(i));
+        }
+        for (int i=0; i<dbFillerDTO.getMeetings().size(); i++) {
+            meetings.put(dbFillerDTO.getMeetings().get(i).getTitle(), meetingRepo.save(
+                    Meeting.builder()
+                        .room(rooms.get(dbFillerDTO.getMeetings().get(i).getRoomName()))
+                        .desk(desks.get(dbFillerDTO.getMeetings().get(i).getDeskName()))
+                        .title(dbFillerDTO.getMeetings().get(i).getTitle())
+                        .startingHour(dbFillerDTO.getMeetings().get(i).getStartingHour()) // format YYYY-MM-DDTHH:mm:ss (ex: 2026-02-12T21:31:00)
+                        .endHour(dbFillerDTO.getMeetings().get(i).getEndHour()) // format YYYY-MM-DDTHH:mm:ss (ex: 2026-02-12T21:31:00)
+                        .description(dbFillerDTO.getMeetings().get(i).getDescription())
+                        .build()
+                ));
+        }
+        meetingRepo.flush();
+
+        HashMap<String, MeetingEmployee> meetingEmployees = new HashMap<String, MeetingEmployee>();
+        List<MeetingEmployee> meetingEmployeeList = meetingEmployeeRepo.findAll();
+        for (int i=0; i<meetingEmployeeList.size(); i++) {
+            meetingEmployees.put(meetingEmployeeList.get(i).getEmployee().getFirstName()+"_"+meetingEmployeeList.get(i).getEmployee().getLastName()+"_"+meetingEmployeeList.get(i).getMeeting().getTitle(), meetingEmployeeList.get(i));
+        }
+        for (int i=0; i<dbFillerDTO.getMeetingEmployees().size(); i++) {
+            meetingEmployees.put(dbFillerDTO.getMeetingEmployees().get(i).getEmployeeFirstName()+"_"+dbFillerDTO.getMeetingEmployees().get(i).getEmployeeLastName()+"_"+dbFillerDTO.getMeetingEmployees().get(i).getMeetingTitle(), meetingEmployeeRepo.save(
+                    new MeetingEmployee(
+                        meetings.get(dbFillerDTO.getMeetingEmployees().get(i).getMeetingTitle()),
+                        employees.get(dbFillerDTO.getMeetingEmployees().get(i).getEmployeeFirstName()+"_"+dbFillerDTO.getMeetingEmployees().get(i).getEmployeeLastName()),
+                        dbFillerDTO.getMeetingEmployees().get(i).getPresent(),
+                        dbFillerDTO.getMeetingEmployees().get(i).getRemote()
+                )));
+        }
+        meetingEmployeeRepo.flush();
 
         return "done";
     }
