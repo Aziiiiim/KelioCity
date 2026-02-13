@@ -88,8 +88,10 @@ public class DatabaseFillerController {
 
         HashMap<String, Desk> desks = new HashMap<String, Desk>();
         List<Desk> deskList = deskRepo.findAll();
+        HashMap<String, String> deskNames = new HashMap<String, String>();
         for (int i=0; i<deskList.size(); i++) {
             desks.put(deskList.get(i).getDeskName(), deskList.get(i));
+            deskNames.put(deskList.get(i).getRoom().getRoomName()+"_"+deskList.get(i).getDeskType().getDeskNumber(), deskList.get(i).getDeskName());
         }
         for (int i=0; i<dbFillerDTO.getDesks().size(); i++) {
             desks.put(dbFillerDTO.getDesks().get(i).getDeskName(), deskRepo.save(
@@ -99,6 +101,7 @@ public class DatabaseFillerController {
                     .deskType(deskTypes.get(rooms.get(dbFillerDTO.getDesks().get(i).getRoomName()).getRoomType().getRoomtypeName()+"_"+dbFillerDTO.getDesks().get(i).getDeskNumber()))
                     .build()
             ));
+            deskNames.put(dbFillerDTO.getDesks().get(i).getRoomName()+"_"+dbFillerDTO.getDesks().get(i).getDeskNumber(),dbFillerDTO.getDesks().get(i).getDeskName());
         }
         deskRepo.flush();
 
@@ -107,12 +110,30 @@ public class DatabaseFillerController {
         for (int i=0; i<employeeList.size(); i++) {
             employees.put(employeeList.get(i).getFirstName()+"_"+employeeList.get(i).getLastName(), employeeList.get(i));
         }
+        Desk desk = null;
         for (int i=0; i<dbFillerDTO.getEmployees().size(); i++) {
+            if (dbFillerDTO.getEmployees().get(i).getRoomName() != null && dbFillerDTO.getEmployees().get(i).getDeskNumber() != null) {
+                desk = desks.get(deskNames.get(dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber()));
+                if (desk == null) {
+                    desk = deskRepo.save(
+                        Desk.builder()
+                            .deskName(dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber())
+                            .room(rooms.get(dbFillerDTO.getEmployees().get(i).getRoomName()))
+                            .deskType(deskTypes.get(rooms.get(dbFillerDTO.getEmployees().get(i).getRoomName()).getRoomType().getRoomtypeName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber()))
+                            .build()
+                    );
+                    desks.put(dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber(), desk);
+                    deskNames.put(dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber(),dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber());
+                }
+            } else if (dbFillerDTO.getEmployees().get(i).getDeskName() != null) {
+                desk = desks.get(dbFillerDTO.getEmployees().get(i).getDeskName());
+            }
+
             employees.put(dbFillerDTO.getEmployees().get(i).getFirstName()+"_"+dbFillerDTO.getEmployees().get(i).getLastName(), employeeRepo.save(
                     Employee.builder()
                         .firstName(dbFillerDTO.getEmployees().get(i).getFirstName())
                         .lastName(dbFillerDTO.getEmployees().get(i).getLastName())
-                        .desk(desks.get(dbFillerDTO.getEmployees().get(i).getDeskName()))
+                        .desk(desk)
                         .email(dbFillerDTO.getEmployees().get(i).getEmail())
                         .phoneNumber(dbFillerDTO.getEmployees().get(i).getPhoneNumber())
                         .workingHours(dbFillerDTO.getEmployees().get(i).getWorkingHours())
