@@ -42,17 +42,11 @@ public class DatabaseFillerController {
     public String create(@RequestBody DatabaseFillerDTO dbFillerDTO) {
         if (dbFillerDTO.getReset()) {
             meetingEmployeeRepo.deleteAll();
-            //meetingEmployeeRepo.truncateMeetingEmployee();
             meetingRepo.deleteAll();
-            //meetingRepo.truncateMeeting();
             employeeRepo.deleteAll();
-            //employeeRepo.truncateEmployee();
             deskRepo.deleteAll();
-            //deskRepo.truncateDesk();
             roomRepo.deleteAll();
-            //roomRepo.truncateRoom();
             floorRepo.deleteAll();
-            floorRepo.truncateFloor();
         }
 
         HashMap<String, RoomType> roomTypes = new HashMap<String, RoomType>();
