@@ -39,4 +39,14 @@ public class MeetingEmployee {
 		this.id = new MeetingEmployeeId(meeting.getId(), employee.getId());
 	}
 
+    @PrePersist
+	public void setDefaultValues() {
+        if (this.present == null) {
+            this.present = true;
+        }
+        if (this.remote == null) {
+            this.remote = false;
+        }
+    }
+
 }

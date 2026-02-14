@@ -37,6 +37,19 @@ public class Room {
     private Integer openspaceNumber;
 
     @ManyToOne
-    @JoinColumn(name = "floor_name", nullable = false)
+    @JoinColumn(name = "floor", nullable = false)
     private Floor floor;
+
+    @PrePersist
+	public void setDefaultValues() {
+        if (this.orientationDeg == null) {
+            this.orientationDeg = 0f;
+        }
+        if (this.coordX1 == null) {
+            this.coordX1 = 0f;
+        }
+        if (this.coordZ1 == null) {
+            this.coordZ1 = 0f;
+        }
+    }
 }

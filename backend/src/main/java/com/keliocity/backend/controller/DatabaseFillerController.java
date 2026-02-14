@@ -143,6 +143,18 @@ public class DatabaseFillerController {
                 desk = desks.get(dbFillerDTO.getEmployees().get(i).getDeskName());
             }
 
+            String inoffice = dbFillerDTO.getEmployees().get(i).getInOffice();
+            if (dbFillerDTO.getEmployees().get(i).getInOffice() == null) {
+                inoffice = "OFFICE";
+            }
+            String status = dbFillerDTO.getEmployees().get(i).getStatus();
+            if (dbFillerDTO.getEmployees().get(i).getStatus() == null) {
+                status = "AVAILABLE";
+            }
+            String sprite = dbFillerDTO.getEmployees().get(i).getSprite();
+            if (dbFillerDTO.getEmployees().get(i).getSprite() == null) {
+                sprite = "MAN1";
+            }
             employees.put(dbFillerDTO.getEmployees().get(i).getFirstName()+"_"+dbFillerDTO.getEmployees().get(i).getLastName(), employeeRepo.save(
                     Employee.builder()
                         .firstName(dbFillerDTO.getEmployees().get(i).getFirstName())
@@ -151,9 +163,9 @@ public class DatabaseFillerController {
                         .email(dbFillerDTO.getEmployees().get(i).getEmail())
                         .phoneNumber(dbFillerDTO.getEmployees().get(i).getPhoneNumber())
                         .workingHours(dbFillerDTO.getEmployees().get(i).getWorkingHours())
-                        .inOffice(WorkLocation.valueOf(dbFillerDTO.getEmployees().get(i).getInOffice().trim().toUpperCase()))
-                        .status(EmployeeStatus.valueOf(dbFillerDTO.getEmployees().get(i).getStatus().trim().toUpperCase()))
-                        .sprite(Sprite.valueOf(dbFillerDTO.getEmployees().get(i).getSprite().trim().toUpperCase()))
+                        .inOffice(WorkLocation.valueOf(inoffice.trim().toUpperCase()))
+                        .status(EmployeeStatus.valueOf(status.trim().toUpperCase()))
+                        .sprite(Sprite.valueOf(sprite.trim().toUpperCase()))
                         .build()
             ));
         }

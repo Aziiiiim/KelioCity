@@ -47,4 +47,19 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     @Column(name = "sprite", nullable = false)
     private Sprite sprite;
+
+    @PrePersist
+    public void setDefaultValues() {
+        if (this.phoneNumber == null || this.phoneNumber == "") {
+            this.phoneNumber = "Non communiqué";
+        }
+
+        if (this.email == null || this.email == "") {
+            this.email = this.firstName.toLowerCase()+"."+this.lastName.toLowerCase()+"@keliocity.com";
+        }
+
+        if (this.workingHours == null || this.workingHours == "") {
+            this.workingHours = "08:00-16:00";
+        }
+    }
 }
