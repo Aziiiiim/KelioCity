@@ -40,6 +40,21 @@ public class DatabaseFillerController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@RequestBody DatabaseFillerDTO dbFillerDTO) {
+        if (dbFillerDTO.getReset()) {
+            meetingEmployeeRepo.deleteAll();
+            //meetingEmployeeRepo.truncateMeetingEmployee();
+            meetingRepo.deleteAll();
+            //meetingRepo.truncateMeeting();
+            employeeRepo.deleteAll();
+            //employeeRepo.truncateEmployee();
+            deskRepo.deleteAll();
+            //deskRepo.truncateDesk();
+            roomRepo.deleteAll();
+            //roomRepo.truncateRoom();
+            floorRepo.deleteAll();
+            floorRepo.truncateFloor();
+        }
+
         HashMap<String, RoomType> roomTypes = new HashMap<String, RoomType>();
         List<RoomType> roomTypeList = roomTypeRepo.findAll();
         for (int i=0; i<roomTypeList.size(); i++) {
@@ -115,15 +130,19 @@ public class DatabaseFillerController {
             if (dbFillerDTO.getEmployees().get(i).getRoomName() != null && dbFillerDTO.getEmployees().get(i).getDeskNumber() != null) {
                 desk = desks.get(deskNames.get(dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber()));
                 if (desk == null) {
+                    String deskname = dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber();
+                    if (dbFillerDTO.getEmployees().get(i).getDeskName() != null) {
+                        deskname = dbFillerDTO.getEmployees().get(i).getDeskName();
+                    }
                     desk = deskRepo.save(
                         Desk.builder()
-                            .deskName(dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber())
+                            .deskName(deskname)
                             .room(rooms.get(dbFillerDTO.getEmployees().get(i).getRoomName()))
                             .deskType(deskTypes.get(rooms.get(dbFillerDTO.getEmployees().get(i).getRoomName()).getRoomType().getRoomtypeName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber()))
                             .build()
                     );
-                    desks.put(dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber(), desk);
-                    deskNames.put(dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber(),dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber());
+                    desks.put(deskname, desk);
+                    deskNames.put(dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber(),deskname);
                 }
             } else if (dbFillerDTO.getEmployees().get(i).getDeskName() != null) {
                 desk = desks.get(dbFillerDTO.getEmployees().get(i).getDeskName());
@@ -151,10 +170,14 @@ public class DatabaseFillerController {
             meetings.put(meetingList.get(i).getTitle(), meetingList.get(i));
         }
         for (int i=0; i<dbFillerDTO.getMeetings().size(); i++) {
+            String deskname = dbFillerDTO.getMeetings().get(i).getDeskName();
+            if (deskname == null && dbFillerDTO.getMeetings().get(i).getDeskNumber() != null) {
+                deskname = deskNames.get(dbFillerDTO.getMeetings().get(i).getRoomName()+"_"+dbFillerDTO.getMeetings().get(i).getDeskNumber());
+            }
             meetings.put(dbFillerDTO.getMeetings().get(i).getTitle(), meetingRepo.save(
                     Meeting.builder()
                         .room(rooms.get(dbFillerDTO.getMeetings().get(i).getRoomName()))
-                        .desk(desks.get(dbFillerDTO.getMeetings().get(i).getDeskName()))
+                        .desk(desks.get(deskname))
                         .title(dbFillerDTO.getMeetings().get(i).getTitle())
                         .startingHour(dbFillerDTO.getMeetings().get(i).getStartingHour()) // format YYYY-MM-DDTHH:mm:ss (ex: 2026-02-12T21:31:00)
                         .endHour(dbFillerDTO.getMeetings().get(i).getEndHour()) // format YYYY-MM-DDTHH:mm:ss (ex: 2026-02-12T21:31:00)

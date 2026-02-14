@@ -4,12 +4,17 @@ import java.util.List;
 
 public class DatabaseFillerDTO {
 
+    private boolean reset;
     private List<FloorDTO> floors;
     private List<RoomDTO> rooms;
     private List<DeskDTO> desks;
     private List<EmployeeDTO> employees;
     private List<MeetingDTO> meetings;
     private List<MeetingEmployeeDTO> meetingEmployees;
+
+    public boolean getReset() {
+        return reset;
+    }
 
     public List<FloorDTO> getFloors() {
         return floors;
