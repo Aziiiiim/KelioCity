@@ -47,6 +47,7 @@ public class DatabaseFillerController {
             deskRepo.deleteAll();
             roomRepo.deleteAll();
             floorRepo.deleteAll();
+            floorRepo.resetAutoIncrement();
         }
 
         HashMap<String, RoomType> roomTypes = new HashMap<String, RoomType>();
