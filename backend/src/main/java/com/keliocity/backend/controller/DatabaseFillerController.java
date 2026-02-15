@@ -2,6 +2,7 @@ package com.keliocity.backend.controller;
 
 import java.util.List;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import com.keliocity.backend.model.dto.*;
 import com.keliocity.backend.model.*;
@@ -70,7 +71,7 @@ public class DatabaseFillerController {
             deskTypes.put((deskTypeList.get(i).getRoomType().getRoomtypeName()+"_"+deskTypeList.get(i).getDeskNumber()).trim().toUpperCase(), deskTypeList.get(i));
         }
 
-        HashMap<String, Floor> floors = new HashMap<String, Floor>();
+        LinkedHashMap<String, Floor> floors = new LinkedHashMap<String, Floor>();
         List<Floor> floorList = floorRepo.findAll();
         for (int i=0; i<floorList.size(); i++) {
             floors.put(floorList.get(i).getFloorName().trim().toUpperCase(), floorList.get(i));
