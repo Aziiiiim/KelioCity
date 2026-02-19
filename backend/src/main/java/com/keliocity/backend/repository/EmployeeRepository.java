@@ -30,15 +30,12 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     FROM Employee e
     LEFT JOIN e.desk d
     LEFT JOIN d.room r
-    LEFT JOIN r.floor f
     WHERE
-      f.id = :floorId
-      AND
       (LOWER(CONCAT(e.firstName, ' ', e.lastName)) LIKE LOWER(CONCAT('%', :name, '%'))
       OR
       LOWER(CONCAT(e.lastName, ' ', e.firstName)) LIKE LOWER(CONCAT('%', :name, '%')))
     """)
-    List<Employee> searchByName(@Param("floorId") Integer floorId, @Param("name") String name);
+    List<Employee> searchByName(@Param("name") String name);
 
     @Modifying
     @Transactional

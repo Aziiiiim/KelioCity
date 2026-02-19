@@ -42,10 +42,10 @@ public class DeskController {
         return deskRepo.findByRoom_Id(roomId);
     }
 
-    // GET /api/desks/search/{floorId}/{name}
-    @GetMapping("/search/{floorId}/{name}")
-    public List<Desk> getByName(@PathVariable Integer floorId, @PathVariable String name) {
-        return deskRepo.searchByName(floorId, name);
+    // GET /api/desks/search/{name}
+    @GetMapping("/search/{name}")
+    public List<Desk> getByName(@PathVariable String name) {
+        return deskRepo.searchByName(name);
     }
 
     @PostMapping

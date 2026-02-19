@@ -36,10 +36,10 @@ public class RoomController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
     }
 
-    // GET /api/rooms/search/{floorId}/{name}
-    @GetMapping("/search/{floorId}/{name}")
-    public List<Room> getByName(@PathVariable Integer floorId, @PathVariable String name) {
-        return roomRepo.searchByName(floorId, name);
+    // GET /api/rooms/search/{name}
+    @GetMapping("/search/{name}")
+    public List<Room> getByName(@PathVariable String name) {
+        return roomRepo.searchByName(name);
     }
 
     // GET /api/rooms/floor/{floorId}
