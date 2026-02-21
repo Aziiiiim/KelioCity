@@ -1,8 +1,13 @@
 package com.keliocity.backend.controller;
 
-import com.keliocity.backend.model.dto.AccountDTO;
 import com.keliocity.backend.model.dto.AuthResponse;
+import com.keliocity.backend.model.dto.DeskAssignDTO;
+import com.keliocity.backend.model.dto.LoginDTO;
+import com.keliocity.backend.model.dto.RegisterDTO;
+import com.keliocity.backend.repository.AccountRepository;
 import com.keliocity.backend.service.AuthService;
+
+import java.security.Principal;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -13,21 +18,30 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final AccountRepository accountRepo;
 
-    public AuthController(AuthService authService){
+    public AuthController(AuthService authService,AccountRepository accountRepo){
         this.authService = authService;
+        this.accountRepo = accountRepo;
     }
 
     @PostMapping("/login")
-    public AuthResponse login(@RequestBody AccountDTO accDTO){
+    public AuthResponse login(@RequestBody LoginDTO accDTO){
         String token = authService.login(accDTO);
         return new AuthResponse(token, "Bearer");
     }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthResponse  register(@RequestBody AccountDTO accDTO) {
+    public AuthResponse  register(@RequestBody RegisterDTO accDTO) {
+    	System.out.println("REGISTER called for email=" + accDTO.email());
         String token = authService.register(accDTO);
         return new AuthResponse(token, "Bearer");
+    }
+    
+    @PutMapping("/me/desk")
+    public void assignMyDesk(@RequestBody DeskAssignDTO dto, Principal principal) {
+    	String email = principal.getName(); 
+    	authService.assignDesk(email, dto.deskId());
     }
 }

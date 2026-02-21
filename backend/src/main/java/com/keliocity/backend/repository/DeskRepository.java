@@ -23,4 +23,5 @@ public interface DeskRepository extends JpaRepository<Desk, Integer> {
       LOWER(d.deskName) LIKE LOWER(CONCAT('%', :name, '%'))
     """)
     List<Desk> searchByName(@Param("name") String name);
+    List<Desk> findByRoom_Floor_Id(Integer floorId);
 }

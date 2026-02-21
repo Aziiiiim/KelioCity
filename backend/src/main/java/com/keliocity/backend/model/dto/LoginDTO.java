@@ -1,7 +1,6 @@
 package com.keliocity.backend.model.dto;
 
-public record AccountDTO (
+public record LoginDTO(
     String email,
     String password
-)
-{}
+) {}

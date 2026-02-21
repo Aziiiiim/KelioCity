@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { initChar } from '../../objects/Characters.jsx';
+import { safeJson } from "./utils.js";
 
 const scenes = document.querySelectorAll(".scene-wrap");
 
@@ -116,14 +117,31 @@ export default function initCharScene(canvas, id){
 const createBtn = document.getElementById("btn-create");
 const backBtn = document.getElementById("btn-back");
 
-createBtn.addEventListener("click", () => {
+createBtn.addEventListener("click",async () => {
     if(!selectedScene) return;
-    
-    console.log("AAAAAAAAAAAAA");
-    // créer compte
-    sessionStorage.setItem("sprite", selectedSpriteName);
 
-    //window.location.href = "../html/spriteChoice.html";
+    const firstName = sessionStorage.getItem("firstName");
+    const lastName = sessionStorage.getItem("lastName");
+    const email = sessionStorage.getItem("email");
+    const password = sessionStorage.getItem("password");
+    const phoneNumber = sessionStorage.getItem("phoneNumber");
+
+    const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ firstName, lastName, email, password, phoneNumber, sprite: selectedSpriteName.toUpperCase() }),
+    });
+
+    if (!res.ok) {
+        return;
+    }
+    localStorage.clear();
+    sessionStorage.clear();
+    const data = await safeJson(res);
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("email", email);
+
+    window.location.href = "/index.html?mode=REGISTER";
 });
 
 backBtn.addEventListener("click", () => {

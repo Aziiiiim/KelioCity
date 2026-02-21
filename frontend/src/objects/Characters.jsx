@@ -6,8 +6,10 @@ function clipOrIndex(animations, idx) {
 }
 
 export function initChar(asset, onReady) {
+  
   makeSkinnedInstance(asset)
     .then(({ obj, animations }) => {
+      //console.log(asset, animations.map((a, i) => `${i}: ${a.name}`));
       obj.scale.set(0.5, 0.5, 0.5);
       obj.focusPosition = new THREE.Vector3(0, 2, 0.5);
       
@@ -18,7 +20,7 @@ export function initChar(asset, onReady) {
       const walk = clipOrIndex(animations, 10);
       const standing = clipOrIndex(animations, 8);
       const idle = clipOrIndex(animations, 2);
-
+      //console.log("Idle tracks:", idle.tracks.map(t => t.name));
       if (sitting) {
         actions.Sitting = mixer.clipAction(sitting);
         actions.Sitting.setLoop(THREE.LoopOnce);

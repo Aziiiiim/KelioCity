@@ -1,5 +1,7 @@
 package com.keliocity.backend.model;
 	
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,7 +51,7 @@ public class Employee {
     @Column(name = "sprite", nullable = false)
     private Sprite sprite;
     
-    /*@OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", unique = true)
-    private Account account;*/
+    @OneToOne(mappedBy = "employee")
+    @JsonIgnore
+    private Account account;
 }

@@ -18,12 +18,9 @@ loginForm.addEventListener("submit", async (e) => {
         document.getElementById("error").textContent = "Login invalide";
         return;
     }
-
-    
-
     const data = await safeJson(res);
     localStorage.setItem("token", data.token);
     localStorage.setItem("email", email);
 
-    window.location.href = "/index.html";
+    window.location.href = "/index.html?mode=NORMAL";
 });

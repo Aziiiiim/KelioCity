@@ -85,4 +85,9 @@ public class DeskController {
         }
         deskRepo.deleteById(id);
     }
+    
+    @GetMapping("/floor/{floorId}")
+    public List<Desk> getByFloor(@PathVariable Integer floorId) {
+        return deskRepo.findByRoom_Floor_Id(floorId);
+    }
 }

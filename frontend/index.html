@@ -17,12 +17,15 @@
   <body>
     <div id="root-window">
       <div id="render-target"></div>
-        <div class="filter-wrapper">
+        <div id="register-banner" class="register-banner hidden">
+          CHOISIS UN BUREAU OU UN SIEGE LIBRE
+        </div>
+        <div id="filter-wrapper" class="filter-wrapper">
           <button class="filter-btn" onclick="selectFilter(this)" data-type="employee">Employé</button>
           <button class="filter-btn" onclick="selectFilter(this)" data-type="room">Salle</button>
           <button class="filter-btn" onclick="selectFilter(this)" data-type="desk">Bureau</button>
         </div>
-        <div class="search-wrapper">
+        <div id="search-wrapper" class="search-wrapper">
           <input type="text" class="search-bar" placeholder="Rechercher une personne, un bureau..."/>
           <button class="search-btn" aria-label="Rechercher" onclick="search()">
             <svg viewBox="0 0 24 24">
@@ -47,12 +50,18 @@
       <button id="logout-btn" class="logout-btn">Déconnexion</button>
       </div>
     <script type="module">
-      import {createScene} from './src/core/scene.jsx'
+      import { createScene } from './src/core/scene.jsx';
+      function getModeFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const mode = (params.get("mode") || "").toUpperCase();
+        return (mode === "LOGIN" || mode === "REGISTER") ? mode : "NORMAL";
+      }
       window.onload = () => {
         window.floorId = 1;
-        window.scene = createScene(window.floorId);
+        const mode = getModeFromUrl();
+        window.scene = createScene(window.floorId, mode);
         window.scene.start();
-      }
+      };
     </script>
     <script>
       const logoutBtn = document.getElementById("logout-btn");

@@ -12,7 +12,7 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @Enumerated(EnumType.STRING)
@@ -22,8 +22,9 @@ public class Account {
     @Column(name = "password", nullable = false)
     private String password;
 
-    //@OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
-    //private Employee employee;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_id", unique = true)
+    private Employee employee;
     
     public Account(){
         this.role = AccountRole.USER;
@@ -33,6 +34,6 @@ public class Account {
         this.email = email;
         this.password = password;
         this.role = AccountRole.USER;
-        //this.employee = employee;
+        this.employee = employee;
     }
 }
