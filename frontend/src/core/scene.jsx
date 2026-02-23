@@ -31,9 +31,16 @@ const currentLights = [];
 let currentMode = "NORMAL";
 let _reloadFloor = null;
 
-let myEmployee = null;
 let myEmployeeId = null;
 let myCharacterRoot = null; 
+
+export function getMyEmployeeId() {
+  return myEmployeeId;
+}
+
+export function getMyCharacterRoot() {
+  return myCharacterRoot;
+}
 
 
 export function setMode(mode) {
@@ -61,6 +68,7 @@ function setRegisterUIHidden(hidden) {
         "available-btn",
         "occupied-btn",
         "logout-btn",
+        "zoom-self-btn",
     ];
 
     for (const id of ids) {
@@ -363,7 +371,6 @@ export function createScene(floorId, mode){
                             character.scene.userData.employee = employees[i];
                             if (myEmployeeId && Number(employees[i]?.id) === myEmployeeId) {
                                 myCharacterRoot = character.scene;
-                                console.log("OUI");
                             }
                             scene.groupCharacters.add(character.scene);
                             characters.push(character);
@@ -418,7 +425,7 @@ export function createScene(floorId, mode){
         _camera = camera;
         _controls = controls;
 
-    return { start, stop, updateFloor, scene, camera, renderer };
+    return { start, stop, updateFloor, scene, camera, renderer, reload: loadFloor  };
 }
 
 export function selectEmployee(employeeId) {

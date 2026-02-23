@@ -1,0 +1,275 @@
+.menu{
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: min(820px, 92vw);
+  height: 100%;
+  background: #ffffffee;
+  border-left: 1px solid #e5e5e5;
+  backdrop-filter: blur(10px);
+  box-shadow: -4px 0 12px rgba(0,0,0,0.12);
+  padding: 28px;
+  transform: translateX(100%);
+  transition: transform 0.4s ease;
+  z-index: 40;
+  overflow-y: auto;
+  font-family: "Inter", sans-serif;
+  isolation: isolate;
+}
+
+.menu.visible{ 
+    transform: translateX(0);
+}
+
+.menu-tabs{
+  display:flex;
+  gap:10px;
+  margin: 10px 0 18px;
+}
+
+.menu-tab{
+  border:none;
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor:pointer;
+  background: rgba(0,0,0,0.08);
+  font-weight: 700;
+}
+
+.menu-tab.active{
+  background: #111;
+  color: white;
+}
+
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  width: 50px;
+  height: 40px;
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: none;
+  border: none;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  color: #555;
+  z-index: 10;
+  pointer-events: auto;
+}
+
+.close-btn:hover {
+  background: rgba(0,0,0,0.06);
+}
+
+.card {
+  background: #f8f9fb;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.animate {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Header row: titre + bouton edit */
+.menu-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom: 10px;
+}
+
+.menu-title{
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  color: #111;
+}
+
+/* Profil header (avatar + nom + mail) */
+.profile-header{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-bottom: 18px;
+}
+
+.profile-avatar{
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  background:#e0e0e0;
+  flex: 0 0 auto;
+}
+
+.profile-name{
+  margin:0;
+  font-size:22px;
+  font-weight:700;
+  color:#111;
+}
+
+.profile-sub{
+  margin-top:4px;
+  font-size:14px;
+  color:#555;
+}
+
+/* Bouton crayon */
+.pencil-btn{
+  border:none;
+  background: rgba(0,0,0,0.06);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.pencil-btn:hover{ background: rgba(0,0,0,0.10); }
+
+.pencil-btn img{
+  width: 18px;
+  height: 18px;
+  display:block;
+}
+
+/* Grille d'infos (comme sidebar) */
+.profile-grid{
+  display:grid;
+  grid-template-columns: 140px 1fr;
+  row-gap: 10px;
+  column-gap: 12px;
+  align-items:center;
+}
+
+.profile-label{
+  font-size: 13px;
+  font-weight: 700;
+  color: #666;
+}
+
+.profile-value{
+  font-size: 14px;
+  color: #111;
+}
+
+/* Inputs en mode édition */
+.profile-input{
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+  background:#fff;
+}
+.profile-input:focus{ border-color: #aaa; }
+
+/* Actions */
+.profile-actions{
+  display:flex;
+  justify-content:flex-end;
+  gap:10px;
+  margin-top: 12px;
+}
+
+.menu-primary-btn, .menu-secondary-btn{
+  border:none;
+  border-radius:10px;
+  padding:10px 12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.menu-primary-btn{
+  background:#111;
+  color:#fff;
+}
+.menu-primary-btn:hover{ opacity: 0.9; }
+
+.menu-secondary-btn{
+  background: rgba(0,0,0,0.08);
+  color:#111;
+}
+.menu-secondary-btn:hover{ background: rgba(0,0,0,0.12); }
+
+.menu-hint{
+  margin-top: 10px;
+  font-size: 13px;
+}
+.menu-hint.ok{ color: #2e7d32; }
+.menu-hint.err{ color: #c62828; }
+
+.profile-avatar-block{
+  display:flex;
+  justify-content:center;
+  margin: 20px 0 10px;
+}
+
+.avatar3d-wrap{
+  width: 260px;
+  height: 260px;
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.04);
+  border: 1px solid rgba(0,0,0,0.10);
+}
+
+.avatar3d-wrap canvas{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+.sprite-picker{
+  display:flex;
+  gap:12px;
+  margin-top: 10px;
+}
+
+.sprite-card{
+  flex: 1;
+  height: 140px;
+  border-radius: 16px;
+  overflow:hidden;
+  background: rgba(0,0,0,0.04);
+  border:1px solid rgba(0,0,0,0.10);
+  cursor:pointer;
+  transition: transform 0.15s ease;
+}
+
+.sprite-card:hover{ transform: scale(1.02); }
+
+.sprite-card.selected{
+  outline: 3px solid #111;
+}
+
+.sprite-card canvas{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+.menu-bottom-spacer{
+  height: 60px;
+}

@@ -6,6 +6,7 @@ import com.keliocity.backend.model.dto.LoginDTO;
 import com.keliocity.backend.model.dto.RegisterDTO;
 import com.keliocity.backend.repository.AccountRepository;
 import com.keliocity.backend.service.AuthService;
+import com.keliocity.backend.service.ChangeService;
 
 import java.security.Principal;
 
@@ -18,11 +19,11 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final AccountRepository accountRepo;
+    private final ChangeService changeService;
 
-    public AuthController(AuthService authService,AccountRepository accountRepo){
+    public AuthController(AuthService authService, ChangeService changeService){
         this.authService = authService;
-        this.accountRepo = accountRepo;
+        this.changeService = changeService;
     }
 
     @PostMapping("/login")
@@ -42,7 +43,8 @@ public class AuthController {
     
     @PutMapping("/me/desk")
     public void assignMyDesk(@RequestBody DeskAssignDTO dto, Principal principal) {
-    	String email = principal.getName(); 
+    	String email = principal.getName();
+    	changeService.inc();
     	authService.assignDesk(email, dto.deskId());
     }
 }
