@@ -1,5 +1,7 @@
 import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar, closeSidebar } from "./sidebar.js";
 import { cameraOn } from "../core/camera.jsx";
+import {updateFloorByStairs} from "./selectFloor.js"
+
 
 
 import * as THREE from "three";
@@ -108,6 +110,7 @@ export function createInteractionManager({ camera, renderer, targets }) {
 
   async function hover(e) {
     if (e.target.closest("#sidebar")) return;
+    
 
     let selected = null;
     let selectedHit = null;
@@ -291,7 +294,13 @@ export function roomPlugin({camera, controls, onlyTypes = null } = {}) {
     onClick: (root) => {
       if(root.userData.roomType == "MeetingRoom") openMeetingRoomSidebar(root);
       if(root.userData.roomType.toLowerCase().includes("desk")) openOfficeSidebar(root);
-      cameraOn(camera, controls, root);
+      if(root.userData.roomType == "Stairs") {
+        if (root.userData.nextFloor) {
+          updateFloorByStairs(root.userData.nextFloor.id);
+        }
+      } else {
+        cameraOn(camera, controls, root);
+      }
     },
   };
 }

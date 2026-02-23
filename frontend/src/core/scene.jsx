@@ -26,10 +26,59 @@ const objectList = [];
 let interaction = null;
 let currentGround = null;
 const currentLights = [];
+let backgroundSphere = null;
+
+// Shader pour le dégradé de fond 3D
+const vertexShader = `
+  varying vec3 vPosition;
+  void main() {
+    vPosition = position;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const fragmentShader = `
+  varying vec3 vPosition;
+  void main() {
+    // Normaliser la coordonnée Y de la sphère (de -1000 à 1000) vers 0 à 1 pour le dégradé
+    float normalizedY = (vPosition.y + 1000.0) / 2000.0;
+    // Dégradé vertical : bleu fixe sur 0-30%, vert fixe sur 70-100%, dégradé entre 30-70%
+    vec3 colorTop = vec3(0.125, 0.357, 0.588); 
+    // clair et flashy : 0.443, 0.847, 0.941 // plus foncé : 0.275, 0.510, 0.706
+    vec3 colorBottom = vec3( 0.345, 0.537, 0.361);
+    //0.345, 0.537, 0.361 // #339b3b
+    vec3 color;
+    float a = 0.45;
+    float b = 0.55;
+    if (normalizedY < a) {
+      color = colorBottom; // Vert fixe en bas
+    } else if (normalizedY > b) {
+      color = colorTop; // Bleu fixe en haut
+    } else {
+      // Dégradé entre 40% et 60%
+      float t = (normalizedY - a) / (b-a);
+      color = mix(colorBottom, colorTop, t);
+    }
+    gl_FragColor = vec4(color, 1.0);
+  }
+`;
+
+
 
 export function createScene(floorId){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
+
+    // Créer un environnement 3D dégradé avec une sphère
+    const sphereGeometry = new THREE.SphereGeometry(1000, 32, 32); // Sphère géante pour envelopper la scène
+    const sphereMaterial = new THREE.ShaderMaterial({
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      side: THREE.BackSide, // Rendre l'intérieur de la sphère pour qu'elle entoure la caméra
+    });
+    backgroundSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    scene.add(backgroundSphere);
+
     //apiTest();
 
     const { camera, resize: resizeCamera, attachResetButton } = createCamera(gameWindow);
@@ -60,19 +109,6 @@ export function createScene(floorId){
         if (scene.groupRooms) scene.groupRooms.clear();
         if (scene.groupCharacters) scene.groupCharacters.clear();
 
-        fetch('/api/floors/'+floorId)
-            .then(res => res.json())
-            .then(floor => {
-                currentGround = createGround(floor["lengthX"],floor["lengthZ"]);
-                scene.add(currentGround);
-                const light1 = createLight(-floor["lengthX"]/2,-floor["lengthZ"]/2,floor["lengthX"]/2,floor["lengthZ"]/2);
-                const light2 = createLight(floor["lengthX"]/2,floor["lengthZ"]/2,-floor["lengthX"]/2,-floor["lengthZ"]/2);
-                scene.add(light1);
-                scene.add(light2);
-                currentLights.push(light1, light2);
-            }).catch(err => console.error("Erreur API:", err));
-
-
         if (!scene.groupRooms) {
             scene.groupRooms = new THREE.Group();
             scene.add(scene.groupRooms);
@@ -94,7 +130,7 @@ export function createScene(floorId){
         });
         interaction.addPlugin(doorPlugin());
         interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters,refresh: interaction.refresh }));
-        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks"] })); 
+        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs"] })); 
         
         const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
         const bouton_available = document.getElementById("available-btn");
@@ -115,9 +151,11 @@ export function createScene(floorId){
             toggleOccupied(interaction);
         });
         
+        
         fetch("/api/rooms/floor/"+floorId)
         .then(res => res.json())
         .then(rooms => {
+            const holes = [];
             for (let i=0; i < rooms.length; i++) {
                     const roomType = rooms[i]?.roomType?.roomtypeName;
                     let roomObj = null;
@@ -154,6 +192,12 @@ export function createScene(floorId){
                     roomElements.userData.roomType = roomType;
                     roomElements.userData.roomId = rooms[i].id;
                     roomElements.userData.roomName = rooms[i]["roomName"];
+                    if (rooms[i]["nextFloor"] != null) {
+                        roomElements.userData.nextFloor = rooms[i]["nextFloor"];
+                    }
+                    if (rooms[i]["position"] != null) {
+                        roomElements.userData.position = rooms[i]["position"];
+                    }
                     roomElements.rotation.y = (rooms[i]["orientationDeg"] / 180) * Math.PI;
                     let newX, newZ;
                     const cosAngle = Math.cos(rooms[i]["orientationDeg"] / 180 * Math.PI);
@@ -173,10 +217,37 @@ export function createScene(floorId){
                         newZ = rooms[i]["coordZ1"] - rooms[i]["roomType"]["lengthZ"]*cosAngle;
                     }
                     roomElements.position.set(newX, 0, newZ);
+                    if (roomElements.userData.roomType == "Stairs" && roomElements.userData.position == "down") {
+                        roomElements.position.set(newX, -5, newZ);
+                        const hole = new THREE.Path();
+                        const lengthX = sinAngle*rooms[i]["roomType"]["lengthZ"]; 
+                        const lengthZ = -sinAngle*rooms[i]["roomType"]["lengthX"];
+                        const centerX = newX ;
+                        const centerZ = -newZ ;
+                        hole.moveTo(centerX , centerZ ); 
+                        hole.lineTo(centerX , centerZ + lengthZ);
+                        hole.lineTo(centerX + lengthX, centerZ + lengthZ); 
+                        hole.lineTo(centerX + lengthX, centerZ ); 
+                        hole.lineTo(centerX , centerZ);
+                        holes.push(hole);
+                    }
 
                     roomList.push(roomElements);
                     scene.groupRooms.add(roomElements);
             }
+
+            fetch('/api/floors/'+floorId)
+            .then(res => res.json())
+            .then(floor => {
+                currentGround = createGround(floor["lengthX"],floor["lengthZ"], holes);
+                scene.add(currentGround);
+                const light1 = createLight(-floor["lengthX"]/2,-floor["lengthZ"]/2,floor["lengthX"]/2,floor["lengthZ"]/2);
+                const light2 = createLight(floor["lengthX"]/2,floor["lengthZ"]/2,-floor["lengthX"]/2,-floor["lengthZ"]/2);
+                scene.add(light1);
+                scene.add(light2);
+                currentLights.push(light1, light2);
+            }).catch(err => console.error("Erreur API:", err));
+
             fetch("/api/employees/floor/"+floorId)
                 .then(res => res.json())
                 .then(employees => {
@@ -245,6 +316,11 @@ export function createScene(floorId){
             controls.update();
 
             if (camera.position.y < 0) camera.position.y = 0;
+
+            // Mettre à jour la position de la sphère pour qu'elle suive la caméra
+            if (backgroundSphere) {
+                backgroundSphere.position.copy(camera.position);
+            }
 
             characters.forEach(c => c.mixer.update(delta));
             objectList.forEach(room => room.openDoor?.(delta));

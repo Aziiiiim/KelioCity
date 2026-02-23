@@ -28,7 +28,7 @@ public class Room {
     private Float coordX1;
 
     @Column(name = "coord_z1", nullable = false)
-    private Float coordZ1;
+    private Float coordZ1; 
 
     @Column(name = "orientation_deg", nullable = false)
     private Float orientationDeg;
@@ -39,4 +39,11 @@ public class Room {
     @ManyToOne
     @JoinColumn(name = "floor_name", nullable = false)
     private Floor floor;
+
+    @ManyToOne
+    @JoinColumn(name = "next_floor_name", nullable = true)
+    private Floor nextFloor;
+    
+    @Column(name = "position", nullable = true)
+    private String position; //up or down
 }
