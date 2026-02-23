@@ -47,6 +47,9 @@
         </div>
         <button id="available-btn" class="available-btn"><img class="img-btn" src="/assets/icons/available.png" alt=""icone disponible par Icons8></button>
         <button id="occupied-btn" class="occupied-btn"><img class="img-btn" src="/assets/icons/occupied.png" alt=""icone occupé par Icons8></button>
+      <button id="zoom-self-btn" class="zoom-self-btn" title="Zoom sur moi">
+        <img src="/assets/icons/target.png" class="img-btn" alt="Zoom sur moi">
+      </button>
       <button id="logout-btn" class="logout-btn">Déconnexion</button>
       </div>
     <script type="module">
@@ -65,7 +68,6 @@
     </script>
     <script>
       const logoutBtn = document.getElementById("logout-btn");
-
       logoutBtn.addEventListener("click", () => {
         localStorage.removeItem("token");
         window.location.href = "/auth/html/welcome.html";

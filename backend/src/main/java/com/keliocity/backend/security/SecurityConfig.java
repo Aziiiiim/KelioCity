@@ -50,7 +50,7 @@ public class SecurityConfig {
         .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(auth -> auth
             .requestMatchers(HttpMethod.POST, "/api/login", "/api/register").permitAll()
-            .requestMatchers("/api/debug/**").permitAll()
+            //.requestMatchers("/api/debug/**").permitAll()
             .requestMatchers("/api/**").authenticated()
             .anyRequest().permitAll()
         )
@@ -61,22 +61,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-    
-    /*@Bean
-    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .cors(cors -> {})
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(sm -> 
-                sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll()
-            )
-            .oauth2ResourceServer(oauth2 -> oauth2.disable());
-
-        return http.build();
-    }*/
-
-
 }

@@ -15,6 +15,7 @@ import com.keliocity.backend.model.Desk;
 import com.keliocity.backend.model.Employee;
 import com.keliocity.backend.model.EmployeeStatus;
 import com.keliocity.backend.model.WorkLocation;
+import com.keliocity.backend.model.dto.AuthResponse;
 import com.keliocity.backend.model.dto.LoginDTO;
 import com.keliocity.backend.model.dto.RegisterDTO;
 import com.keliocity.backend.repository.AccountRepository;
@@ -39,7 +40,7 @@ public class AuthService {
     }
 
     @Transactional
-    public String register(RegisterDTO accDTO){
+    public AuthResponse register(RegisterDTO accDTO){
         if (accountRepo.existsByEmail(accDTO.email())) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email déjà utilisé");
         }
@@ -70,7 +71,7 @@ public class AuthService {
         try {
             accountRepo.save(acc);
             String token = jwtService.generateToken(acc);
-            return token;
+            return new AuthResponse(token, "Bearer", emp.getId());
         } catch (DataIntegrityViolationException e) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email déjà utilisé");
         }
@@ -83,7 +84,7 @@ public class AuthService {
         return true;
     }
 
-    public String login(LoginDTO accDTO){
+    public AuthResponse login(LoginDTO accDTO){
         Optional<Account> res = accountRepo.findByEmail(accDTO.email());
         if (res.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email et/ou mot de passe incorrect(s)");
@@ -91,7 +92,7 @@ public class AuthService {
         else{
             if(passwordEncoder.matches(accDTO.password(),res.get().getPassword())){
                 String token = jwtService.generateToken(res.get());
-                return token;
+                return new AuthResponse(token, "Bearer", res.get().getEmployee().getId());
             }
             else{
                 throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email et/ou mot de passe incorrect(s)");

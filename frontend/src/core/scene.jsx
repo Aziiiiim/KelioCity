@@ -31,6 +31,11 @@ const currentLights = [];
 let currentMode = "NORMAL";
 let _reloadFloor = null;
 
+let myEmployee = null;
+let myEmployeeId = null;
+let myCharacterRoot = null; 
+
+
 export function setMode(mode) {
     const next = (mode === "REGISTER") ? "REGISTER" : "NORMAL";
     if (next === currentMode) return;
@@ -192,13 +197,14 @@ export function createScene(floorId, mode){
     _scene = scene;
     //apiTest();
 
-    const { camera, resize: resizeCamera, attachResetButton } = createCamera(gameWindow);
+    const { camera, resize: resizeCamera, attachResetButton, attachZoomSelfButton } = createCamera(gameWindow);
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     const controls = createControls(camera,gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
     const initialMode = (mode === "REGISTER") ? "REGISTER" : "NORMAL";
     currentMode = initialMode;
+    myEmployeeId = Number(localStorage.getItem("employeeId"));
     async function loadFloor() {
         // Vider les anciennes données
         characters.forEach(char => {
@@ -355,6 +361,10 @@ export function createScene(floorId, mode){
                             character.scene.position.set(newRelativeCoordX+employees[i]["desk"]["room"]["coordX1"], pos_y, newRelativeCoordZ+employees[i]["desk"]["room"]["coordZ1"]);
                             character.play("Sitting");
                             character.scene.userData.employee = employees[i];
+                            if (myEmployeeId && Number(employees[i]?.id) === myEmployeeId) {
+                                myCharacterRoot = character.scene;
+                                console.log("OUI");
+                            }
                             scene.groupCharacters.add(character.scene);
                             characters.push(character);
                             loadedChars += 1;
@@ -373,6 +383,7 @@ export function createScene(floorId, mode){
     }
 
     attachResetButton(controls);
+    attachZoomSelfButton(controls,() => myCharacterRoot);
     function start() {
         function onResize() {
             resizeRenderer();

@@ -27,16 +27,17 @@ public class AuthController {
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginDTO accDTO){
-        String token = authService.login(accDTO);
-        return new AuthResponse(token, "Bearer");
+        /*String token = authService.login(accDTO);
+        return new AuthResponse(token, "Bearer");*/
+    	return authService.login(accDTO);
     }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public AuthResponse  register(@RequestBody RegisterDTO accDTO) {
-    	System.out.println("REGISTER called for email=" + accDTO.email());
-        String token = authService.register(accDTO);
-        return new AuthResponse(token, "Bearer");
+        /*String token = authService.register(accDTO);
+        return new AuthResponse(token, "Bearer");*/
+    	return authService.register(accDTO);
     }
     
     @PutMapping("/me/desk")
