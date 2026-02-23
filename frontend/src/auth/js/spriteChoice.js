@@ -135,12 +135,12 @@ createBtn.addEventListener("click",async () => {
     if (!res.ok) {
         return;
     }
-    localStorage.clear();
+    sessionStorage.clear();
     sessionStorage.clear();
     const data = await safeJson(res);
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("email", email);
-    localStorage.setItem("employeeId", String(data.employeeId));
+    sessionStorage.setItem("token", data.token);
+    sessionStorage.setItem("email", email);
+    sessionStorage.setItem("employeeId", String(data.employeeId));
     
     window.location.href = "/index.html?mode=REGISTER";
 });

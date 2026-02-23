@@ -1,5 +1,5 @@
 export async function apiFetch(url, options = {}) {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   const headers = new Headers(options.headers || {});
 
@@ -17,7 +17,7 @@ export async function apiFetch(url, options = {}) {
   });
 
   if (response.status === 401) {
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     window.location.href = "/auth/welcome.html";
     throw new Error("Unauthorized");
   }

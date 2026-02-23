@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="./src/styles/main.css">
     <link rel="stylesheet" href="./src/styles/sidebar.css">
     <script>
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       if (!token) {
         window.location.href = "/src/auth/html/welcome.html";
       }
@@ -69,7 +69,7 @@
     <script>
       const logoutBtn = document.getElementById("logout-btn");
       logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
         window.location.href = "/auth/html/welcome.html";
       });
     </script>

@@ -204,7 +204,7 @@ export function createScene(floorId, mode){
     gameWindow.appendChild(renderer.domElement);
     const initialMode = (mode === "REGISTER") ? "REGISTER" : "NORMAL";
     currentMode = initialMode;
-    myEmployeeId = Number(localStorage.getItem("employeeId"));
+    myEmployeeId = Number(sessionStorage.getItem("employeeId"));
     async function loadFloor() {
         // Vider les anciennes données
         characters.forEach(char => {
