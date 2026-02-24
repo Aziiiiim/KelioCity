@@ -126,18 +126,15 @@ function renderProfileView(me) {
   const fullName = `${me?.firstName ?? ""} ${me?.lastName ?? ""}`.trim() || "Mon profil";
 
   content.innerHTML = `
-    <div class="menu-header">
-      <div></div>
-      <button class="pencil-btn" id="profile-edit" title="Modifier">
-        <img src="/assets/icons/edit.png" alt="Modifier">
-      </button>
-    </div>
-
     <div class="profile-header">
       <div class="profile-avatar"></div>
       <div>
         <h3 class="profile-name">${escapeHtml(fullName)}</h3>
       </div>
+      <div></div>
+      <button class="pencil-btn" id="profile-edit" title="Modifier">
+        <img src="/assets/icons/edit.png" alt="Modifier">
+      </button>
     </div>
 
     <div class="card">
