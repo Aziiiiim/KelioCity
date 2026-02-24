@@ -48,8 +48,8 @@ const fragmentShader = `
     vec3 colorBottom = vec3( 0.345, 0.537, 0.361);
     //0.345, 0.537, 0.361 // #339b3b
     vec3 color;
-    float a = 0.45;
-    float b = 0.55;
+    float a = 0.4;
+    float b = 0.5;
     if (normalizedY < a) {
       color = colorBottom; // Vert fixe en bas
     } else if (normalizedY > b) {
