@@ -402,6 +402,8 @@ public class DataInitializer implements CommandLineRunner {
                         .coordX1(22f).coordZ1(0f)
                         .orientationDeg(90f)
                         .floor(floor1)
+                        .nextFloor(floor2)
+                        .position("up")
                         .build()
             );
 
@@ -533,6 +535,8 @@ public class DataInitializer implements CommandLineRunner {
                         .coordX1(-12f).coordZ1(-7f)
                         .orientationDeg(-90f)
                         .floor(floor2)
+                        .nextFloor(floor1)
+                        .position("down")
                         .build()
             );
 

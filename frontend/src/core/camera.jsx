@@ -32,7 +32,7 @@ export function createCamera(container) {
     camera.updateProjectionMatrix();
   }
 
-  return { camera, resize,attachResetButton };
+  return { camera, resize, attachResetButton };
 }
 
 export function cameraOn (camera, controls, obj) {
