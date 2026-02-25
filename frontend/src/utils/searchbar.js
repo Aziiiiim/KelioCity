@@ -36,6 +36,7 @@ window.selectFilter = function(btn) {
 
 function showResults() {
     let btnType = "";
+    const floorId = document.getElementsByClassName("select-floor")[0].value;
     if (document.getElementsByClassName("filter-btn active")[0]) {
         btnType = document.getElementsByClassName("filter-btn active")[0].dataset.type;
     }
@@ -244,6 +245,7 @@ function goToResult(elem) {
     document.getElementsByClassName("search-bar")[0].value = "";
     const dropdown = document.getElementsByClassName("search-dropdown")[0];
     dropdown.innerHTML = "";
+    dropdown.classList.add("hidden");
     const btns = document.getElementsByClassName("filter-btn");
     for (let i=0; i<btns.length; i++) {
         btns[i].classList.remove("active");

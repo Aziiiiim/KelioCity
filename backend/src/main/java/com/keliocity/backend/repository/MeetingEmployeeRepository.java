@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.keliocity.backend.model.MeetingEmployee;
 import com.keliocity.backend.model.MeetingEmployeeId;
@@ -42,4 +44,9 @@ public interface MeetingEmployeeRepository extends JpaRepository<MeetingEmployee
         @Param("employeeId") Integer employeeId,
         @Param("now") LocalDateTime now
     );
+
+    @Modifying
+    @Transactional
+    @Query(value = "ALTER TABLE meeting_employees AUTO_INCREMENT = 1", nativeQuery = true)
+    void resetAutoIncrement();
 }

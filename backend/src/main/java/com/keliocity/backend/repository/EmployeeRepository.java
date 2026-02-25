@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.keliocity.backend.model.Employee;
 import com.keliocity.backend.model.EmployeeStatus;
@@ -26,12 +28,18 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
     @Query("""
     SELECT e
     FROM Employee e
+    LEFT JOIN e.desk d
+    LEFT JOIN d.room r
     WHERE
-      LOWER(CONCAT(e.firstName, ' ', e.lastName)) LIKE LOWER(CONCAT('%', :name, '%'))
+      (LOWER(CONCAT(e.firstName, ' ', e.lastName)) LIKE LOWER(CONCAT('%', :name, '%'))
       OR
-      LOWER(CONCAT(e.lastName, ' ', e.firstName)) LIKE LOWER(CONCAT('%', :name, '%'))
+      LOWER(CONCAT(e.lastName, ' ', e.firstName)) LIKE LOWER(CONCAT('%', :name, '%')))
     """)
     List<Employee> searchByName(@Param("name") String name);
-    
     boolean existsByDeskId(Integer deskId);
+
+    @Modifying
+    @Transactional
+    @Query(value = "ALTER TABLE employees AUTO_INCREMENT = 1", nativeQuery = true)
+    void resetAutoIncrement();
 }

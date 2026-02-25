@@ -54,4 +54,19 @@ public class Employee {
     @OneToOne(mappedBy = "employee")
     @JsonIgnore
     private Account account;
+
+    @PrePersist
+    public void setDefaultValues() {
+        if (this.phoneNumber == null || this.phoneNumber == "") {
+            this.phoneNumber = "Non communiqué";
+        }
+
+        if (this.email == null || this.email == "") {
+            this.email = this.firstName.toLowerCase()+"."+this.lastName.toLowerCase()+"@keliocity.com";
+        }
+
+        if (this.workingHours == null || this.workingHours == "") {
+            this.workingHours = "08:00-16:00";
+        }
+    }
 }

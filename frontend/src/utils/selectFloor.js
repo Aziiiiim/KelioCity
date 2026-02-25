@@ -27,6 +27,12 @@ function updateFloor() {
     window.scene.updateFloor(window.floorId);
 }
 
+export function updateFloorByStairs(floorId) {
+    window.floorId = floorId;
+    window.scene.updateFloor(window.floorId);
+    document.getElementsByClassName("select-floor")[0].value = window.floorId;
+}
+
 
 
 
