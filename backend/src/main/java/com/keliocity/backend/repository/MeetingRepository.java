@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.keliocity.backend.model.Meeting;
 
@@ -16,4 +19,8 @@ public interface MeetingRepository extends JpaRepository<Meeting, Integer>{
                                                        LocalDateTime start,
                                                        LocalDateTime end);
 
+    @Modifying
+    @Transactional
+    @Query(value = "ALTER TABLE meetings AUTO_INCREMENT = 1", nativeQuery = true)
+    void resetAutoIncrement();
 }

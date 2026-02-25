@@ -29,4 +29,7 @@ public class DeskType {
     @ManyToOne
     @JoinColumn(name = "room_type", nullable = false)
     private RoomType roomType;
+
+    @Column(name = "desk_number", nullable = false)
+    private Integer deskNumber;
 }

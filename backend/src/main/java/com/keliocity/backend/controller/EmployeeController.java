@@ -72,10 +72,10 @@ public class EmployeeController {
         return "";
     }
 
-    // GET /api/employees/search/{floorId}/{name}
-    @GetMapping("/search/{floorId}/{name}")
-    public List<Employee> getByName(@PathVariable Integer floorId, @PathVariable String name) {
-        return employeeRepo.searchByName(floorId, name);
+    // GET /api/employees/search/{name}
+    @GetMapping("/search/{name}")
+    public List<Employee> getByName(@PathVariable String name) {
+        return employeeRepo.searchByName(name);
     }
 
     // GET /api/employees/floor/{floorId}

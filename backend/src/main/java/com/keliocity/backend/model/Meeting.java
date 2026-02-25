@@ -38,4 +38,18 @@ public class Meeting {
 
     @Column(name = "description")
     private String description;
+
+    @PrePersist
+    public void setDefaultValues() {
+        if (this.startingHour == null) {
+            this.startingHour = LocalDateTime.now();
+        }
+        if (this.endHour == null) {
+            this.endHour = LocalDateTime.now().plusHours(1);
+        }
+
+        if (this.description == null || this.description == "") {
+            this.description = "Non communiqué";
+        }
+    }
 }
