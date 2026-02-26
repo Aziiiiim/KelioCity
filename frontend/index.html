@@ -56,6 +56,7 @@
         <img class="menu-icon" src="/assets/icons/menu.png" alt="">
       </button>
       <button id="logout-btn" class="logout-btn">Déconnexion</button>
+      <button id="admin-btn" class="admin-btn hidden">Admin</button>
       </div>
     <script type="module">
       import { createScene } from './src/core/scene.jsx';
@@ -87,6 +88,30 @@
       menuBtn.addEventListener("click", () => {
         openMenu();
       });
+    </script>
+    <script type="module">
+      import { apiFetch } from "./src/utils/apiFetch.js";
+      const adminBtn = document.getElementById("admin-btn");
+
+      async function loadMe() {
+        try {
+          const res = await apiFetch(`/api/me`, { method: "GET" });
+          if (!res.ok) return;
+
+          const me = await res.json();
+          if (me.role === "ADMIN") {
+            adminBtn.classList.remove("hidden");
+          }
+        } catch (e) {
+          console.error("Erreur /api/me", e);
+        }
+      }
+
+      adminBtn.addEventListener("click", () => {
+        window.location.href = "/src/admin/admin.html";
+      });
+
+      loadMe();
     </script>
   </body>
 </html>
