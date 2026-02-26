@@ -22,12 +22,9 @@ export function createGround(lengthX, lengthZ, holes){
   shape.lineTo(-lengthX/2, -lengthZ/2);
 
   // Ajouter les trous
-  if(holes){
-    for (let hole of holes) {
-      shape.holes.push(hole);
-    }
+  for (let hole of holes) {
+    shape.holes.push(hole);
   }
-  
   
   const geometry = new THREE.ShapeGeometry(shape);
   const ground = new THREE.Mesh(geometry, material);

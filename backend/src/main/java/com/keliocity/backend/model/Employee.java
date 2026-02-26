@@ -55,6 +55,7 @@ public class Employee {
     @JsonIgnore
     private Account account;
 
+
     @PrePersist
     public void setDefaultValues() {
         if (this.phoneNumber == null || this.phoneNumber == "") {

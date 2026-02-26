@@ -119,8 +119,6 @@ function setRegisterUIHidden(hidden) {
 
 function enterRegisterMode() {
     if (!interaction) return;
-
-    console.log("ENTER REGISTER MODE");
     const banner = document.getElementById("register-banner");
     if (banner) banner.classList.remove("hidden");
     setRegisterUIHidden(true); 
@@ -134,7 +132,6 @@ function enterRegisterMode() {
             charactersGroup: _scene.groupCharacters,
             onDeskSelected: async (deskId, root) => {
                 try {
-                    console.log("Desk selected:", deskId);
 
                     interaction.setPersistentStyle(root, {
                         color: 0x00ff00,
@@ -167,7 +164,6 @@ function enterRegisterMode() {
 }
 
 function exitRegisterMode() {
-    console.log("EXIT REGISTER MODE");
 
     if (!interaction) return;
     const banner = document.getElementById("register-banner");
@@ -180,8 +176,6 @@ function exitRegisterMode() {
 
 function enterNormalMode() {
     if (!interaction) return;
-
-    console.log("ENTER NORMAL MODE");
 
     interaction.clearPlugins();
 
@@ -209,9 +203,6 @@ function enterNormalMode() {
 }
 function exitNormalMode() {
     if (!interaction) return;
-
-    console.log("EXIT NORMAL MODE");
-
     interaction.clearPlugins();
 
     const sidebar = document.getElementById("sidebar");
@@ -241,8 +232,6 @@ function clearDeskHighlights() {
 export function createScene(floorId, mode){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
-    
-
     // Créer un environnement 3D dégradé avec une sphère
     const sphereGeometry = new THREE.SphereGeometry(1000, 32, 32); // Sphère géante pour envelopper la scène
     const sphereMaterial = new THREE.ShaderMaterial({
@@ -290,10 +279,10 @@ export function createScene(floorId, mode){
 
         const desksByRoomId = new Map();
         for (const d of desks) {
-        const rid = d.room?.id;
-        if (!rid) continue;
-        if (!desksByRoomId.has(rid)) desksByRoomId.set(rid, []);
-        desksByRoomId.get(rid).push(d);
+            const rid = d.room?.id;
+            if (!rid) continue;
+            if (!desksByRoomId.has(rid)) desksByRoomId.set(rid, []);
+            desksByRoomId.get(rid).push(d);
         }
         if (!scene.groupRooms) {
             scene.groupRooms = new THREE.Group();
