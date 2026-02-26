@@ -1,3 +1,5 @@
+import { apiFetch } from "../utils/apiFetch.js";
+
 const API = "http://localhost:8080/api";
 
 export async function apiTest() {
@@ -21,7 +23,7 @@ export async function apiTest() {
     // ----------------------------
 
     const roomType = await test("Créer RoomType", async () =>
-        fetch(`${API}/room-types`, {
+        apiFetch(`${API}/room-types`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -33,7 +35,7 @@ export async function apiTest() {
     );
 
     await test("GET /room-types", async () =>
-        fetch(`${API}/room-types`).then(res => res.json())
+        apiFetch(`${API}/room-types`).then(res => res.json())
     );
 
     // ----------------------------
@@ -41,7 +43,7 @@ export async function apiTest() {
     // ----------------------------
 
     const room = await test("Créer Room", async () =>
-        fetch(`${API}/rooms`, {
+        apiFetch(`${API}/rooms`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -56,7 +58,7 @@ export async function apiTest() {
     );
 
     await test("GET /rooms", async () =>
-        fetch(`${API}/rooms`).then(res => res.json())
+        apiFetch(`${API}/rooms`).then(res => res.json())
     );
 
     // ----------------------------
@@ -64,7 +66,7 @@ export async function apiTest() {
     // ----------------------------
 
     const desk = await test("Créer Desk", async () =>
-        fetch(`${API}/desks`, {
+        apiFetch(`${API}/desks`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -77,7 +79,7 @@ export async function apiTest() {
     );
 
     await test("GET /desks", async () =>
-        fetch(`${API}/desks`).then(res => res.json())
+        apiFetch(`${API}/desks`).then(res => res.json())
     );
 
     // ----------------------------
@@ -85,7 +87,7 @@ export async function apiTest() {
     // ----------------------------
 
     const employee = await test("Créer Employee", async () =>
-        fetch(`${API}/employees`, {
+        apiFetch(`${API}/employees`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -103,11 +105,11 @@ export async function apiTest() {
     );
 
     await test("GET /employees", async () =>
-        fetch(`${API}/employees`).then(res => res.json())
+        apiFetch(`${API}/employees`).then(res => res.json())
     );
 
     await test("PATCH employee status", async () =>
-        fetch(`${API}/employees/${employee.id}/status/OCCUPIED`, {
+        apiFetch(`${API}/employees/${employee.id}/status/OCCUPIED`, {
             method: "PATCH"
         }).then(res => res.json())
     );
@@ -120,7 +122,7 @@ export async function apiTest() {
     const later = new Date(now.getTime() + 3600000);
 
     const meeting = await test("Créer Meeting", async () =>
-        fetch(`${API}/meetings`, {
+        apiFetch(`${API}/meetings`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -134,7 +136,7 @@ export async function apiTest() {
     );
 
     await test("GET /meetings", async () =>
-        fetch(`${API}/meetings`).then(res => res.json())
+        apiFetch(`${API}/meetings`).then(res => res.json())
     );
 
     // ----------------------------
@@ -142,7 +144,7 @@ export async function apiTest() {
     // ----------------------------
 
     const participant = await test("Ajouter participant au meeting", async () =>
-        fetch(`${API}/meeting-participants`, {
+        apiFetch(`${API}/meeting-participants`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -155,7 +157,7 @@ export async function apiTest() {
     );
 
     await test("GET participants du meeting", async () =>
-        fetch(`${API}/meeting-participants/meeting/${meeting.id}`)
+        apiFetch(`${API}/meeting-participants/meeting/${meeting.id}`)
             .then(res => res.json())
     );
 
@@ -164,23 +166,23 @@ export async function apiTest() {
     // ----------------------------
 
     await test("DELETE Meeting", async () =>
-        fetch(`${API}/meetings/${meeting.id}`, { method: "DELETE" })
+        apiFetch(`${API}/meetings/${meeting.id}`, { method: "DELETE" })
     );
 
     await test("DELETE Employee", async () =>
-        fetch(`${API}/employees/${employee.id}`, { method: "DELETE" })
+        apiFetch(`${API}/employees/${employee.id}`, { method: "DELETE" })
     );
 
     await test("DELETE Desk", async () =>
-        fetch(`${API}/desks/${desk.id}`, { method: "DELETE" })
+        apiFetch(`${API}/desks/${desk.id}`, { method: "DELETE" })
     );
 
     await test("DELETE Room", async () =>
-        fetch(`${API}/rooms/${room.id}`, { method: "DELETE" })
+        apiFetch(`${API}/rooms/${room.id}`, { method: "DELETE" })
     );
 
     await test("DELETE RoomType", async () =>
-        fetch(`${API}/room-types/${roomType.id}`, { method: "DELETE" })
+        apiFetch(`${API}/room-types/${roomType.id}`, { method: "DELETE" })
     );
 
     console.log("\n FIN DES TESTS");

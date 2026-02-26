@@ -1,0 +1,228 @@
+import { apiFetch } from "../../utils/apiFetch.js";
+
+const logoutBtn = document.getElementById("logout-btn");
+const backBtn = document.getElementById("back-btn");
+const rolePill = document.getElementById("role-pill");
+
+logoutBtn.addEventListener("click", () => {
+  sessionStorage.removeItem("token");
+  window.location.href = "/src/auth/html/welcome.html";
+});
+backBtn.addEventListener("click", () => window.location.href = "/");
+
+async function loadMe() {
+  try {
+    const res = await apiFetch("/api/me", { method: "GET" });
+    if (!res.ok) return;
+    const me = await res.json();
+    rolePill.textContent = me.role ?? "—";
+  } catch {}
+}
+
+const sheets = [
+  {
+    sheetName: 'Floors',
+    minDimensions:[3,10],
+    columns: [
+      {type: 'text', title: 'floorName', name: 'floorName', width:200},
+      {type: 'numeric', title: 'lengthX', name: 'lengthX', width:100},
+      {type: 'numeric', title: 'lengthZ', name: 'lengthZ', width:100}
+    ]
+  },
+  {
+    sheetName: 'Rooms',
+    minDimensions:[7,10],
+    columns: [
+      {type: 'text', title: 'roomName', name: 'roomName', width:150},
+      {type: 'dropdown', title: 'roomType', name: 'roomType', width:150, source: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Openspace", "Stairs"]},
+      {type: 'text', title: 'floorName', name: 'floorName', width:150},
+      {type: 'numeric', title: 'coordX1', name: 'coordX1', width:100},
+      {type: 'numeric', title: 'coordZ1', name: 'coordZ1', width:100},
+      {type: 'numeric', title: 'orientationDeg', name: 'orientationDeg', width:140},
+      {type: 'numeric', title: 'openspaceNumber', name: 'openspaceNumber', width:160}
+    ]
+  },
+  {
+    sheetName: 'Desks',
+    minDimensions:[3,10],
+    columns: [
+      {type: 'text', title: 'deskName', name: 'deskName', width:160},
+      {type: 'text', title: 'roomName', name: 'roomName', width:160},
+      {type: 'numeric', title: 'deskNumber', name: 'deskNumber', width:110}
+    ]
+  },
+  {
+    sheetName: 'Employees',
+    minDimensions:[11,10],
+    columns: [
+      {type: 'text', title: 'lastName', name: 'lastName', width:100},
+      {type: 'text', title: 'firstName', name: 'firstName', width:100},
+      {type: 'text', title: 'roomName', name: 'roomName', width:100},
+      {type: 'numeric', title: 'deskNumber', name: 'deskNumber', width:100},
+      {type: 'text', title: 'deskName', name: 'deskName', width:100},
+      {type: 'numeric', title: 'phoneNumber', name: 'phoneNumber', width:110},
+      {type: 'numeric', title: 'email', name: 'email', width:160},
+      {type: 'numeric', title: 'workingHours', name: 'workingHours', width:110},
+      {type: 'dropdown', title: 'inOffice', name: 'inOffice', width:100, source: ["OFFICE", "REMOTE"]},
+      {type: 'dropdown', title: 'status', name: 'status', width:100, source: ["AVAILABLE", "OCCUPIED", "ABSENT"]},
+      {type: 'dropdown', title: 'sprite', name: 'sprite', width:100, source: ["MAN1","WOMAN1","MAN2","WOMAN2","MAN3","WOMAN3","MAN4","WOMAN4"]}
+    ]
+  },
+  {
+    sheetName: 'Meetings',
+    minDimensions:[7,10],
+    columns: [
+      {type: 'text', title: 'title', name: 'title', width:150},
+      {type: 'text', title: 'roomName', name: 'roomName', width:120},
+      {type: 'numeric', title: 'deskNumber', name: 'deskNumber', width:110},
+      {type: 'text', title: 'deskName', name: 'deskName', width:120},
+      {type: 'text', title: 'startingHour', name: 'startingHour', width:110},
+      {type: 'text', title: 'endHour', name: 'endHour', width:100},
+      {type: 'text', title: 'description', name: 'description', width:250}
+    ]
+  },
+  {
+    sheetName: 'MeetingEmployees',
+    minDimensions:[5,10],
+    columns: [
+      {type: 'text', title: 'meetingTitle', name: 'meetingTitle', width:200},
+      {type: 'text', title: 'employeeLastName', name: 'employeeLastName', width:200},
+      {type: 'text', title: 'employeeFirstName', name: 'employeeFirstName', width:200},
+      {type: 'checkbox', title: 'present', name: 'present', width:100},
+      {type: 'checkbox', title: 'remote', name: 'remote', width:110}
+    ]
+  }
+];
+
+jspreadsheet.tabs(document.getElementById('spreadsheet'), sheets);
+
+const tabs = document.getElementsByClassName("jexcel_tab_link");
+tabs[0]?.click();
+
+const tables = ["floors", "rooms", "desks", "employees", "meetings", "meetingEmployees"];
+
+function getCleanedJson() {
+  const excel = document.getElementById("spreadsheet").jexcel;
+  let json = {};
+
+  for (let i = 0; i < excel.length; i++) {
+    const columns = excel[i].getConfig().columns;
+
+    json[tables[i]] = excel[i].getJson().map(row => {
+      let hasContent = false;
+      let processed = {};
+
+      Object.entries(row).forEach(([key, value]) => {
+        const colConfig = columns.find(c => c.name === key);
+        const type = colConfig ? colConfig.type : 'text';
+
+        if (type === 'numeric') {
+          if (value === "" || value === null || value === undefined) processed[key] = null;
+          else {
+            const num = Number(value);
+            processed[key] = isNaN(num) ? value : num;
+          }
+        } else if (type === 'checkbox') {
+          processed[key] = !!value;
+        } else {
+          processed[key] = value === "" ? null : value;
+        }
+
+        if (type !== 'checkbox' && processed[key] !== null) hasContent = true;
+      });
+
+      return hasContent ? processed : null;
+    }).filter(x => x !== null);
+  }
+
+  return json;
+}
+
+async function send() {
+  const reset = document.getElementById("reset").checked;
+  const auth = "AUTH_PR0C0M_k3l10c1ty";
+
+  const json = getCleanedJson();
+  json.auth = auth;
+  json.reset = reset;
+
+  try {
+    const res = await apiFetch("/api/database-filler", {
+      method: "POST",
+      body: JSON.stringify(json)
+    });
+
+    if (!res.ok) {
+      const msg = await res.text();
+      alert("Echec de la requête.\n" + msg);
+      return;
+    }
+
+    document.getElementById("reset").checked = false;
+
+    const excels = document.getElementById("spreadsheet").jexcel;
+    excels.forEach(sheet => sheet.setData([]));
+    tabs[0]?.click();
+
+    alert("Données envoyées ✅");
+  } catch (e) {
+    console.error(e);
+    alert("Erreur réseau");
+  }
+}
+
+function downloadSpreadsheet() {
+  const data = getCleanedJson();
+  const workbook = XLSX.utils.book_new();
+  const hasData = Object.values(data).some(sheet => sheet.length > 0);
+
+  if (!hasData) {
+    alert("Pas de données à télécharger");
+    return;
+  }
+
+  Object.keys(data).forEach(sheetName => {
+    const sheetRows = data[sheetName];
+    if (sheetRows.length > 0) {
+      const worksheet = XLSX.utils.json_to_sheet(sheetRows);
+      XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+    }
+  });
+
+  const fileName = `KelioCity_Export_${new Date().toISOString()}.ods`;
+  XLSX.writeFile(workbook, fileName, { bookType: 'ods' });
+}
+
+document.getElementById("send").addEventListener("click", send);
+document.getElementById("file-export").addEventListener("click", downloadSpreadsheet);
+
+document.getElementById("file-import").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (ev) {
+    const data = new Uint8Array(ev.target.result);
+    const workbook = XLSX.read(data, { type: 'array' });
+
+    workbook.SheetNames.forEach(sheetName => {
+      const jsonData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+      let targetSheet = null;
+
+      for (let i = 0; i < tables.length; i++) {
+        if (tables[i].toLowerCase() === sheetName.toLowerCase()) {
+          targetSheet = document.getElementById("spreadsheet").jexcel[i];
+        }
+      }
+
+      if (targetSheet && jsonData.length > 0) {
+        targetSheet.setData(jsonData.slice(1));
+      }
+    });
+
+    document.getElementById("file-import").value = '';
+  };
+  reader.readAsArrayBuffer(file);
+});
+
+loadMe();

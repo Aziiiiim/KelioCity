@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - KelioCity</title>
+  <link rel="stylesheet" href="../css/login.css" />
+</head>
+<body>
+
+  <main class="page">
+    <a class="back" href="welcome.html">← Retour</a>
+
+    <section class="card">
+      <header class="head">
+        <div class="logo">K</div>
+        <div>
+          <h2>Connexion</h2>
+          <p>Accédez à votre espace KelioCity.</p>
+        </div>
+      </header>
+
+      <form id="login-form" novalidate>
+        <label>
+          <span>Email</span>
+          <input type="email" id="email" placeholder="ex: nom@domaine.com" required />
+        </label>
+
+        <label>
+          <span>Mot de passe</span>
+          <input type="password" id="password" placeholder="••••••••" required />
+        </label>
+
+        <button class="btn" type="submit">Se connecter</button>
+      </form>
+
+      <p id="error" class="error" aria-live="polite"></p>
+
+      <p class="switch">
+        Pas de compte ? <a href="register.html">Créer un compte</a>
+      </p>
+    </section>
+  </main>
+
+  <script type="module" src="../js/login.js"></script>
+</body>
+</html>

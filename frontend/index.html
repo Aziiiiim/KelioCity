@@ -5,18 +5,28 @@
     <title>KelioCity</title>
     <link rel="stylesheet" href="./src/styles/main.css">
     <link rel="stylesheet" href="./src/styles/sidebar.css">
+    <link rel="stylesheet" href="./src/styles/menu.css">
+    <script>
+      const token = sessionStorage.getItem("token");
+      if (!token) {
+        window.location.href = "/src/auth/html/welcome.html";
+      }
+    </script>
     <script type="module" src="./src/utils/searchbar.js"></script>
     <script type="module" src="./src/utils/selectFloor.js"></script>
   </head>
   <body>
     <div id="root-window">
       <div id="render-target"></div>
-        <div class="filter-wrapper">
+        <div id="register-banner" class="register-banner hidden">
+          CHOISIS UN BUREAU OU UN SIEGE LIBRE
+        </div>
+        <div id="filter-wrapper" class="filter-wrapper">
           <button class="filter-btn" onclick="selectFilter(this)" data-type="employee">Employé</button>
           <button class="filter-btn" onclick="selectFilter(this)" data-type="room">Salle</button>
           <button class="filter-btn" onclick="selectFilter(this)" data-type="desk">Bureau</button>
         </div>
-        <div class="search-wrapper">
+        <div id="search-wrapper" class="search-wrapper">
           <input type="text" class="search-bar" placeholder="Rechercher une personne, un bureau..."/>
           <button class="search-btn" aria-label="Rechercher" onclick="search()">
             <svg viewBox="0 0 24 24">
@@ -36,16 +46,72 @@
           <h2>Informations</h2>
           <p>Clique sur un personnage pour afficher ses infos.</p>
         </div>
+        <div id="menu" class="menu hidden"></div>
         <button id="available-btn" class="available-btn"><img class="img-btn" src="/assets/icons/available.png" alt=""icone disponible par Icons8></button>
         <button id="occupied-btn" class="occupied-btn"><img class="img-btn" src="/assets/icons/occupied.png" alt=""icone occupé par Icons8></button>
+      <button id="zoom-self-btn" class="zoom-self-btn" title="Zoom sur moi">
+        <img src="/assets/icons/target.png" class="img-btn" alt="Zoom sur moi">
+      </button>
+      <button id="menu-btn" class="menu-btn" aria-label="Ouvrir le menu">
+        <img class="menu-icon" src="/assets/icons/menu.png" alt="">
+      </button>
+      <button id="logout-btn" class="logout-btn">Déconnexion</button>
+      <button id="admin-btn" class="admin-btn hidden">Admin</button>
       </div>
     <script type="module">
-      import {createScene} from './src/core/scene.jsx'
+      import { createScene } from './src/core/scene.jsx';
+      import { startChangesWatcher } from "./src/utils/changesWatcher.js";
+      function getModeFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const mode = (params.get("mode") || "").toUpperCase();
+        return (mode === "LOGIN" || mode === "REGISTER") ? mode : "NORMAL";
+      }
       window.onload = () => {
         window.floorId = 1;
-        window.scene = createScene(window.floorId);
+        const mode = getModeFromUrl();
+        window.scene = createScene(window.floorId, mode);
         window.scene.start();
+
+        startChangesWatcher(() => {
+          window.scene.reload();
+        }, { intervalMs: 2000 });
+      };
+    </script>
+    <script type="module">
+      import { openMenu, closeMenu } from "./src/utils/menu.js";
+      const logoutBtn = document.getElementById("logout-btn");
+      logoutBtn.addEventListener("click", () => {
+        sessionStorage.removeItem("token");
+        window.location.href = "/auth/html/welcome.html";
+      });
+      const menuBtn = document.getElementById("menu-btn");
+      menuBtn.addEventListener("click", () => {
+        openMenu();
+      });
+    </script>
+    <script type="module">
+      import { apiFetch } from "./src/utils/apiFetch.js";
+      const adminBtn = document.getElementById("admin-btn");
+
+      async function loadMe() {
+        try {
+          const res = await apiFetch(`/api/me`, { method: "GET" });
+          if (!res.ok) return;
+
+          const me = await res.json();
+          if (me.role === "ADMIN") {
+            adminBtn.classList.remove("hidden");
+          }
+        } catch (e) {
+          console.error("Erreur /api/me", e);
+        }
       }
+
+      adminBtn.addEventListener("click", () => {
+        window.location.href = "/src/admin/admin.html";
+      });
+
+      loadMe();
     </script>
   </body>
 </html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>KelioCity — Admin — Plan</title>
+  <link rel="stylesheet" href="../admin.css">
+  <script>
+    const token = sessionStorage.getItem("token");
+    if (!token) window.location.href = "/src/auth/html/welcome.html";
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://bossanova.uk/jspreadsheet/v4/jspreadsheet.js"></script>
+  <link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v4/jspreadsheet.css" type="text/css" />
+  <script src="https://jsuites.net/v5/jsuites.js"></script>
+  <link rel="stylesheet" href="https://jsuites.net/v5/jsuites.css" type="text/css" />
+</head>
+<body>
+  <div class="container">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-title">Kelio<span>City</span></div>
+        <div class="brand-sub">Espace admin</div>
+      </div>
+
+      <nav class="nav">
+        <a class="btn btn-ghost" href="/src/admin/pages/accounts.html">Comptes</a>
+        <a class="btn btn-ghost active" href="/src/admin/pages/database.html">Plan</a>
+      </nav>
+
+      <div class="actions">
+        <span class="pill" id="role-pill">…</span>
+        <button id="back-btn" class="btn btn-secondary">Retour au plan</button>
+        <button id="logout-btn" class="btn btn-danger">Déconnexion</button>
+      </div>
+    </header>
+
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">Plan</h1>
+        <p class="page-subtitle">Tableur d’import/export — envoi vers <code>/api/database-filler</code></p>
+      </div>
+    </div>
+
+    <section class="card">
+      <div class="row">
+        <label for="file-import" class="btn btn-secondary">Importer un fichier</label>
+        <input type="file" id="file-import" accept=".ods,.xlsx" style="display:none;" />
+
+        <button id="file-export" class="btn btn-secondary">Télécharger</button>
+
+        <label class="row" style="margin-left:auto;">
+          <input type="checkbox" id="reset" />
+          <span class="pill">Réinitialiser DB</span>
+        </label>
+
+        <button id="send" class="btn btn-primary">Envoyer</button>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:12px;">
+      <div class="spreadsheet-wrapper">
+        <div id="spreadsheet"></div>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="./database.js"></script>
+</body>
+</html>

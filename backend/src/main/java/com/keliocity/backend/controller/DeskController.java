@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.keliocity.backend.model.Desk;
 import com.keliocity.backend.model.Room;
-import com.keliocity.backend.model.RoomType;
 import com.keliocity.backend.repository.DeskRepository;
 import com.keliocity.backend.repository.RoomRepository;
 
@@ -85,5 +84,10 @@ public class DeskController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Desk not found");
         }
         deskRepo.deleteById(id);
+    }
+    
+    @GetMapping("/floor/{floorId}")
+    public List<Desk> getByFloor(@PathVariable Integer floorId) {
+        return deskRepo.findByRoom_Floor_Id(floorId);
     }
 }

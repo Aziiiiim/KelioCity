@@ -1,9 +1,10 @@
 import { createScene } from "../core/scene";
+import { apiFetch } from "./apiFetch.js";
 
 // display the floor list in the select box
 window.addEventListener("DOMContentLoaded", () => {
     const select = document.getElementsByClassName("select-floor")[0];
-    fetch ("/api/floors")
+    apiFetch ("/api/floors")
         .then(res => res.json())
         .then (listFloors => {
             for (let i=0; i<listFloors.length; i++){

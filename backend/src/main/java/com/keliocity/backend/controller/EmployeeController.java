@@ -12,6 +12,7 @@ import com.keliocity.backend.model.WorkLocation;
 import com.keliocity.backend.model.Desk;
 import com.keliocity.backend.repository.EmployeeRepository;
 import com.keliocity.backend.repository.MeetingEmployeeRepository;
+import com.keliocity.backend.service.ChangeService;
 import com.keliocity.backend.repository.DeskRepository;
 
 import org.springframework.http.HttpStatus;
@@ -25,13 +26,15 @@ public class EmployeeController {
 	private EmployeeRepository employeeRepo;
 	private final MeetingEmployeeRepository meetingEmployeeRepo;
 	private final DeskRepository deskRepo;
+	private final ChangeService changeService;
 
 	
 	public EmployeeController(EmployeeRepository employeeRepo,
-            DeskRepository deskRepo, MeetingEmployeeRepository meetingEmployeeRepo) {
+            DeskRepository deskRepo, MeetingEmployeeRepository meetingEmployeeRepo, ChangeService changeService) {
 		this.employeeRepo = employeeRepo;
 		this.deskRepo = deskRepo;
 		this.meetingEmployeeRepo = meetingEmployeeRepo;
+		this.changeService = changeService;
 	}
 
 
@@ -115,15 +118,16 @@ public class EmployeeController {
         existing.setStatus(updated.getStatus());
         existing.setSprite(updated.getSprite());
 
-        if (updated.getDesk() != null && updated.getDesk().getId() != null) {
-            Desk desk = deskRepo.findById(updated.getDesk().getId())
-                    .orElseThrow(() -> new ResponseStatusException(
-                            HttpStatus.BAD_REQUEST, "Desk not found"));
-            existing.setDesk(desk);
-        } else {
-            existing.setDesk(null);
+        if (updated.getDesk() != null) {
+        	if (updated.getDesk().getId() != null) {
+        		Desk desk = deskRepo.findById(updated.getDesk().getId())
+        				.orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Desk not found"));
+        	    existing.setDesk(desk);
+        	} else {
+        		existing.setDesk(null);
+        	}
         }
-
+        changeService.inc();
         return employeeRepo.save(existing);
     }
 
@@ -134,6 +138,7 @@ public class EmployeeController {
         if (!employeeRepo.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found");
         }
+        changeService.inc();
         employeeRepo.deleteById(id);
     }
 

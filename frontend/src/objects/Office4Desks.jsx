@@ -1,7 +1,17 @@
 import * as THREE from 'three';
 import { makeInstance } from '../utils/asset.js'; 
     
-export function createOffice4Desks(initDoor = null) {
+function tagGroupAsDesk(group, deskId) {
+  group.traverse(n => {
+    if (n.isMesh) {
+      n.userData.kind = "desk";
+      n.userData.deskId = deskId;
+    }
+  });
+}
+
+
+export function createOffice4Desks(deskIds = [],initDoor = null) {
     let x = -1;
     const elements = new THREE.Group();
     elements.userData.kind = "room";
@@ -61,17 +71,28 @@ export function createOffice4Desks(initDoor = null) {
 
     const groupDesk1 = new THREE.Group();
 
+    
     Promise.all([
         makeInstance('/assets/models/decoratedDesk.glb').then((desk) => {
         desk.position.set(-5.43 + 3.5, 0, 2.5);
         desk.scale.set(1.1, 1.1, 1.1);
         desk.rotation.y = -Math.PI * 0.5;
+        desk.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+            }
+        });
         groupDesk1.add(desk);
         }),
         makeInstance('/assets/models/chair.glb').then((chair) => {
         chair.position.set(-4.7 + 3.5, 0, -9.5);
         chair.scale.set(0.035, 0.035, 0.035);
         chair.rotation.y = -Math.PI * 0.5;
+        chair.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+            }
+        });
         groupDesk1.add(chair);
         }),
     ])
@@ -88,6 +109,12 @@ export function createOffice4Desks(initDoor = null) {
 
         groupDesk4.rotation.y = Math.PI;
         groupDesk4.position.set(9 + x, 0, 6.25);
+
+
+        tagGroupAsDesk(groupDesk1, deskIds[0]);
+        tagGroupAsDesk(groupDesk2, deskIds[1]);
+        tagGroupAsDesk(groupDesk3, deskIds[2]);
+        tagGroupAsDesk(groupDesk4, deskIds[3]);
 
         elements.add(groupDesk1, groupDesk2, groupDesk3, groupDesk4);
         })

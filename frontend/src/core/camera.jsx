@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import gsap from "gsap"
+import { openSidebar } from '../utils/sidebar';
 
 export function createCamera(container) {
   const camera = new THREE.PerspectiveCamera(
@@ -22,6 +23,17 @@ export function createCamera(container) {
       });
   }
 
+    function attachZoomSelfButton(controls, getSelf){
+        const btn = document.getElementById("zoom-self-btn");
+        btn.addEventListener("click", () =>{
+            const self = getSelf?.();
+            if (!self) {
+                return;
+            }
+            cameraOn(camera,controls,self);
+            openSidebar(self.userData.employee);
+        });
+    }
 
   function reset(controls) {
     cameraOn(camera, controls, initialPoint);
@@ -32,7 +44,7 @@ export function createCamera(container) {
     camera.updateProjectionMatrix();
   }
 
-  return { camera, resize, attachResetButton };
+  return { camera, resize,attachResetButton, attachZoomSelfButton };
 }
 
 export function cameraOn (camera, controls, obj) {
