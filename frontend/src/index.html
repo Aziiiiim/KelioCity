@@ -3,17 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <title>KelioCity</title>
-    <link rel="stylesheet" href="./src/styles/main.css">
-    <link rel="stylesheet" href="./src/styles/sidebar.css">
-    <link rel="stylesheet" href="./src/styles/menu.css">
+    <link rel="stylesheet" href="./styles/main.css">
+    <link rel="stylesheet" href="./styles/sidebar.css">
+    <link rel="stylesheet" href="./styles/menu.css">
     <script>
       const token = sessionStorage.getItem("token");
       if (!token) {
-        window.location.href = "/src/auth/html/welcome.html";
+        window.location.href = "/auth/html/welcome.html";
       }
     </script>
-    <script type="module" src="./src/utils/searchbar.js"></script>
-    <script type="module" src="./src/utils/selectFloor.js"></script>
+    <script type="module" src="./utils/searchbar.js"></script>
+    <script type="module" src="./utils/selectFloor.js"></script>
   </head>
   <body>
     <div id="root-window">
@@ -47,8 +47,8 @@
           <p>Clique sur un personnage pour afficher ses infos.</p>
         </div>
         <div id="menu" class="menu hidden"></div>
-        <button id="available-btn" class="available-btn"><img class="img-btn" src="/assets/icons/available.png" alt=""icone disponible par Icons8></button>
-        <button id="occupied-btn" class="occupied-btn"><img class="img-btn" src="/assets/icons/occupied.png" alt=""icone occupé par Icons8></button>
+        <button id="available-btn" class="available-btn"><img class="img-btn" src="/assets/icons/available.png" alt="icone disponible par Icons8"></button>
+        <button id="occupied-btn" class="occupied-btn"><img class="img-btn" src="/assets/icons/occupied.png" alt="icone occupé par Icons8"></button>
       <button id="zoom-self-btn" class="zoom-self-btn" title="Zoom sur moi">
         <img src="/assets/icons/target.png" class="img-btn" alt="Zoom sur moi">
       </button>
@@ -59,8 +59,8 @@
       <button id="admin-btn" class="admin-btn hidden">Admin</button>
       </div>
     <script type="module">
-      import { createScene } from './src/core/scene.jsx';
-      import { startChangesWatcher } from "./src/utils/changesWatcher.js";
+      import { createScene } from './core/scene.jsx';
+      import { startChangesWatcher } from "./utils/changesWatcher.js";
       function getModeFromUrl() {
         const params = new URLSearchParams(window.location.search);
         const mode = (params.get("mode") || "").toUpperCase();
@@ -78,7 +78,7 @@
       };
     </script>
     <script type="module">
-      import { openMenu, closeMenu } from "./src/utils/menu.js";
+      import { openMenu, closeMenu } from "./utils/menu.js";
       const logoutBtn = document.getElementById("logout-btn");
       logoutBtn.addEventListener("click", () => {
         sessionStorage.removeItem("token");
@@ -90,7 +90,7 @@
       });
     </script>
     <script type="module">
-      import { apiFetch } from "./src/utils/apiFetch.js";
+      import { apiFetch } from "./utils/apiFetch.js";
       const adminBtn = document.getElementById("admin-btn");
 
       async function loadMe() {
@@ -108,7 +108,7 @@
       }
 
       adminBtn.addEventListener("click", () => {
-        window.location.href = "/src/admin/admin.html";
+        window.location.href = "/admin/admin.html";
       });
 
       loadMe();
