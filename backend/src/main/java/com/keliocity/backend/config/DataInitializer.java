@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -19,6 +20,8 @@ public class DataInitializer implements CommandLineRunner {
     private final MeetingEmployeeRepository meetingEmployeeRepo;
     private final FloorRepository floorRepo;
     private final DeskTypeRepository deskTypeRepo;
+    private final AccountRepository accountRepo;
+    private final PasswordEncoder passwordEncoder;
 
     public DataInitializer(RoomRepository roomRepo,
                            DeskRepository deskRepo,
@@ -27,7 +30,9 @@ public class DataInitializer implements CommandLineRunner {
                            MeetingRepository meetingRepo,
                            MeetingEmployeeRepository meetingEmployeeRepo,
                            FloorRepository floorRepo,
-                           DeskTypeRepository deskTypeRepo) {
+                           DeskTypeRepository deskTypeRepo,
+                           AccountRepository accountRepo,
+                           PasswordEncoder passwordEncoder) {
         this.roomRepo = roomRepo;
         this.deskRepo = deskRepo;
         this.employeeRepo = employeeRepo;
@@ -36,8 +41,50 @@ public class DataInitializer implements CommandLineRunner {
         this.meetingEmployeeRepo = meetingEmployeeRepo;
         this.floorRepo = floorRepo;
         this.deskTypeRepo = deskTypeRepo;
+        this.accountRepo = accountRepo;
+        this.passwordEncoder = passwordEncoder;
+    }
+    
+    private Employee createEmployeeWithAccount(
+            String firstName,
+            String lastName,
+            Desk desk,
+            String email,
+            String phoneNumber,
+            String workingHours,
+            WorkLocation inOffice,
+            EmployeeStatus status,
+            Sprite sprite) {
+        Employee emp = Employee.builder()
+                .firstName(firstName)
+                .lastName(lastName)
+                .desk(desk)
+                .email(email)
+                .phoneNumber(phoneNumber)
+                .workingHours(workingHours)
+                .inOffice(inOffice)
+                .status(status)
+                .sprite(sprite)
+                .build();
+
+        Account acc = new Account();
+        acc.setEmail(email);
+        acc.setPassword(passwordEncoder.encode("mdp"));
+        acc.setRole(AccountRole.USER);
+        acc.setEmployee(emp);
+
+        accountRepo.save(acc);
+        return acc.getEmployee();
     }
 
+    private boolean shouldCreateEmployeeOnDeskD(int j, int i) {
+        return (i + j) % 2 == 0;
+    }
+
+    private boolean shouldCreateEmployeeOnDeskG(int j, int i) {
+        return (i + j) % 2 != 0;
+    }
+    
     @Override
     @Transactional
     public void run(String... args) {
@@ -750,368 +797,316 @@ public class DataInitializer implements CommandLineRunner {
             );
 
             // --- EMPLOYEES ---
-            Employee alice = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Alice")
-                        .lastName("Dupont")
-                        .desk(deskA105)
-                        .email("alice.dupont@keliocity.com")
-                        .phoneNumber("0601020304")
-                        .workingHours("09:00-17:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.WOMAN1)
-                        .build()
+            Employee alice = createEmployeeWithAccount(
+                    "Alice",
+                    "Dupont",
+                    deskA105,
+                    "alice.dupont@keliocity.com",
+                    "0601020304",
+                    "09:00-17:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.WOMAN1
             );
 
-            Employee bob = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Bob")
-                        .lastName("Martin")
-                        .desk(deskA106)
-                        .email("bob.martin@keliocity.com")
-                        .phoneNumber("0611223344")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.OCCUPIED)
-                        .sprite(Sprite.MAN1)
-                        .build()
+            /*Employee bob = createEmployeeWithAccount(
+                    "Bob",
+                    "Martin",
+                    deskA106,
+                    "bob.martin@keliocity.com",
+                    "0611223344",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.OCCUPIED,
+                    Sprite.MAN1
+            );*/
+
+            /*Employee jade = createEmployeeWithAccount(
+                    "Jade",
+                    "Bernard",
+                    deskA107_1,
+                    "jade.bernard@keliocity.com",
+                    "0611020777",
+                    "09:00-17:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.WOMAN2
+            );*/
+
+            Employee pol = createEmployeeWithAccount(
+                    "Pol",
+                    "Meuler",
+                    deskA107_2,
+                    "pol.meuler@keliocity.com",
+                    "0611721777",
+                    "09:00-17:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.MAN2
             );
 
-            Employee jade = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Jade")
-                        .lastName("Bernard")
-                        .desk(deskA107_1)
-                        .email("jade.bernard@keliocity.com")
-                        .phoneNumber("0611020777")
-                        .workingHours("09:00-17:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.WOMAN2)
-                        .build()
+            /*Employee paul = createEmployeeWithAccount(
+                    "Paul",
+                    "Lefevre",
+                    deskA108_1,
+                    "paul.lefevre@keliocity.com",
+                    "0681283384",
+                    "08:00-16:00",
+                    WorkLocation.REMOTE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.MAN2
+            );*/
+
+            Employee jacob = createEmployeeWithAccount(
+                    "Jacob",
+                    "Clair",
+                    deskA108_2,
+                    "jacob.clair@keliocity.com",
+                    "0681243384",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.ABSENT,
+                    Sprite.MAN1
             );
 
-            Employee pol = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Pol")
-                        .lastName("Meuler")
-                        .desk(deskA107_2)
-                        .email("pol.meuler@keliocity.com")
-                        .phoneNumber("0611721777")
-                        .workingHours("09:00-17:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.MAN2)
-                        .build()
+            Employee alicia = createEmployeeWithAccount(
+                    "Alicia",
+                    "Rodriguez",
+                    deskA108_3,
+                    "alicia.rodriguez@keliocity.com",
+                    "0681283389",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.OCCUPIED,
+                    Sprite.WOMAN2
             );
 
-            Employee paul = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Paul")
-                        .lastName("Lefevre")
-                        .desk(deskA108_1)
-                        .email("paul.lefevre@keliocity.com")
-                        .phoneNumber("0681283384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.REMOTE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.MAN2)
-                        .build()
+            /*Employee marguerite = createEmployeeWithAccount(
+                    "Marguerite",
+                    "Diatre",
+                    deskA108_4,
+                    "marguerite.diatre@keliocity.com",
+                    "0681203384",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.OCCUPIED,
+                    Sprite.WOMAN1
+            );*/
+
+            Employee alexis = createEmployeeWithAccount(
+                    "Alexis",
+                    "Dialo",
+                    deskA109_1,
+                    "alexis.dialo@keliocity.com",
+                    "0781203384",
+                    "08:00-16:00",
+                    WorkLocation.REMOTE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.MAN3
             );
 
-            Employee jacob = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Jacob")
-                        .lastName("Clair")
-                        .desk(deskA108_2)
-                        .email("jacob.clair@keliocity.com")
-                        .phoneNumber("0681243384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.ABSENT)
-                        .sprite(Sprite.MAN1)
-                        .build()
+            /*Employee jeanne = createEmployeeWithAccount(
+                    "Jeanne",
+                    "Dargen",
+                    deskA109_2,
+                    "jeanne.dargen@keliocity.com",
+                    "0681201384",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.WOMAN3
+            );*/
+
+            /*Employee matthieu = createEmployeeWithAccount(
+                    "Matthieu",
+                    "Bess",
+                    deskA109_3,
+                    "matthieu.bess@keliocity.com",
+                    "0681803384",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.MAN4
+            );*/
+
+            Employee jacques = createEmployeeWithAccount(
+                    "Jacques",
+                    "Marlot",
+                    deskA109_4,
+                    "jacques.marlot@keliocity.com",
+                    "0681243384",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.ABSENT,
+                    Sprite.MAN2
             );
 
-            Employee alicia = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Alicia")
-                        .lastName("Rodriguez")
-                        .desk(deskA108_3)
-                        .email("alicia.rodriguez@keliocity.com")
-                        .phoneNumber("0681283389")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.OCCUPIED)
-                        .sprite(Sprite.WOMAN2)
-                        .build()
+            Employee alphonsine = createEmployeeWithAccount(
+                    "Alphonsine",
+                    "Sauvignon",
+                    deskA109_5,
+                    "alphonsine.sauvignon@keliocity.com",
+                    "0631203384",
+                    "08:00-16:00",
+                    WorkLocation.REMOTE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.WOMAN1
             );
 
-            Employee marguerite = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Marguerite")
-                        .lastName("Diatre")
-                        .desk(deskA108_4)
-                        .email("marguerite.diatre@keliocity.com")
-                        .phoneNumber("0681203384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.OCCUPIED)
-                        .sprite(Sprite.WOMAN1)
-                        .build()
+            Employee hector = createEmployeeWithAccount(
+                    "Hector",
+                    "De Thouars",
+                    deskA109_6,
+                    "hector.dethouars@keliocity.com",
+                    "0681000384",
+                    "08:00-16:00",
+                    WorkLocation.REMOTE,
+                    EmployeeStatus.OCCUPIED,
+                    Sprite.MAN1
             );
 
-            Employee alexis = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Alexis")
-                        .lastName("Dialo")
-                        .desk(deskA109_1)
-                        .email("alexis.dialo@keliocity.com")
-                        .phoneNumber("0781203384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.REMOTE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.MAN3)
-                        .build()
+            Employee jackson = createEmployeeWithAccount(
+                    "Jackson",
+                    "Smith",
+                    deskA205_1,
+                    "jackson.smith@keliocity.com",
+                    "0681001384",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.MAN1
             );
 
-            Employee jeanne = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Jeanne")
-                        .lastName("Dargen")
-                        .desk(deskA109_2)
-                        .email("jeanne.dargen@keliocity.com")
-                        .phoneNumber("0681201384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.WOMAN3)
-                        .build()
+            Employee bruce = createEmployeeWithAccount(
+                    "Bruce",
+                    "Lice",
+                    deskA205_2,
+                    "bruce.lice@keliocity.com",
+                    "0681501384",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.OCCUPIED,
+                    Sprite.MAN2
             );
 
-            Employee matthieu = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Matthieu")
-                        .lastName("Bess")
-                        .desk(deskA109_3)
-                        .email("matthieu.bess@keliocity.com")
-                        .phoneNumber("0681803384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.MAN4)
-                        .build()
+            /*Employee jackie = createEmployeeWithAccount(
+                    "Jackie",
+                    "Champs",
+                    deskA206_1,
+                    "jackie.champs@keliocity.com",
+                    "0641501384",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.WOMAN2
+            );*/
+
+            /*Employee martha = createEmployeeWithAccount(
+                    "Martha",
+                    "Saoss",
+                    deskA206_2,
+                    "martha.saoss@keliocity.com",
+                    "0681501784",
+                    "08:00-16:00",
+                    WorkLocation.REMOTE,
+                    EmployeeStatus.OCCUPIED,
+                    Sprite.WOMAN4
+            );*/
+
+            Employee ali = createEmployeeWithAccount(
+                    "Ali",
+                    "gateur",
+                    deskA207_1,
+                    "ai.gateur@keliocity.com",
+                    "0781501384",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.MAN4
             );
 
-            Employee jacques = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Jacques")
-                        .lastName("Marlot")
-                        .desk(deskA109_4)
-                        .email("jacques.marlot@keliocity.com")
-                        .phoneNumber("0681243384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.ABSENT)
-                        .sprite(Sprite.MAN2)
-                        .build()
+            /*Employee nathalie = createEmployeeWithAccount(
+                    "Nathalie",
+                    "Havre",
+                    deskA207_2,
+                    "nathalie.havre@keliocity.com",
+                    "0611501384",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.WOMAN1
+            );*/
+
+            /*Employee james = createEmployeeWithAccount(
+                    "James",
+                    "Bord",
+                    deskA208_1,
+                    "james.bord@keliocity.com",
+                    "0681501386",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.OCCUPIED,
+                    Sprite.MAN2
+            );*/
+
+            Employee mel = createEmployeeWithAccount(
+                    "Mel",
+                    "heire",
+                    deskA208_2,
+                    "mel.heir@keliocity.com",
+                    "0681501380",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.WOMAN3
             );
 
-            Employee alphonsine = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Alphonsine")
-                        .lastName("Sauvignon")
-                        .desk(deskA109_5)
-                        .email("alphonsine.sauvignon@keliocity.com")
-                        .phoneNumber("0631203384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.REMOTE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.WOMAN1)
-                        .build()
+            /*Employee antoine = createEmployeeWithAccount(
+                    "Antoine",
+                    "Rase",
+                    deskA209,
+                    "antoine.rase@keliocity.com",
+                    "0611293344",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.MAN1
             );
 
-            Employee Hector = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Hector")
-                        .lastName("De Thouars")
-                        .desk(deskA109_6)
-                        .email("hector.dethouars@keliocity.com")
-                        .phoneNumber("0681000384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.REMOTE)
-                        .status(EmployeeStatus.OCCUPIED)
-                        .sprite(Sprite.MAN1)
-                        .build()
+            Employee rose = createEmployeeWithAccount(
+                    "Rose",
+                    "Bornart",
+                    deskA210,
+                    "rose.bornart@keliocity.com",
+                    "0671293344",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.WOMAN1
             );
 
-            Employee Jackson = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Jackson")
-                        .lastName("Smith")
-                        .desk(deskA205_1)
-                        .email("jackson.smith@keliocity.com")
-                        .phoneNumber("0681001384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.MAN1)
-                        .build()
-            );
+            /*Employee pierre = createEmployeeWithAccount(
+                    "Pierre",
+                    "Raux",
+                    deskA211,
+                    "pierre.raux@keliocity.com",
+                    "0611293364",
+                    "08:00-16:00",
+                    WorkLocation.REMOTE,
+                    EmployeeStatus.AVAILABLE,
+                    Sprite.MAN2
+            );*/
 
-            Employee Bruce = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Bruce")
-                        .lastName("Lice")
-                        .desk(deskA205_2)
-                        .email("bruce.lice@keliocity.com")
-                        .phoneNumber("0681501384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.OCCUPIED)
-                        .sprite(Sprite.MAN2)
-                        .build()
-            );
-
-            Employee Jackie = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Jackie")
-                        .lastName("Champs")
-                        .desk(deskA206_1)
-                        .email("jackie.champs@keliocity.com")
-                        .phoneNumber("0641501384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.WOMAN2)
-                        .build()
-            );
-
-            Employee Martha = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Martha")
-                        .lastName("Saoss")
-                        .desk(deskA206_2)
-                        .email("martha.saoss@keliocity.com")
-                        .phoneNumber("0681501784")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.REMOTE)
-                        .status(EmployeeStatus.OCCUPIED)
-                        .sprite(Sprite.WOMAN4)
-                        .build()
-            );
-
-            Employee Ali = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Ali")
-                        .lastName("gateur")
-                        .desk(deskA207_1)
-                        .email("ai.gateur@keliocity.com")
-                        .phoneNumber("0781501384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.MAN4)
-                        .build()
-            );
-
-            Employee Nathalie = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Nathalie")
-                        .lastName("Havre")
-                        .desk(deskA207_2)
-                        .email("nathalie.havre@keliocity.com")
-                        .phoneNumber("0611501384")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.WOMAN1)
-                        .build()
-            );
-
-            Employee James = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("James")
-                        .lastName("Bord")
-                        .desk(deskA208_1)
-                        .email("james.bord@keliocity.com")
-                        .phoneNumber("0681501386")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.OCCUPIED)
-                        .sprite(Sprite.MAN2)
-                        .build()
-            );
-
-            Employee Mel = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Mel")
-                        .lastName("heire")
-                        .desk(deskA208_2)
-                        .email("mel.heir@keliocity.com")
-                        .phoneNumber("0681501380")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.WOMAN3)
-                        .build()
-            );
-
-            Employee Antoine = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Antoine")
-                        .lastName("Rase")
-                        .desk(deskA209)
-                        .email("antoine.rase@keliocity.com")
-                        .phoneNumber("0611293344")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.MAN1)
-                        .build()
-            );
-
-            Employee Rose = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Rose")
-                        .lastName("Bornart")
-                        .desk(deskA210)
-                        .email("rose.bornart@keliocity.com")
-                        .phoneNumber("0671293344")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.WOMAN1)
-                        .build()
-            );
-
-            Employee Pierre = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Pierre")
-                        .lastName("Raux")
-                        .desk(deskA211)
-                        .email("pierre.raux@keliocity.com")
-                        .phoneNumber("0611293364")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.REMOTE)
-                        .status(EmployeeStatus.AVAILABLE)
-                        .sprite(Sprite.MAN2)
-                        .build()
-            );
-
-            Employee Moly = employeeRepo.save(
-                    Employee.builder()
-                        .firstName("Moly")
-                        .lastName("golie")
-                        .desk(deskA212)
-                        .email("moly.golie@keliocity.com")
-                        .phoneNumber("0611793344")
-                        .workingHours("08:00-16:00")
-                        .inOffice(WorkLocation.OFFICE)
-                        .status(EmployeeStatus.OCCUPIED)
-                        .sprite(Sprite.WOMAN1)
-                        .build()
+            Employee moly = createEmployeeWithAccount(
+                    "Moly",
+                    "golie",
+                    deskA212,
+                    "moly.golie@keliocity.com",
+                    "0611793344",
+                    "08:00-16:00",
+                    WorkLocation.OFFICE,
+                    EmployeeStatus.OCCUPIED,
+                    Sprite.WOMAN1
             );
 
             // Employees and desks for openspaces
@@ -1230,41 +1225,42 @@ public class DataInitializer implements CommandLineRunner {
                                 .build()
                         );
                         deskRepo.flush();
-                        String spriteD;
-                        if (people.get(14*j+2*i).gender.equals("H")) {
-                            spriteD = "MAN"+((i%4)+1);
-                        } else {
-                            spriteD = "WOMAN"+((i%4)+1);
+                        if (shouldCreateEmployeeOnDeskD(i,j)) {
+	                        String spriteD;
+	                        if (people.get(14*j+2*i).gender.equals("H")) {
+	                            spriteD = "MAN"+((i%4)+1);
+	                        } else {
+	                            spriteD = "WOMAN"+((i%4)+1);
+	                        }
+	
+	                        WorkLocation workLocation;
+	                        EmployeeStatus employeeStatus;
+	                        if ((i+1)%3 == 0) {
+	                            workLocation = WorkLocation.REMOTE;
+	                        } else {
+	                            workLocation = WorkLocation.OFFICE;
+	                        }
+	                        if ((i+1)%5 == 0) {
+	                            employeeStatus = EmployeeStatus.OCCUPIED;
+	                        } else if ((i+1)%7 == 0) {
+	                            employeeStatus = EmployeeStatus.ABSENT;
+	                        } else {
+	                            employeeStatus = EmployeeStatus.AVAILABLE;
+	                        }
+	                        
+	                        createEmployeeWithAccount(
+						            people.get(14*j+2*i).firstname,
+						            people.get(14*j+2*i).lastname,
+						            deskD_openspace,
+						            people.get(14*j+2*i).firstname.toLowerCase() + "." + people.get(14*j+2*i).lastname.toLowerCase() + "@keliocity.com",
+						            "06" + j + "28399" + i,
+						            "08:00-16:00",
+						            workLocation,
+						            employeeStatus,
+						            Sprite.valueOf(spriteD)
+						    	);
+	                        accountRepo.flush();
                         }
-
-                        WorkLocation workLocation;
-                        EmployeeStatus employeeStatus;
-                        if ((i+1)%3 == 0) {
-                            workLocation = WorkLocation.REMOTE;
-                        } else {
-                            workLocation = WorkLocation.OFFICE;
-                        }
-                        if ((i+1)%5 == 0) {
-                            employeeStatus = EmployeeStatus.OCCUPIED;
-                        } else if ((i+1)%7 == 0) {
-                            employeeStatus = EmployeeStatus.ABSENT;
-                        } else {
-                            employeeStatus = EmployeeStatus.AVAILABLE;
-                        }
-                        Employee employeeD = employeeRepo.save(
-                            Employee.builder()
-                                .firstName(people.get(14*j+2*i).firstname)
-                                .lastName(people.get(14*j+2*i).lastname)
-                                .desk(deskD_openspace)
-                                .email(people.get(14*j+2*i).firstname.toLowerCase()+"."+people.get(14*j+2*i).lastname.toLowerCase()+"@keliocity.com")
-                                .phoneNumber("068"+j+"28399"+i)
-                                .workingHours("08:00-16:00")
-                                .inOffice(workLocation)
-                                .status(employeeStatus)
-                                .sprite(Sprite.valueOf(spriteD))
-                                .build()
-                        );
-                        employeeRepo.flush();
                         Desk deskG_openspace = deskRepo.save(
                             Desk.builder()
                                 .deskName("Desk OA100_00"+(j+1)+" "+(2*i+2))
@@ -1273,26 +1269,29 @@ public class DataInitializer implements CommandLineRunner {
                                 .build()
                         );
                         deskRepo.flush();
-                        String spriteG;
-                        if (people.get(14*j+2*i+1).gender.equals("H")) {
-                            spriteG = "MAN"+((i%4)+1);
-                        } else {
-                            spriteG = "WOMAN"+((i%4)+1);
+                        if (shouldCreateEmployeeOnDeskG(i,j)) {
+	                        String spriteG;
+	                        if (people.get(14*j+2*i+1).gender.equals("H")) {
+	                            spriteG = "MAN"+((i%4)+1);
+	                        } else {
+	                            spriteG = "WOMAN"+((i%4)+1);
+	                        }
+	                        
+	                        createEmployeeWithAccount(
+					            people.get(14*j+2*i+1).firstname,
+					            people.get(14*j+2*i+1).lastname,
+					            deskG_openspace,
+					            people.get(14*j+2*i+1).firstname.toLowerCase() + "." + people.get(14*j+2*i+1).lastname.toLowerCase() + "@keliocity.com",
+					            "06" + j + "128999" + i,
+					            "08:00-16:00",
+					            WorkLocation.OFFICE,
+					            EmployeeStatus.AVAILABLE,
+					            Sprite.valueOf(spriteG)
+					    	);
+		                         
+	                        
+	                        accountRepo.flush();
                         }
-                        Employee employeeG = employeeRepo.save(
-                            Employee.builder()
-                                .firstName(people.get(14*j+2*i+1).firstname)
-                                .lastName(people.get(14*j+2*i+1).lastname)
-                                .desk(deskG_openspace)
-                                .email(people.get(14*j+2*i+1).firstname.toLowerCase()+"."+people.get(14*j+2*i+1).lastname.toLowerCase()+"@keliocity.com")
-                                .phoneNumber("06"+j+"128999"+i)
-                                .workingHours("08:00-16:00")
-                                .inOffice(WorkLocation.OFFICE)
-                                .status(EmployeeStatus.AVAILABLE)
-                                .sprite(Sprite.valueOf(spriteG))
-                                .build()
-                        );
-                        employeeRepo.flush();
                     }
                 }
             }
@@ -1308,42 +1307,43 @@ public class DataInitializer implements CommandLineRunner {
                     );
                     deskRepo.flush();
                     if (i != 9) {
-                        String spriteD;
-                        if (people.get(20*j+2*i+38).gender.equals("H")) {
-                            spriteD = "MAN"+((i%4)+1);
-                        } else {
-                            spriteD = "WOMAN"+((i%4)+1);
-                        }
-
-                        WorkLocation workLocation;
-                        EmployeeStatus employeeStatus;
-                        if ((i+1)%5 == 0) {
-                            workLocation = WorkLocation.REMOTE;
-                        } else {
-                            workLocation = WorkLocation.OFFICE;
-                        }
-                        if ((i+1)%7 == 0) {
-                            employeeStatus = EmployeeStatus.OCCUPIED;
-                        } else if (i == 2) {
-                            employeeStatus = EmployeeStatus.ABSENT;
-                        } else {
-                            employeeStatus = EmployeeStatus.AVAILABLE;
-                        }
-                        Employee employeeD = employeeRepo.save(
-                            Employee.builder()
-                                .firstName(people.get(20*j+2*i+38).firstname)
-                                .lastName(people.get(20*j+2*i+38).lastname)
-                                .desk(deskD_openspace)
-                                .email(people.get(20*j+2*i+38).firstname.toLowerCase()+"."+people.get(20*j+2*i+38).lastname.toLowerCase()+"@keliocity.com")
-                                .phoneNumber("067"+j+"28399"+i)
-                                .workingHours("08:00-16:00")
-                                .inOffice(workLocation)
-                                .status(employeeStatus)
-                                .sprite(Sprite.valueOf(spriteD))
-                                .build()
-                        );
+                    	if (shouldCreateEmployeeOnDeskD(i,j)) {
+	                        String spriteD;
+	                        if (people.get(20*j+2*i+38).gender.equals("H")) {
+	                            spriteD = "MAN"+((i%4)+1);
+	                        } else {
+	                            spriteD = "WOMAN"+((i%4)+1);
+	                        }
+	
+	                        WorkLocation workLocation;
+	                        EmployeeStatus employeeStatus;
+	                        if ((i+1)%5 == 0) {
+	                            workLocation = WorkLocation.REMOTE;
+	                        } else {
+	                            workLocation = WorkLocation.OFFICE;
+	                        }
+	                        if ((i+1)%7 == 0) {
+	                            employeeStatus = EmployeeStatus.OCCUPIED;
+	                        } else if (i == 2) {
+	                            employeeStatus = EmployeeStatus.ABSENT;
+	                        } else {
+	                            employeeStatus = EmployeeStatus.AVAILABLE;
+	                        }
+	                        
+	                        createEmployeeWithAccount(
+						            people.get(20*j+2*i+38).firstname,
+						            people.get(20*j+2*i+38).lastname,
+						            deskD_openspace,
+						            people.get(20*j+2*i+38).firstname.toLowerCase() + "." + people.get(20*j+2*i+38).lastname.toLowerCase() + "@keliocity.com",
+						            "06" + j + "28399" + i,
+						            "08:00-16:00",
+						            workLocation,
+						            employeeStatus,
+						            Sprite.valueOf(spriteD)
+					    		);
+                    	}
                     }
-                    employeeRepo.flush();
+                    accountRepo.flush();
                     Desk deskG_openspace = deskRepo.save(
                         Desk.builder()
                             .deskName("Desk OA100_00"+(j+4)+" "+(2*i+2))
@@ -1353,26 +1353,28 @@ public class DataInitializer implements CommandLineRunner {
                     );
                     deskRepo.flush();
                     if (i != 9) {
-                        String spriteG;
-                        if (people.get(20*j+2*i+39).gender.equals("H")) {
-                            spriteG = "MAN"+((i%4)+1);
-                        } else {
-                            spriteG = "WOMAN"+((i%4)+1);
-                        }
-                        Employee employeeG = employeeRepo.save(
-                            Employee.builder()
-                                .firstName(people.get(20*j+2*i+39).firstname)
-                                .lastName(people.get(20*j+2*i+39).lastname)
-                                .desk(deskG_openspace)
-                                .email(people.get(20*j+2*i+39).firstname.toLowerCase()+"."+people.get(20*j+2*i+39).lastname.toLowerCase()+"@keliocity.com")
-                                .phoneNumber("06"+j+"738999"+i)
-                                .workingHours("08:00-16:00")
-                                .inOffice(WorkLocation.OFFICE)
-                                .status(EmployeeStatus.AVAILABLE)
-                                .sprite(Sprite.valueOf(spriteG))
-                                .build()
-                        );
-                        employeeRepo.flush();
+                    	if (shouldCreateEmployeeOnDeskG(i,j)) {
+	                        String spriteG;
+	                        if (people.get(20*j+2*i+39).gender.equals("H")) {
+	                            spriteG = "MAN"+((i%4)+1);
+	                        } else {
+	                            spriteG = "WOMAN"+((i%4)+1);
+	                        }
+	                        
+	                        createEmployeeWithAccount(
+					            people.get(20*j+2*i+39).firstname,
+					            people.get(20*j+2*i+39).lastname,
+					            deskG_openspace,
+					            people.get(20*j+2*i+39).firstname.toLowerCase() + "." + people.get(20*j+2*i+39).lastname.toLowerCase() + "@keliocity.com",
+					            "06" + j + "738999" + i,
+					            "08:00-16:00",
+					            WorkLocation.OFFICE,
+					            EmployeeStatus.AVAILABLE,
+					            Sprite.valueOf(spriteG)
+				    		);
+	                         
+	                        accountRepo.flush();
+                    	}
                     }
                 }
             }

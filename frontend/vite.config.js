@@ -29,6 +29,7 @@ export default defineConfig({
         register: resolve(__dirname, 'src/auth/html/register.html'),
         genderChoice: resolve(__dirname, 'src/auth/html/genderChoice.html'),
         spriteChoice: resolve(__dirname, 'src/auth/html/spriteChoice.html'),
+        admin: resolve(__dirname, 'src/admin/admin.html'),
       },
     },
   },
