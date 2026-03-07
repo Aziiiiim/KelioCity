@@ -131,7 +131,7 @@ export function createScene(floorId){
         });
         interaction.addPlugin(doorPlugin());
         interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters,refresh: interaction.refresh }));
-        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs"] })); 
+        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office2DesksB2"] }));
         
         const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
         const bouton_available = document.getElementById("available-btn");
