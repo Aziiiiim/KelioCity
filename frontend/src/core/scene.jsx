@@ -11,6 +11,7 @@ import { createOffice4Desks } from '../objects/Office4Desks.jsx';
 import { createOffice6Desks } from '../objects/Office6Desks.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
 import { createStairs } from '../objects/Stairs.jsx';
+import { createOffice2DesksB2 } from '../objects/Office2DesksB2.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin } from "../utils/interactionManager.js";
@@ -181,6 +182,9 @@ export function createScene(floorId){
                     }
                     else if (roomType === "Stairs") {
                         roomObj = createStairs();
+                    }
+                    else if (roomType === "Office2DesksB2") {
+                        roomObj = createOffice2DesksB2();
                     }
                     if (roomObj) {
                         roomElements = roomObj.elements;

@@ -118,6 +118,14 @@ public class DataInitializer implements CommandLineRunner {
                         .lengthZ(3f)
                         .build()
             );
+
+            RoomType office2DesksB2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office2DesksB2")
+                        .lengthX(6f)
+                        .lengthZ(4.5f)
+                        .build()
+            );
             // --- DESK TYPE ---
             DeskType desk1office1desk = deskTypeRepo.save(
                     DeskType.builder()
@@ -247,6 +255,26 @@ public class DataInitializer implements CommandLineRunner {
                             .roomType(office6Desks)
                             .deskNumber(6)
                             .build()
+            );
+
+            DeskType desk1office2desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(4.7f)
+                        .coordZ(1.4f)
+                        .orientationDeg(0f)
+                        .roomType(office2DesksB2)
+                        .deskNumber(1)
+                        .build()
+            );
+
+            DeskType desk2office2desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.2f)
+                        .coordZ(3.05f)
+                        .orientationDeg(180f)
+                        .roomType(office2DesksB2)
+                        .deskNumber(2)
+                        .build()
             );
 
             // --- ROOMS ---
