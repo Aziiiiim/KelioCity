@@ -143,6 +143,14 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
+            RoomType office4DesksB2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office4DesksB2")
+                        .lengthX(6f)
+                        .lengthZ(6.5f)
+                        .build()
+            );
+
             // --- DESK TYPE ---
             DeskType desk1office1desk = deskTypeRepo.save(
                     DeskType.builder()
@@ -331,6 +339,46 @@ public class DataInitializer implements CommandLineRunner {
                         .orientationDeg(180f)
                         .roomType(office3DesksB2)
                         .deskNumber(3)
+                        .build()
+            );
+
+            DeskType desk1office4desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(4.7f)
+                        .coordZ(1.4f)
+                        .orientationDeg(0f)
+                        .roomType(office4DesksB2)
+                        .deskNumber(1)
+                        .build()
+            );
+
+            DeskType desk2office4desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.2f)
+                        .coordZ(3.05f)
+                        .orientationDeg(180f)
+                        .roomType(office4DesksB2)
+                        .deskNumber(2)
+                        .build()
+            );
+
+            DeskType desk3office4desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(5.1f)
+                        .coordZ(3.5f)
+                        .orientationDeg(180f)
+                        .roomType(office4DesksB2)
+                        .deskNumber(3)
+                        .build()
+            );
+
+            DeskType desk4office4desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.2f)
+                        .coordZ(5.45f)
+                        .orientationDeg(0f)
+                        .roomType(office4DesksB2)
+                        .deskNumber(4)
                         .build()
             );
 

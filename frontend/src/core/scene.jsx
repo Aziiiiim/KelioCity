@@ -14,6 +14,7 @@ import { createStairs } from '../objects/Stairs.jsx';
 import { createOffice1DeskB2 } from '../objects/Office1DeskB2.jsx';
 import { createOffice2DesksB2 } from '../objects/Office2DesksB2.jsx';
 import { createOffice3DesksB2 } from '../objects/Office3DesksB2.jsx';
+import { createOffice4DesksB2 } from '../objects/Office4DesksB2.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin } from "../utils/interactionManager.js";
@@ -133,7 +134,7 @@ export function createScene(floorId){
         });
         interaction.addPlugin(doorPlugin());
         interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters,refresh: interaction.refresh }));
-        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2"] }));
+        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2"] }));
         
         const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
         const bouton_available = document.getElementById("available-btn");
@@ -193,6 +194,9 @@ export function createScene(floorId){
                     }
                     else if (roomType === "Office3DesksB2") {
                         roomObj = createOffice3DesksB2();
+                    }
+                    else if (roomType === "Office4DesksB2") {
+                        roomObj = createOffice4DesksB2();
                     }
                     if (roomObj) {
                         roomElements = roomObj.elements;
