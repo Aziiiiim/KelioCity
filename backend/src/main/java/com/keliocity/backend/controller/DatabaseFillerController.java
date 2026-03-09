@@ -106,6 +106,10 @@ public class DatabaseFillerController {
             if (roomname == null) {
                 roomname = floorname+"_room_"+rooms.size();
             }
+            String nextFloorName = dbFillerDTO.getRooms().get(i).getNextFloor();
+            if (nextFloorName != null) {
+                nextFloorName = nextFloorName.trim().toUpperCase();
+            }
             rooms.put(dbFillerDTO.getRooms().get(i).getRoomName().trim().toUpperCase(), roomRepo.save(
                 Room.builder()
                     .roomType(roomTypes.get(dbFillerDTO.getRooms().get(i).getRoomType().trim().toUpperCase()))
@@ -114,6 +118,8 @@ public class DatabaseFillerController {
                     .orientationDeg(dbFillerDTO.getRooms().get(i).getOrientationDeg())
                     .openspaceNumber(dbFillerDTO.getRooms().get(i).getOpenspaceNumber())
                     .floor(floors.get(floorname))
+                    .nextFloor(floors.get(nextFloorName))
+                    .position(dbFillerDTO.getRooms().get(i).getPosition())
                     .build()
             ));
         }

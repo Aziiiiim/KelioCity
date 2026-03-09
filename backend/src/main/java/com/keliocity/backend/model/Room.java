@@ -40,6 +40,13 @@ public class Room {
     @JoinColumn(name = "floor", nullable = false)
     private Floor floor;
 
+    @ManyToOne
+    @JoinColumn(name = "next_floor_name", nullable = true)
+    private Floor nextFloor;
+
+    @Column(name = "position", nullable = true)
+    private String position; //up or down
+
     @PrePersist
 	public void setDefaultValues() {
         if (this.orientationDeg == null) {
@@ -52,12 +59,4 @@ public class Room {
             this.coordZ1 = 0f;
         }
     }
-
-    @ManyToOne
-    @JoinColumn(name = "next_floor_name", nullable = true)
-    private Floor nextFloor;
-    
-    @Column(name = "position", nullable = true)
-    private String position; //up or down
-
 }
