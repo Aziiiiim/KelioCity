@@ -62,12 +62,36 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
+            Floor floorForum = floorRepo.save(
+                    Floor.builder()
+                        .floorName("Forum")
+                        .lengthX(80f)
+                        .lengthZ(60f)
+                        .build()
+            );
+
             // --- ROOM TYPE ---
             RoomType meetingRoom = roomTypeRepo.save(
                     RoomType.builder()
                         .roomtypeName("MeetingRoom")
                         .lengthX(15f)
                         .lengthZ(12f)
+                        .build()
+            );
+
+            RoomType forum = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Forum")
+                        .lengthX(80f)
+                        .lengthZ(50f)
+                        .build()
+            );
+
+            RoomType standForum = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("StandForum")
+                        .lengthX(10f)
+                        .lengthZ(10f)
                         .build()
             );
 
@@ -236,7 +260,94 @@ public class DataInitializer implements CommandLineRunner {
                             .build()
             );
 
+            DeskType desk1StandForum = deskTypeRepo.save(
+                    DeskType.builder()
+                            .coordX(0.7f)
+                            .coordZ(-0.1f)
+                            .orientationDeg(135f)
+                            .roomType(standForum)
+                            .build()
+            );
+            DeskType desk2StandForum = deskTypeRepo.save(
+                    DeskType.builder()
+                            .coordX(0f)
+                            .coordZ(-0.9f)
+                            .orientationDeg(135f)
+                            .roomType(standForum)
+                            .build()
+            );
+
             // --- ROOMS ---
+
+            Room roomForum = roomRepo.save(
+                    Room.builder()
+                        .roomType(forum)
+                        .roomName("Forum")
+                        .coordX1(-40f).coordZ1(-30f)
+                        .orientationDeg(0f)
+                        .floor(floorForum)
+                        .build()
+            );
+
+            for (int i=0; i<6; i++) {
+
+                Room standForumA = roomRepo.save(
+                        Room.builder()
+                            .roomType(standForum)
+                            .roomName("StandA"+i)
+                            .coordX1(-35f+i*7f).coordZ1(-25f)
+                            .orientationDeg(-90f)
+                            .floor(floorForum)
+                            .build()
+                );
+                Room standForumB = roomRepo.save(
+                        Room.builder()
+                            .roomType(standForum)
+                            .roomName("StandB"+i)
+                            .coordX1(-25f+i*7f).coordZ1(-12f)
+                            .orientationDeg(0f)
+                            .floor(floorForum)
+                            .build()
+                );
+            }
+
+            Room stairsForum1A = roomRepo.save(
+                    Room.builder()
+                        .roomType(stairs)
+                        .roomName("Escalier 1A Forum")
+                        .coordX1(25f).coordZ1(3f)
+                        .orientationDeg(90f)
+                        .floor(floorForum)
+                        .build()
+            );
+            Room stairsForum1B = roomRepo.save(
+                    Room.builder()
+                        .roomType(stairs)
+                        .roomName("Escalier 1B Forum")
+                        .coordX1(28f).coordZ1(3f)
+                        .orientationDeg(90f)
+                        .floor(floorForum)
+                        .build()
+            );
+            Room stairsForum2 = roomRepo.save(
+                    Room.builder()
+                        .roomType(stairs)
+                        .roomName("Escalier 2 Forum")
+                        .coordX1(5f).coordZ1(3f)
+                        .orientationDeg(90f)
+                        .floor(floorForum)
+                        .build()
+            );
+            Room stairsForum3 = roomRepo.save(
+                    Room.builder()
+                        .roomType(stairs)
+                        .roomName("Escalier 3 Forum")
+                        .coordX1(-20f).coordZ1(3f)
+                        .orientationDeg(90f)
+                        .floor(floorForum)
+                        .build()
+            );
+
             Room roomA101 = roomRepo.save(
                     Room.builder()
                         .roomType(meetingRoom)
@@ -524,6 +635,22 @@ public class DataInitializer implements CommandLineRunner {
             );
 
             // --- DESKS ---
+
+            /*Desk deskStand1 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk Stand1")
+                        .room(standForumA)
+                        .deskType(desk1StandForum)
+                        .build()
+            );
+            Desk deskStand2 = deskRepo.save(
+                    Desk.builder()
+                        .deskName("Desk Stand2")
+                        .room(standForumA)
+                        .deskType(desk2StandForum)
+                        .build()
+            );  */  
+
             Desk deskA105 = deskRepo.save(
                     Desk.builder()
                         .deskName("Desk A105")
@@ -803,11 +930,11 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
-            Employee jacob = employeeRepo.save(
+            /*Employee jacob = employeeRepo.save(
                     Employee.builder()
                         .firstName("Jacob")
                         .lastName("Clair")
-                        .desk(deskA108_2)
+                        .desk(deskStand1)
                         .email("jacob.clair@keliocity.com")
                         .phoneNumber("0681243384")
                         .workingHours("08:00-16:00")
@@ -815,7 +942,7 @@ public class DataInitializer implements CommandLineRunner {
                         .status(EmployeeStatus.ABSENT)
                         .sprite(Sprite.MAN1)
                         .build()
-            );
+            );*/
 
             Employee alicia = employeeRepo.save(
                     Employee.builder()
@@ -929,11 +1056,11 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
-            Employee Jackson = employeeRepo.save(
+            /*Employee Jackson = employeeRepo.save(
                     Employee.builder()
                         .firstName("Jackson")
                         .lastName("Smith")
-                        .desk(deskA205_1)
+                        .desk(deskStand2)
                         .email("jackson.smith@keliocity.com")
                         .phoneNumber("0681001384")
                         .workingHours("08:00-16:00")
@@ -941,7 +1068,7 @@ public class DataInitializer implements CommandLineRunner {
                         .status(EmployeeStatus.AVAILABLE)
                         .sprite(Sprite.MAN1)
                         .build()
-            );
+            );*/
 
             Employee Bruce = employeeRepo.save(
                     Employee.builder()

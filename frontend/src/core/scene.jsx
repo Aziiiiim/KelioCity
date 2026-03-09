@@ -10,6 +10,8 @@ import { createOffice2Desks } from '../objects/Office2Desks.jsx';
 import { createOffice4Desks } from '../objects/Office4Desks.jsx';
 import { createOffice6Desks } from '../objects/Office6Desks.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
+import { createForum } from '../objects/Forum.jsx';
+import { createStand } from '../objects/StandForum.jsx';
 import { createStairs } from '../objects/Stairs.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
@@ -126,6 +128,12 @@ export function createScene(floorId){
                     if (roomType === "MeetingRoom") {
                         roomObj = createMeetingRoom();
                     } 
+                    else if (roomType === "Forum") {
+                        roomObj = createForum();
+                    } 
+                    else if (roomType === "StandForum") {
+                        roomObj = createStand();
+                    } 
                     else if (roomType === "Office1Desk") {
                         roomObj = createOffice1Desk();
                     } 
@@ -222,6 +230,19 @@ export function createScene(floorId){
         })
         .catch(err => console.error("Erreur API:", err));
     };
+
+    /*if (window.floorId == 5) {
+        let roomObj = createForum();
+        let roomElements = roomObj.elements;
+        objectList.push(roomObj);
+        roomList.push(roomElements);
+        if (!scene.groupRooms) {
+            scene.groupRooms = new THREE.Group();
+            scene.add(scene.groupRooms);
+        }
+        console.log(roomElements);
+        scene.groupRooms.add(roomElements);
+    }*/
 
     loadFloor();
     const lights = createSetupLight();
