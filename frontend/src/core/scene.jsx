@@ -16,6 +16,7 @@ import { createOffice2DesksB2 } from '../objects/Office2DesksB2.jsx';
 import { createOffice3DesksB2 } from '../objects/Office3DesksB2.jsx';
 import { createOffice4DesksB2 } from '../objects/Office4DesksB2.jsx';
 import { createOffice5DesksB2 } from '../objects/Office5DesksB2.jsx';
+import { createMeetingRoomB2 } from '../objects/MeetingRoomB2.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin } from "../utils/interactionManager.js";
@@ -135,7 +136,7 @@ export function createScene(floorId){
         });
         interaction.addPlugin(doorPlugin());
         interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters,refresh: interaction.refresh }));
-        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2"] }));
+        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2"] }));
         
         const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
         const bouton_available = document.getElementById("available-btn");
@@ -201,6 +202,9 @@ export function createScene(floorId){
                     }
                     else if (roomType === "Office5DesksB2") {
                         roomObj = createOffice5DesksB2();
+                    }
+                    else if (roomType === "MeetingRoomB2") {
+                        roomObj = createMeetingRoomB2();
                     }
                     if (roomObj) {
                         roomElements = roomObj.elements;
@@ -415,9 +419,9 @@ export function selectObject(type, id) {
     if (type === "room") {
         const roomObj = findRoomById(id);
         if (!roomObj) return;
-    
+
         const roomType = roomObj.userData?.roomType;
-        if (roomType === "MeetingRoom") {
+        if (roomType.includes("MeetingRoom")) {
             openMeetingRoomSidebar(roomObj);
         }
         else{

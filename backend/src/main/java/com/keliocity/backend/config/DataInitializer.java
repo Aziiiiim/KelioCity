@@ -159,6 +159,14 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
+            RoomType meetingRoomB2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("MeetingRoomB2")
+                        .lengthX(6f)
+                        .lengthZ(6.5f)
+                        .build()
+            );
+
             // --- DESK TYPE ---
             DeskType desk1office1desk = deskTypeRepo.save(
                     DeskType.builder()
@@ -437,6 +445,66 @@ public class DataInitializer implements CommandLineRunner {
                         .orientationDeg(0f)
                         .roomType(office5DesksB2)
                         .deskNumber(5)
+                        .build()
+            );
+
+            DeskType desk1meetingRoomB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.4f)
+                        .coordZ(5f)
+                        .orientationDeg(90f)
+                        .roomType(meetingRoomB2)
+                        .deskNumber(1)
+                        .build()
+            );
+
+            DeskType desk2meetingRoomB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.4f)
+                        .coordZ(3.5f)
+                        .orientationDeg(90f)
+                        .roomType(meetingRoomB2)
+                        .deskNumber(2)
+                        .build()
+            );
+
+            DeskType desk3meetingRoomB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(2.2f)
+                        .coordZ(1.9f)
+                        .orientationDeg(0f)
+                        .roomType(meetingRoomB2)
+                        .deskNumber(3)
+                        .build()
+            );
+
+            DeskType desk4meetingRoomB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(3.8f)
+                        .coordZ(1.9f)
+                        .orientationDeg(0f)
+                        .roomType(meetingRoomB2)
+                        .deskNumber(4)
+                        .build()
+            );
+
+            DeskType desk5meetingRoomB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(4.6f)
+                        .coordZ(3.5f)
+                        .orientationDeg(-90f)
+                        .roomType(meetingRoomB2)
+                        .deskNumber(5)
+                        .build()
+            );
+
+            DeskType desk6meetingRoomB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(4.6f)
+                        .coordZ(5f)
+                        .orientationDeg(-90f)
+                        .roomType(meetingRoomB2)
+                        .deskNumber(6)
                         .build()
             );
 

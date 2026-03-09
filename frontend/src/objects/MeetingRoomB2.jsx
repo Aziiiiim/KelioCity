@@ -98,12 +98,44 @@ export function createMeetingRoomB2(initDoor = null) {
     // Desk 3
     makeInstance('/assets/models/StandingDesk.glb').then((desk) => {
         desk.scale.set(1, 1, 1);
+        desk.position.set(2.2, 0.4, 2.3);
+        elements.add(desk);
+    });
+
+    // Chair 3
+    makeInstance('/assets/models/OfficeChair.glb')
+        .then((chair) => {
+        chair.position.set(2.2, 0, 1.5);
+        chair.scale.set(1.3, 1.3, 1.3);
+        elements.add(chair);
+    })
+    .catch(console.error);
+
+    // Desk 4
+    makeInstance('/assets/models/StandingDesk.glb').then((desk) => {
+        desk.scale.set(1, 1, 1);
+        desk.position.set(3.8, 0.4, 2.3);
+        elements.add(desk);
+    });
+
+    // Chair 4
+    makeInstance('/assets/models/OfficeChair.glb')
+        .then((chair) => {
+        chair.position.set(3.8, 0, 1.5);
+        chair.scale.set(1.3, 1.3, 1.3);
+        elements.add(chair);
+    })
+    .catch(console.error);
+
+    // Desk 5
+    makeInstance('/assets/models/StandingDesk.glb').then((desk) => {
+        desk.scale.set(1, 1, 1);
         desk.rotation.y = Math.PI/2;
         desk.position.set(4.2, 0.4, 5);
         elements.add(desk);
     });
 
-    // Chair 3
+    // Chair 5
     makeInstance('/assets/models/OfficeChair.glb')
         .then((chair) => {
         chair.position.set(5, 0, 5);
@@ -113,7 +145,7 @@ export function createMeetingRoomB2(initDoor = null) {
     })
     .catch(console.error);
 
-    // Desk 4
+    // Desk 6
     makeInstance('/assets/models/StandingDesk.glb').then((desk) => {
         desk.scale.set(1, 1, 1);
         desk.rotation.y = Math.PI/2;
@@ -121,44 +153,12 @@ export function createMeetingRoomB2(initDoor = null) {
         elements.add(desk);
     });
 
-    // Chair 4
+    // Chair 6
     makeInstance('/assets/models/OfficeChair.glb')
         .then((chair) => {
         chair.position.set(5, 0, 3.5);
         chair.scale.set(1.3, 1.3, 1.3);
         chair.rotation.y = -Math.PI/2;
-        elements.add(chair);
-    })
-    .catch(console.error);
-
-    // Desk 5
-    makeInstance('/assets/models/StandingDesk.glb').then((desk) => {
-        desk.scale.set(1, 1, 1);
-        desk.position.set(3.8, 0.4, 2.3);
-        elements.add(desk);
-    });
-
-    // Chair 5
-    makeInstance('/assets/models/OfficeChair.glb')
-        .then((chair) => {
-        chair.position.set(3.8, 0, 1.5);
-        chair.scale.set(1.3, 1.3, 1.3);
-        elements.add(chair);
-    })
-    .catch(console.error);
-
-    // Desk 6
-    makeInstance('/assets/models/StandingDesk.glb').then((desk) => {
-        desk.scale.set(1, 1, 1);
-        desk.position.set(2.2, 0.4, 2.3);
-        elements.add(desk);
-    });
-
-    // Chair 6
-    makeInstance('/assets/models/OfficeChair.glb')
-        .then((chair) => {
-        chair.position.set(2.2, 0, 1.5);
-        chair.scale.set(1.3, 1.3, 1.3);
         elements.add(chair);
     })
     .catch(console.error);
