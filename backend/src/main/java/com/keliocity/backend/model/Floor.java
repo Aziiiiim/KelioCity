@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "FLOOR")
+@Table(name = "FLOORS")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,4 +25,15 @@ public class Floor {
 
     @Column(name = "length_z", nullable = false)
     private Float lengthZ;
+
+    @PrePersist
+    public void setDefaultValues() {
+        if (this.lengthX == null || this.lengthX == 0) {
+            this.lengthX = 50.0f;
+        }
+
+        if (this.lengthZ == null || this.lengthZ == 0) {
+            this.lengthZ = 50.0f;
+        }
+    }
 }

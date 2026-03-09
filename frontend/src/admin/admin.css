@@ -1,0 +1,160 @@
+:root {
+    --gold: #D4AF37;
+    --dark-bg: #1a1a1a;
+    --darker: #0f0f0f;
+    --text-light: #f4f4f4;
+    --gray: #333;
+}
+
+body {
+    background-color: var(--darker);
+    color: var(--text-light);
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 20px;
+    height: 90vh;
+}
+
+.admin-container {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--dark-bg);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    border: 1px solid #333;
+    height: 85vh;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+header h1 {
+    color: var(--gold);
+    margin: 0;
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+header h1 span { color: white; }
+
+header h2 {
+    font-weight: 400;
+    font-size: 1.1rem;
+    color: #888;
+}
+
+.spreadsheet-wrapper {
+    height: 337px;
+    overflow: auto;
+    border: 1px solid var(--gray);
+    background: white;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    color: black;
+}
+
+.jexcel_tabs {
+    background-color: var(--darker) !important;
+    padding-top: 5px !important;
+}
+
+.jexcel_tab_link {
+    background-color: #222 !important;
+    color: #888 !important;
+    border: none !important;
+    padding: 10px 20px !important;
+}
+
+.jexcel_tab_link:first-of-type {
+    margin-left: 5px;
+}
+
+.jexcel_tab_link.selected {
+    background-color: var(--gold) !important;
+    color: black !important;
+    font-weight: bold;
+}
+
+.toolbar { margin-bottom: 15px; }
+
+#file-import { display: none; }
+
+.btn-secondary {
+    display: inline-block;
+    padding: 10px 20px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-bottom: 10px;
+}
+
+.btn-secondary:hover {
+    background: var(--gold);
+    color: black;
+}
+
+.btn-primary {
+    background: var(--gold);
+    color: black;
+    border: none;
+    padding: 15px 30px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: transform 0.2s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+}
+
+.controls {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    right: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    margin-bottom: 15px;
+    border-top: 1px solid var(--gray);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #888;
+}
+
+#reset {
+    margin-right: 10px;
+    accent-color: var(--gold);
+}
+
+.file-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+#file-export {
+    background: transparent;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+#file-export:hover {
+    background: var(--gold);
+}

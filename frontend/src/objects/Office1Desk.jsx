@@ -1,12 +1,14 @@
 import * as THREE from 'three';
 import { makeInstance, loadTexture } from '../utils/asset.js';
 
-export function createOffice1Desk(initDoor = null) {
+export function createOffice1Desk(deskIds = [],initDoor = null) {
     const elements = new THREE.Group();
     elements.userData.kind = "room";
     elements.userData.roomType = "Office1Desk"; 
     let x = 3;
     let z = 3;
+
+    const deskId = deskIds[0]; 
 
     // Wall and floor
     const floorGeo = new THREE.PlaneGeometry(6, 4);
@@ -61,6 +63,15 @@ export function createOffice1Desk(initDoor = null) {
     makeInstance('/assets/models/decoratedDesk.glb').then((desk) => {
         desk.position.set(0.3 + x, 0, 6.7 + z);
         desk.scale.set(1.1, 1.1, 1.1);
+
+        desk.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+                n.userData.deskId = deskId;
+            }
+        });
+
+
         elements.add(desk);
     }).catch(console.error);
 
@@ -68,6 +79,14 @@ export function createOffice1Desk(initDoor = null) {
     makeInstance('/assets/models/chair.glb').then((chair) => {
         chair.position.set(-11.7 + x, 0, 6 + z);
         chair.scale.set(0.035, 0.035, 0.035);
+
+        chair.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+                n.userData.deskId = deskId;
+            }
+        });
+
         elements.add(chair);
     }).catch(console.error);
 

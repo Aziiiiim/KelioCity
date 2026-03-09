@@ -15,12 +15,14 @@ import { createStand } from '../objects/StandForum.jsx';
 import { createStairs } from '../objects/Stairs.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
-import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin } from "../utils/interactionManager.js";
+import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin, deskSelectionPlugin } from "../utils/interactionManager.js";
 import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar  } from '../utils/sidebar.js';
+import { apiFetch } from "../utils/apiFetch.js";
 //import { apiTest } from "../utils/apiTest.js";
 
 let _camera = null;
 let _controls = null;
+let _scene = null;
 let clock = new THREE.Clock();
 const roomList = [];
 const characters = [];
@@ -28,19 +30,231 @@ const objectList = [];
 let interaction = null;
 let currentGround = null;
 const currentLights = [];
+let currentMode = "NORMAL";
+let _reloadFloor = null;
+let backgroundSphere = null;
 
-export function createScene(floorId){
+
+// Shader pour le dégradé de fond 3D
+const vertexShader = `
+  varying vec3 vPosition;
+  void main() {
+    vPosition = position;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const fragmentShader = `
+  varying vec3 vPosition;
+  void main() {
+    // Normaliser la coordonnée Y de la sphère (de -1000 à 1000) vers 0 à 1 pour le dégradé
+    float normalizedY = (vPosition.y + 1000.0) / 2000.0;
+    // Dégradé vertical : bleu fixe sur 0-30%, vert fixe sur 70-100%, dégradé entre 30-70%
+    vec3 colorTop = vec3(0.125, 0.357, 0.588); 
+    // clair et flashy : 0.443, 0.847, 0.941 // plus foncé : 0.275, 0.510, 0.706
+    vec3 colorBottom = vec3( 0.345, 0.537, 0.361);
+    //0.345, 0.537, 0.361 // #339b3b
+    vec3 color;
+    float a = 0.4;
+    float b = 0.5;
+    if (normalizedY < a) {
+      color = colorBottom; // Vert fixe en bas
+    } else if (normalizedY > b) {
+      color = colorTop; // Bleu fixe en haut
+    } else {
+      // Dégradé entre 40% et 60%
+      float t = (normalizedY - a) / (b-a);
+      color = mix(colorBottom, colorTop, t);
+    }
+    gl_FragColor = vec4(color, 1.0);
+  }
+`;
+
+
+
+let myEmployeeId = null;
+let myCharacterRoot = null; 
+
+export function getMyEmployeeId() {
+  return myEmployeeId;
+}
+
+export function getMyCharacterRoot() {
+  return myCharacterRoot;
+}
+
+
+export function setMode(mode) {
+    const next = (mode === "REGISTER") ? "REGISTER" : "NORMAL";
+    if (next === currentMode) return;
+
+    if (currentMode === "NORMAL") exitNormalMode();
+    if (currentMode === "REGISTER") exitRegisterMode();
+
+    currentMode = next;
+
+    if (currentMode === "NORMAL") enterNormalMode();
+    if (currentMode === "REGISTER") enterRegisterMode();
+}
+
+function applyMode() {
+  if (currentMode === "REGISTER") enterRegisterMode();
+  else enterNormalMode();
+}
+
+function setRegisterUIHidden(hidden) {
+    const ids = [
+        "search-wrapper",
+        "filter-wrapper",
+        "available-btn",
+        "occupied-btn",
+        "logout-btn",
+        "zoom-self-btn",
+    ];
+
+    for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        el.classList.toggle("ui-hidden", hidden);
+    }
+}
+
+function enterRegisterMode() {
+    if (!interaction) return;
+    const banner = document.getElementById("register-banner");
+    if (banner) banner.classList.remove("hidden");
+    setRegisterUIHidden(true); 
+    interaction.clearPlugins();
+
+    const sidebar = document.getElementById("sidebar");
+    if (sidebar) sidebar.classList.add("hidden");
+
+    interaction.addPlugin(
+        deskSelectionPlugin({
+            charactersGroup: _scene.groupCharacters,
+            onDeskSelected: async (deskId, root) => {
+                try {
+
+                    interaction.setPersistentStyle(root, {
+                        color: 0x00ff00,
+                        emissive: 0x004400
+                    });
+                    const res = await apiFetch(`/api/me/desk`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ deskId }),
+                    });
+
+                    if (!res.ok) {
+                        console.error("Assign desk failed:", res.status);
+                        interaction.clearPersistentStyle(root);
+                    return;
+                    }
+                    window.history.replaceState({}, "", "/index.html?mode=NORMAL");
+                    setMode("NORMAL");
+                    await _reloadFloor?.();
+                } 
+                catch (e) {
+                    console.error(e);
+                    interaction.clearPersistentStyle(root);
+                }
+
+            }
+        })
+    );
+    //highlightAvailableDesks();
+}
+
+function exitRegisterMode() {
+
+    if (!interaction) return;
+    const banner = document.getElementById("register-banner");
+    if (banner) banner.classList.add("hidden");
+    setRegisterUIHidden(false); 
+    interaction.clearPlugins();
+
+    clearDeskHighlights();
+}
+
+function enterNormalMode() {
+    if (!interaction) return;
+
+    interaction.clearPlugins();
+
+    interaction.addPlugin(doorPlugin());
+
+    interaction.addPlugin(
+        employeePlugin({
+            camera: _camera,
+            controls: _controls,
+            charactersGroup: _scene.groupCharacters,
+            refresh: interaction.refresh
+        })
+    );
+
+    interaction.addPlugin(
+        roomPlugin({
+            camera: _camera,
+            controls: _controls,
+            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs"]
+        })
+    );
+
+    const sidebar = document.getElementById("sidebar");
+    if (sidebar) sidebar.classList.remove("hidden");
+}
+function exitNormalMode() {
+    if (!interaction) return;
+    interaction.clearPlugins();
+
+    const sidebar = document.getElementById("sidebar");
+    if (sidebar) sidebar.classList.add("hidden");
+}
+
+function highlightAvailableDesks() {
+    _scene.groupRooms.traverse((obj) => {
+        if (obj.userData?.kind === "desk" && obj.userData?.isAvailable){
+            interaction.setPersistentStyle(obj, {
+                color: 0x00ff00,
+                emissive: 0x002200
+            });
+        }
+    });
+}
+
+function clearDeskHighlights() {
+    _scene.groupRooms.traverse((obj) => {
+        if (obj.userData?.kind === "desk") {
+            interaction.clearPersistentStyle(obj);
+        }
+    });
+}
+
+
+export function createScene(floorId, mode){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
+    // Créer un environnement 3D dégradé avec une sphère
+    const sphereGeometry = new THREE.SphereGeometry(1000, 32, 32); // Sphère géante pour envelopper la scène
+    const sphereMaterial = new THREE.ShaderMaterial({
+      vertexShader: vertexShader,
+      fragmentShader: fragmentShader,
+      side: THREE.BackSide, // Rendre l'intérieur de la sphère pour qu'elle entoure la caméra
+    });
+    backgroundSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    scene.add(backgroundSphere);
+    _scene = scene;
     //apiTest();
 
-    const { camera, resize: resizeCamera, attachResetButton } = createCamera(gameWindow);
+    const { camera, resize: resizeCamera, attachResetButton, attachZoomSelfButton } = createCamera(gameWindow);
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     const controls = createControls(camera,gameWindow);
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
-
-    function loadFloor() {
+    const initialMode = (mode === "REGISTER") ? "REGISTER" : "NORMAL";
+    currentMode = initialMode;
+    myEmployeeId = Number(sessionStorage.getItem("employeeId"));
+    async function loadFloor() {
         // Vider les anciennes données
         characters.forEach(char => {
             scene.groupCharacters.remove(char.scene);
@@ -62,19 +276,16 @@ export function createScene(floorId){
         if (scene.groupRooms) scene.groupRooms.clear();
         if (scene.groupCharacters) scene.groupCharacters.clear();
 
-        fetch('/api/floors/'+floorId)
-            .then(res => res.json())
-            .then(floor => {
-                currentGround = createGround(floor["lengthX"],floor["lengthZ"]);
-                scene.add(currentGround);
-                const light1 = createLight(-floor["lengthX"]/2,-floor["lengthZ"]/2,floor["lengthX"]/2,floor["lengthZ"]/2);
-                const light2 = createLight(floor["lengthX"]/2,floor["lengthZ"]/2,-floor["lengthX"]/2,-floor["lengthZ"]/2);
-                scene.add(light1);
-                scene.add(light2);
-                currentLights.push(light1, light2);
-            }).catch(err => console.error("Erreur API:", err));
+        const desksRes = await apiFetch(`/api/desks/floor/${floorId}`);
+        const desks = await desksRes.json();
 
-
+        const desksByRoomId = new Map();
+        for (const d of desks) {
+            const rid = d.room?.id;
+            if (!rid) continue;
+            if (!desksByRoomId.has(rid)) desksByRoomId.set(rid, []);
+            desksByRoomId.get(rid).push(d);
+        }
         if (!scene.groupRooms) {
             scene.groupRooms = new THREE.Group();
             scene.add(scene.groupRooms);
@@ -94,10 +305,7 @@ export function createScene(floorId){
             renderer,
             targets: [scene.groupRooms, scene.groupCharacters],
         });
-        interaction.addPlugin(doorPlugin());
-        interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters,refresh: interaction.refresh }));
-        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks"] })); 
-        
+        applyMode();
         const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
         const bouton_available = document.getElementById("available-btn");
         const bouton_occupied = document.getElementById("occupied-btn");
@@ -117,13 +325,16 @@ export function createScene(floorId){
             toggleOccupied(interaction);
         });
         
-        fetch("/api/rooms/floor/"+floorId)
+        apiFetch("/api/rooms/floor/"+floorId)
         .then(res => res.json())
         .then(rooms => {
+            const holes = [];
             for (let i=0; i < rooms.length; i++) {
                     const roomType = rooms[i]?.roomType?.roomtypeName;
                     let roomObj = null;
-                    let roomElements;
+                    let roomElements;   
+                    const list = desksByRoomId.get(rooms[i].id) || [];
+                    const deskIds = list.map(d => d.id);
 
                     if (roomType === "MeetingRoom") {
                         roomObj = createMeetingRoom();
@@ -135,19 +346,19 @@ export function createScene(floorId){
                         roomObj = createStand();
                     } 
                     else if (roomType === "Office1Desk") {
-                        roomObj = createOffice1Desk();
+                        roomObj = createOffice1Desk(deskIds);
                     } 
                     else if (roomType === "Office2Desks") {
-                        roomObj = createOffice2Desks();
+                        roomObj = createOffice2Desks(deskIds);
                     } 
                     else if (roomType === "Office4Desks") {
-                        roomObj = createOffice4Desks();
+                        roomObj = createOffice4Desks(deskIds);
                     } 
                     else if (roomType === "Office6Desks") {
-                        roomObj = createOffice6Desks();
+                        roomObj = createOffice6Desks(deskIds);
                     }
                     else if (roomType === "Openspace") {
-                        roomElements = createOpenspace(rooms[i]["openspaceNumber"]);
+                        roomElements = createOpenspace(rooms[i]["openspaceNumber"], deskIds);
                     }
                     else if (roomType === "Stairs") {
                         roomObj = createStairs();
@@ -155,6 +366,7 @@ export function createScene(floorId){
                     if (roomObj) {
                         roomElements = roomObj.elements;
                         objectList.push(roomObj);
+                        
                     }
                     if (!roomElements) continue;
 
@@ -162,6 +374,12 @@ export function createScene(floorId){
                     roomElements.userData.roomType = roomType;
                     roomElements.userData.roomId = rooms[i].id;
                     roomElements.userData.roomName = rooms[i]["roomName"];
+                    if (rooms[i]["nextFloor"] != null) {
+                        roomElements.userData.nextFloor = rooms[i]["nextFloor"];
+                    }
+                    if (rooms[i]["position"] != null) {
+                        roomElements.userData.position = rooms[i]["position"];
+                    }
                     roomElements.rotation.y = (rooms[i]["orientationDeg"] / 180) * Math.PI;
                     let newX, newZ;
                     const cosAngle = Math.cos(rooms[i]["orientationDeg"] / 180 * Math.PI);
@@ -181,11 +399,40 @@ export function createScene(floorId){
                         newZ = rooms[i]["coordZ1"] - rooms[i]["roomType"]["lengthZ"]*cosAngle;
                     }
                     roomElements.position.set(newX, 0, newZ);
+                    if (roomElements.userData.roomType == "Stairs" && roomElements.userData.position == "down") {
+                        roomElements.position.set(newX, -5, newZ);
+                        const hole = new THREE.Path();
+                        const lengthX = sinAngle*rooms[i]["roomType"]["lengthZ"]; 
+                        const lengthZ = -sinAngle*rooms[i]["roomType"]["lengthX"];
+                        const centerX = newX ;
+                        const centerZ = -newZ ;
+                        hole.moveTo(centerX , centerZ ); 
+                        hole.lineTo(centerX , centerZ + lengthZ);
+                        hole.lineTo(centerX + lengthX, centerZ + lengthZ); 
+                        hole.lineTo(centerX + lengthX, centerZ ); 
+                        hole.lineTo(centerX , centerZ);
+                        holes.push(hole);
+                    }
 
                     roomList.push(roomElements);
                     scene.groupRooms.add(roomElements);
+                    
             }
-            fetch("/api/employees/floor/"+floorId)
+            
+            setMode(currentMode);
+            apiFetch("/api/floors/"+floorId)
+            .then(res => res.json())
+            .then(floor => {
+                currentGround = createGround(floor["lengthX"],floor["lengthZ"], holes);
+                scene.add(currentGround);
+                const light1 = createLight(-floor["lengthX"]/2,-floor["lengthZ"]/2,floor["lengthX"]/2,floor["lengthZ"]/2);
+                const light2 = createLight(floor["lengthX"]/2,floor["lengthZ"]/2,-floor["lengthX"]/2,-floor["lengthZ"]/2);
+                scene.add(light1);
+                scene.add(light2);
+                currentLights.push(light1, light2);
+            }).catch(err => console.error("Erreur API:", err));
+
+            apiFetch("/api/employees/floor/"+floorId)
                 .then(res => res.json())
                 .then(employees => {
                     let loadedChars = 0;
@@ -220,6 +467,9 @@ export function createScene(floorId){
                             character.scene.position.set(newRelativeCoordX+newX, pos_y, newRelativeCoordZ+newZ);
                             character.play("Sitting");
                             character.scene.userData.employee = employees[i];
+                            if (myEmployeeId && Number(employees[i]?.id) === myEmployeeId) {
+                                myCharacterRoot = character.scene;
+                            }
                             scene.groupCharacters.add(character.scene);
                             characters.push(character);
                             loadedChars += 1;
@@ -230,19 +480,7 @@ export function createScene(floorId){
         })
         .catch(err => console.error("Erreur API:", err));
     };
-
-    /*if (window.floorId == 5) {
-        let roomObj = createForum();
-        let roomElements = roomObj.elements;
-        objectList.push(roomObj);
-        roomList.push(roomElements);
-        if (!scene.groupRooms) {
-            scene.groupRooms = new THREE.Group();
-            scene.add(scene.groupRooms);
-        }
-        console.log(roomElements);
-        scene.groupRooms.add(roomElements);
-    }*/
+    _reloadFloor = loadFloor;
 
     loadFloor();
     const lights = createSetupLight();
@@ -251,7 +489,7 @@ export function createScene(floorId){
     }
 
     attachResetButton(controls);
-
+    attachZoomSelfButton(controls,() => myCharacterRoot);
     function start() {
         function onResize() {
             resizeRenderer();
@@ -266,6 +504,11 @@ export function createScene(floorId){
             controls.update();
 
             if (camera.position.y < 0) camera.position.y = 0;
+
+            // Mettre à jour la position de la sphère pour qu'elle suive la caméra
+            if (backgroundSphere) {
+                backgroundSphere.position.copy(camera.position);
+            }
 
             characters.forEach(c => c.mixer.update(delta));
             objectList.forEach(room => room.openDoor?.(delta));
@@ -288,7 +531,7 @@ export function createScene(floorId){
         _camera = camera;
         _controls = controls;
 
-    return { start, stop, updateFloor, scene, camera, renderer };
+    return { start, stop, updateFloor, scene, camera, renderer, reload: loadFloor  };
 }
 
 export function selectEmployee(employeeId) {
@@ -311,14 +554,14 @@ function findRoomById(roomId) {
 async function findEmployeeByDeskId(deskId) {
   // Option la plus simple: charger tous les employés et filtrer
   // (si tu as un endpoint /api/desks/{id}/employee, remplace par ça)
-  const res = await fetch("/api/employees");
+  const res = await apiFetch("/api/employees");
   const employees = await res.json();
   return (employees || []).find(e => Number(e?.desk?.id) === Number(deskId)) || null;
 }
 
 export async function selectDesk(deskId) {
   try {
-    const dres = await fetch(`/api/desks/${deskId}`);
+    const dres = await apiFetch(`/api/desks/${deskId}`);
     if (!dres.ok) return;
     const desk = await dres.json();
     const employee = await findEmployeeByDeskId(desk.id);

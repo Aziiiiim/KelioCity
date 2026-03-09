@@ -1,7 +1,7 @@
 import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar, closeSidebar } from "./sidebar.js";
 import { cameraOn } from "../core/camera.jsx";
-
-
+import { apiFetch } from "./apiFetch.js";
+import {updateFloorByStairs} from "./selectFloor.js"
 import * as THREE from "three";
 
 const globalStatusCache = new Map(); // id -> { value, ts }
@@ -23,7 +23,7 @@ function getGlobalStatusCached(id) {
 }
 
 async function fetchGlobalStatus(id) {
-  const res = await fetch(`/api/employees/${id}/global_status`);
+  const res = await apiFetch(`/api/employees/${id}/global_status`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   const value = await res.text();
   globalStatusCache.set(id, { value, ts: performance.now() });
@@ -46,6 +46,10 @@ export function createInteractionManager({ camera, renderer, targets }) {
   function addPlugin(plugin) {
     plugins.push(plugin);
     plugins.sort((a, b) => (b.priority ?? 0) - (a.priority ?? 0));
+  }
+
+  function clearPlugins() {
+    plugins.length = 0;
   }
 
   function storeOriginal(root) {
@@ -108,6 +112,7 @@ export function createInteractionManager({ camera, renderer, targets }) {
 
   async function hover(e) {
     if (e.target.closest("#sidebar")) return;
+    
 
     let selected = null;
     let selectedHit = null;
@@ -195,7 +200,7 @@ export function createInteractionManager({ camera, renderer, targets }) {
     if (pendingEvent) hover(pendingEvent);
   }
 
-    return { addPlugin, dispose, refresh, setPersistentStyle, clearPersistentStyle };
+    return { addPlugin, clearPlugins, dispose, refresh, setPersistentStyle, clearPersistentStyle };
 }
 
 
@@ -291,7 +296,13 @@ export function roomPlugin({camera, controls, onlyTypes = null } = {}) {
     onClick: (root) => {
       if(root.userData.roomType == "MeetingRoom") openMeetingRoomSidebar(root);
       if(root.userData.roomType.toLowerCase().includes("desk")) openOfficeSidebar(root);
-      cameraOn(camera, controls, root);
+      if(root.userData.roomType == "Stairs") {
+        if (root.userData.nextFloor) {
+          updateFloorByStairs(root.userData.nextFloor.id);
+        }
+      } else {
+        cameraOn(camera, controls, root);
+      }
     },
   };
 }
@@ -373,6 +384,71 @@ export function filtersPlugin(charactersGroup) {
         wantedStatuses: ["OCCUPIED", "ABSENT"],
         storeSet: occupiedHighlighted,
       });
+    },
+  };
+}
+
+export function deskSelectionPlugin({ charactersGroup, onDeskSelected }) {
+  function isDeskOccupied(deskId) {
+    let found = false;
+    charactersGroup.traverse(n => {
+      if (n.userData?.employee?.desk?.id === deskId) found = true;
+    });
+    return found;
+  }
+  return {
+    name: "deskSelection",
+    priority: 200,
+
+    match: (obj) => {
+      let cur = obj;
+      while (cur) {
+        if (cur.userData?.kind === "desk") return true;
+        cur = cur.parent;
+      }
+      return false;
+    },
+
+    getRoot: (obj) => {
+      let cur = obj;
+      while (cur && cur.userData?.kind !== "desk") cur = cur.parent;
+      return cur;
+    },
+
+    getStyle: (root) => {
+      const deskId = root.userData?.deskId;
+      if (!deskId) {
+        console.log("[deskSelection] hover desk WITHOUT deskId", root);
+        return { color: 0xff00ff, emissive: 0x220022 }; // violet debug
+      }
+
+      const isOccupied = (() => {
+        let found = false;
+        charactersGroup.traverse(n => {
+          if (n.userData?.employee?.desk?.id === deskId) {
+            found = true;
+          }
+        });
+        return found;
+      })();
+
+      if (isOccupied) {
+        return { color: 0xff0000, emissive: 0x330000 };
+      }
+
+      return { color: 0x00ff00, emissive: 0x003300 };
+    },
+
+    onClick: (root) => {
+      const deskId = root.userData?.deskId;
+      if (!deskId) return;
+
+      if (isDeskOccupied(deskId)) {
+        console.log("Desk occupied:", deskId);
+        return;
+      }
+
+      onDeskSelected?.(deskId, root);
     },
   };
 }
