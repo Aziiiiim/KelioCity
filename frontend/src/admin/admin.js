@@ -12,7 +12,7 @@ const sheets = [
         minDimensions:[7,10],
         columns: [
             {type: 'text', title: 'roomName', name: 'roomName', width:150},
-            {type: 'dropdown', title: 'roomType', name: 'roomType', width:150, source: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Openspace", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2"]},
+            {type: 'dropdown', title: 'roomType', name: 'roomType', width:150, source: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Openspace", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2"]},
             {type: 'text', title: 'floorName', name: 'floorName', width:150},
             {type: 'numeric', title: 'coordX1', name: 'coordX1', width:100},
             {type: 'numeric', title: 'coordZ1', name: 'coordZ1', width:100},

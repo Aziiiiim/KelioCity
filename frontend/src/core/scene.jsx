@@ -17,6 +17,8 @@ import { createOffice3DesksB2 } from '../objects/Office3DesksB2.jsx';
 import { createOffice4DesksB2 } from '../objects/Office4DesksB2.jsx';
 import { createOffice5DesksB2 } from '../objects/Office5DesksB2.jsx';
 import { createMeetingRoomB2 } from '../objects/MeetingRoomB2.jsx';
+import { createStairwellB2 } from '../objects/StairwellB2.jsx';
+import { createStairsB2 } from '../objects/StairsB2.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin } from "../utils/interactionManager.js";
@@ -136,7 +138,7 @@ export function createScene(floorId){
         });
         interaction.addPlugin(doorPlugin());
         interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters,refresh: interaction.refresh }));
-        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2"] }));
+        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2"] }));
         
         const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
         const bouton_available = document.getElementById("available-btn");
@@ -206,6 +208,12 @@ export function createScene(floorId){
                     else if (roomType === "MeetingRoomB2") {
                         roomObj = createMeetingRoomB2();
                     }
+                    else if (roomType === "StairwellB2") {
+                        roomObj = createStairwellB2();
+                    }
+                    else if (roomType === "StairsB2") {
+                        roomObj = createStairsB2();
+                    }
                     if (roomObj) {
                         roomElements = roomObj.elements;
                         objectList.push(roomObj);
@@ -241,18 +249,32 @@ export function createScene(floorId){
                         newZ = rooms[i]["coordZ1"] - rooms[i]["roomType"]["lengthZ"]*cosAngle;
                     }
                     roomElements.position.set(newX, 0, newZ);
-                    if (roomElements.userData.roomType == "Stairs" && roomElements.userData.position == "down") {
-                        roomElements.position.set(newX, -5, newZ);
+                    if (roomElements.userData.roomType.includes("Stairs") && roomElements.userData.position === "down") {
+                        if (roomElements.userData.roomType === "StairsB2") {
+                            roomElements.position.set(newX, -2.19, newZ);
+                        } else {
+                            roomElements.position.set(newX, -5, newZ);
+                        }
                         const hole = new THREE.Path();
-                        const lengthX = sinAngle*rooms[i]["roomType"]["lengthZ"]; 
-                        const lengthZ = -sinAngle*rooms[i]["roomType"]["lengthX"];
-                        const centerX = newX ;
-                        const centerZ = -newZ ;
-                        hole.moveTo(centerX , centerZ ); 
-                        hole.lineTo(centerX , centerZ + lengthZ);
-                        hole.lineTo(centerX + lengthX, centerZ + lengthZ); 
-                        hole.lineTo(centerX + lengthX, centerZ ); 
-                        hole.lineTo(centerX , centerZ);
+                        const dx = rooms[i]["roomType"]["lengthX"];
+                        const dz = rooms[i]["roomType"]["lengthZ"];
+                        const startX = newX;
+                        const startZ = - newZ;
+                        const getRotatedPoint = (localX, localZ) => {
+                            const rotX = localX * cosAngle - localZ * sinAngle;
+                            const rotZ = localX * sinAngle + localZ * cosAngle;
+                            return { x: startX + rotX, z: startZ + rotZ };
+                        };
+                        const p1 = getRotatedPoint(0, -dz);
+                        const p2 = getRotatedPoint(0, 0);
+                        const p3 = getRotatedPoint(dx, 0);
+                        const p4 = getRotatedPoint(dx, -dz);
+
+                        hole.moveTo(p1.x, p1.z);
+                        hole.lineTo(p2.x, p2.z);
+                        hole.lineTo(p3.x, p3.z);
+                        hole.lineTo(p4.x, p4.z);
+                        hole.lineTo(p1.x, p1.z);
                         holes.push(hole);
                     }
 

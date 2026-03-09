@@ -294,7 +294,7 @@ export function roomPlugin({camera, controls, onlyTypes = null } = {}) {
     onClick: (root) => {
       if(root.userData.roomType.includes("MeetingRoom")) openMeetingRoomSidebar(root);
       if(root.userData.roomType.toLowerCase().includes("desk")) openOfficeSidebar(root);
-      if(root.userData.roomType == "Stairs") {
+      if(root.userData.roomType.includes("Stairs")) {
         if (root.userData.nextFloor) {
           updateFloorByStairs(root.userData.nextFloor.id);
         }
