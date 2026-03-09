@@ -261,6 +261,7 @@ export function createScene(floorId){
                         const startX = newX;
                         const startZ = - newZ;
                         const getRotatedPoint = (localX, localZ) => {
+                            if (roomElements.userData.roomType === "Stairs") localX -= dx;
                             const rotX = localX * cosAngle - localZ * sinAngle;
                             const rotZ = localX * sinAngle + localZ * cosAngle;
                             return { x: startX + rotX, z: startZ + rotZ };
