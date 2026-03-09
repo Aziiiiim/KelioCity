@@ -182,16 +182,6 @@ export function createMeetingRoomB2(initDoor = null) {
         })
         .catch(console.error);
 
-    // Cabin
-    makeInstance('/assets/models/Cabin.glb')
-        .then((cabin) => {
-        cabin.position.set(5.55, 0.6, 1);
-        cabin.scale.set(2, 1.5, 2);
-        cabin.rotation.y = -Math.PI/2;
-        elements.add(cabin);
-        })
-        .catch(console.error);
-
     // Bin
     makeInstance('/assets/models/Bin.glb')
         .then((bin) => {
@@ -214,6 +204,16 @@ export function createMeetingRoomB2(initDoor = null) {
         });
         elements.add(proj);
     });
+
+    // Printer
+    makeInstance('/assets/models/Printer.glb')
+        .then((printer) => {
+        printer.position.set(5, 1.25, 1);
+        printer.scale.set(0.9, 1, 0.7);
+        printer.rotation.y = Math.PI/2;
+        elements.add(printer);
+        })
+        .catch(console.error);
 
     // Window
     makeInstance('/assets/models/Window.glb')
