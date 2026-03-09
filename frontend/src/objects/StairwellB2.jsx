@@ -8,12 +8,19 @@ export function createStairwellB2(initDoor = null) {
     elements.userData.roomType = "StairwellB2";
 
     // Wall and floor
-    const floorGeo = new THREE.PlaneGeometry(4, 6);
     const floorMat = new THREE.MeshBasicMaterial( { color: 0x2F4680 } );
-    const floorMesh = new THREE.Mesh(floorGeo, floorMat);
-    floorMesh.rotation.x = Math.PI * -.5;
-    floorMesh.position.set(2,0.01,3)
-    elements.add(floorMesh);
+    const floorMesh1 = new THREE.Mesh(new THREE.PlaneGeometry(2.32, 6), floorMat);
+    floorMesh1.rotation.x = Math.PI * -.5;
+    floorMesh1.position.set(1.16,0.01,3)
+    elements.add(floorMesh1);
+    const floorMesh2 = new THREE.Mesh(new THREE.PlaneGeometry(4, 3.1), floorMat);
+    floorMesh2.rotation.x = Math.PI * -.5;
+    floorMesh2.position.set(2,0.01,1.55)
+    elements.add(floorMesh2);
+    const floorMesh3 = new THREE.Mesh(new THREE.PlaneGeometry(4, 0.5), floorMat);
+    floorMesh3.rotation.x = Math.PI * -.5;
+    floorMesh3.position.set(2,0.01,5.75)
+    elements.add(floorMesh3);
 
     const wallGeo1 = new THREE.PlaneGeometry(4, 4);
     const wallGeo2 = new THREE.PlaneGeometry(6, 4);
