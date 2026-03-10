@@ -108,7 +108,15 @@ public class DataInitializer implements CommandLineRunner {
                         .lengthZ(24f)
                         .build()
             );
-
+            
+            Floor floor3 = floorRepo.save(
+            		Floor.builder()
+            		.floorName("Amphis")
+                    .lengthX(60f)
+                    .lengthZ(24f)
+                    .build()
+            );
+            
             // --- ROOM TYPE ---
             RoomType meetingRoom = roomTypeRepo.save(
                     RoomType.builder()

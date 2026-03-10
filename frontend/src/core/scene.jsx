@@ -17,6 +17,9 @@ import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filte
 import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar  } from '../utils/sidebar.js';
 import { apiFetch } from "../utils/apiFetch.js";
 //import { apiTest } from "../utils/apiTest.js";
+import { createSmallAmphi } from '../objects/SmallAmphi.jsx';
+
+
 
 let _camera = null;
 let _controls = null;
@@ -405,12 +408,30 @@ export function createScene(floorId, mode){
                         hole.lineTo(centerX , centerZ);
                         holes.push(hole);
                     }
-
                     roomList.push(roomElements);
                     scene.groupRooms.add(roomElements);
-                    
             }
             
+            const isAmphisFloor = Number(floorId) === 3;
+
+            if (isAmphisFloor) {
+                const amphiObj = createSmallAmphi();
+                const amphi = amphiObj.elements;
+
+                objectList.push(amphiObj);
+
+                amphi.userData.kind = "room";
+                amphi.userData.roomType = "SmallAmphi";
+                amphi.userData.roomId = "front-big-amphi";
+                amphi.userData.roomName = "Big Amphi";
+
+                amphi.position.set(20, 0, 12);
+                amphi.rotation.y = 0;
+
+                roomList.push(amphi);
+                scene.groupRooms.add(amphi);
+            }
+
             setMode(currentMode);
             apiFetch("/api/floors/"+floorId)
             .then(res => res.json())
@@ -503,7 +524,7 @@ export function createScene(floorId, mode){
 
             characters.forEach(c => c.mixer.update(delta));
             objectList.forEach(room => room.openDoor?.(delta));
-
+            
             renderer.render(scene, camera);
         });
         }
