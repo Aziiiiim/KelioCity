@@ -38,9 +38,9 @@ const sheets = [
             {type: 'text', title: 'roomName', name: 'roomName', width:100},
             {type: 'numeric', title: 'deskNumber', name: 'deskNumber', width:100},
             {type: 'text', title: 'deskName', name: 'deskName', width:100},
-            {type: 'numeric', title: 'phoneNumber', name: 'phoneNumber', width:110},
-            {type: 'numeric', title: 'email', name: 'email', width:100},
-            {type: 'numeric', title: 'workingHours', name: 'workingHours', width:110},
+            {type: 'text', title: 'phoneNumber', name: 'phoneNumber', width:110},
+            {type: 'text', title: 'email', name: 'email', width:100},
+            {type: 'text', title: 'workingHours', name: 'workingHours', width:110},
             {type: 'dropdown', title: 'inOffice', name: 'inOffice', width:100, source: ["OFFICE", "REMOTE"]},
             {type: 'dropdown', title: 'status', name: 'status', width:100, source: ["AVAILABLE", "OCCUPIED", "ABSENT"]},
             {type: 'dropdown', title: 'sprite', name: 'sprite', width:100, source: ["MAN1", "WOMAN1","MAN2", "WOMAN2","MAN3", "WOMAN3","MAN4", "WOMAN4"]}]

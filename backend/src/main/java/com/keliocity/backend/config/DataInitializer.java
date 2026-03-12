@@ -1503,7 +1503,7 @@ public class DataInitializer implements CommandLineRunner {
                             .coordZ(0.4f)
                             .orientationDeg(0f)
                             .roomType(openspace)
-                            .deskNumber(2*i)
+                            .deskNumber(2*i+1)
                             .build()
                 );
                 deskType_openspaces[1][i] = deskTypeRepo.save(
@@ -1512,7 +1512,7 @@ public class DataInitializer implements CommandLineRunner {
                             .coordZ(3.1f)
                             .orientationDeg(180f)
                             .roomType(openspace)
-                            .deskNumber(2*i+1)
+                            .deskNumber(2*i+2)
                             .build()
                 );
             }
