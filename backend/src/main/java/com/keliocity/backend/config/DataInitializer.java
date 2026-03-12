@@ -199,6 +199,14 @@ public class DataInitializer implements CommandLineRunner {
                         .build()
             );
 
+            RoomType toilets = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Toilets")
+                        .lengthX(6f)
+                        .lengthZ(3.167f)
+                        .build()
+            );
+
             // --- DESK TYPE ---
             DeskType desk1office1desk = deskTypeRepo.save(
                     DeskType.builder()
