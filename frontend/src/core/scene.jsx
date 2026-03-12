@@ -20,6 +20,7 @@ import { createMeetingRoomB2 } from '../objects/MeetingRoomB2.jsx';
 import { createStairwellB2 } from '../objects/StairwellB2.jsx';
 import { createStairsB2 } from '../objects/StairsB2.jsx';
 import { createLocal } from '../objects/Local.jsx';
+import { createLocalB2 } from '../objects/LocalB2.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin } from "../utils/interactionManager.js";
@@ -139,7 +140,7 @@ export function createScene(floorId){
         });
         interaction.addPlugin(doorPlugin());
         interaction.addPlugin(employeePlugin({ camera, controls, charactersGroup: scene.groupCharacters,refresh: interaction.refresh }));
-        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local"] }));
+        interaction.addPlugin(roomPlugin({ camera, controls,onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local", "LocalB2"] }));
         
         const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
         const bouton_available = document.getElementById("available-btn");
@@ -217,6 +218,9 @@ export function createScene(floorId){
                     }
                     else if (roomType === "Local") {
                         roomObj = createLocal();
+                    }
+                    else if (roomType === "LocalB2") {
+                        roomObj = createLocalB2();
                     }
                     if (roomObj) {
                         roomElements = roomObj.elements;
