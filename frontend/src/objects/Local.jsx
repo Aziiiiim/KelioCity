@@ -5,7 +5,7 @@ export function createLocal(initDoor = null) {
     
     const elements = new THREE.Group();
     elements.userData.kind = "room";
-    elements.userData.roomType = "Office1DeskB2";
+    elements.userData.roomType = "Local";
 
     // Wall and floor
     const floorGeo = new THREE.PlaneGeometry(6, 3.49);
