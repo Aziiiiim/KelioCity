@@ -167,6 +167,13 @@ document.getElementById("file-import").addEventListener("change", function(e) {
     const file = e.target.files[0];
     if (!file) return;
 
+    document.getElementById("reset").checked = false;
+    const excels = document.getElementById("spreadsheet").jexcel;
+    excels.forEach((sheet) => {
+        sheet.setData([]);
+    });
+    tabs[0].click();
+
     const reader = new FileReader();
     reader.onload = function (e) {
         const data = new Uint8Array(e.target.result);
