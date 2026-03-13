@@ -1,3 +1,5 @@
+import { apiFetch } from "./apiFetch.js";
+
 const sidebar = document.getElementById("sidebar");
 let currentScheduleDate = new Date();
 let currentEmployeeId = null;
@@ -72,7 +74,7 @@ export function openSidebar(employee) {
         <h3>Position</h3>
         <div class="info-grid">
           <div class="info-label">Bureau</div>
-          <div class="info-value">${employee.desk?.room?.roomName ?? "Aucun"}</div>
+          <div class="info-value">${employee.desk?.deskName ?? "Aucun"}</div>
 
           <div class="info-label">Présence</div>
           <div class="info-value">${employee.inOffice === "OFFICE" ? "Office" : "Télétravail"}</div>
@@ -95,7 +97,7 @@ export function openSidebar(employee) {
     bindCommonSidebarListeners();
     loadSchedule();
 
-    fetch(`/api/employees/${employee.id}/global_status`)
+    apiFetch(`/api/employees/${employee.id}/global_status`)
       .then(res => res.text())
       .then(globalStatus => {
         if (String(currentEmployeeId) !== String(employee.id)) return;
@@ -253,7 +255,7 @@ async function loadSchedule() {
   list.innerHTML = "<em>Chargement...</em>";
 
   try {
-    const res = await fetch(
+    const res = await apiFetch(
       `/api/employees/${currentEmployeeId}/schedule?date=${dateStr}`
     );
     const items = await res.json();
@@ -287,7 +289,7 @@ async function loadRoomSchedule() {
   const endStr = toLocalISOString(end);
 
   try {
-    const res = await fetch(`/api/meetings/room/${currentRoomId}/between?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}`);
+    const res = await apiFetch(`/api/meetings/room/${currentRoomId}/between?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}`);
     const meetings = await res.json();
     const items = (meetings || []).map(m => ({
       startTime: String(m.startingHour).slice(11, 16),
@@ -378,7 +380,7 @@ async function loadOfficeOccupants(roomType) {
   list.innerHTML = "<em>Chargement...</em>";
 
   try {
-    const res = await fetch("/api/employees");
+    const res = await apiFetch("/api/employees");
     const employees = await res.json();
 
     const occupants = (employees || []).filter(e =>
@@ -506,7 +508,7 @@ function bindMeetingForm(container) {
 
     meetingFormState.searchTimer = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/employees/search/${encodeURIComponent(q)}`);
+        const res = await apiFetch(`/api/employees/search/${encodeURIComponent(q)}`);
         const results = await res.json();
         renderParticipantDropdown(results || [], dropdown, qInput);
       } catch {
@@ -615,7 +617,7 @@ async function submitMeetingForm(container) {
   setHint("Création en cours...", true);
 
   try {
-    const meetingRes = await fetch("/api/meetings", {
+    const meetingRes = await apiFetch("/api/meetings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -642,7 +644,7 @@ async function submitMeetingForm(container) {
 
     const participants = meetingFormState.selectedParticipants || [];
     for (const p of participants) {
-      await fetch("/api/meeting-participants", {
+      await apiFetch("/api/meeting-participants", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

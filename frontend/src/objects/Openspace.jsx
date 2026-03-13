@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { makeInstance, loadTexture } from '../utils/asset.js';
 
 
-export function createOpenspace(nb_desks) {
+export function createOpenspace(nb_desks, deskIds = []) {
   const elements = new THREE.Group();
   elements.userData.kind = "room";
   elements.userData.roomType = "Openspace"; 
@@ -21,10 +21,18 @@ export function createOpenspace(nb_desks) {
   // For each desk, we load the desk, its computer, its chair and the wall between 2 desks
   for (let i=0; i<nb_desks; i++) {
     for (let j=-1; j<1; j++) {
+      const idx = i * 2 + (j === -1 ? 0 : 1);
+      const deskIdForThisSpot = deskIds[idx]; 
       makeInstance('/assets/models/Desk.glb').then((desk) => {
         desk.scale.set(2, 2, 2);
         desk.position.set(x+2.52 * i - j*1.28, 0, z+1+j*1.25);
         desk.rotation.y = Math.PI * j;
+        desk.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+                n.userData.deskId = deskIdForThisSpot; 
+            }
+        });
         elements.add(desk);
       });
       makeInstance('/assets/models/Laptop.glb').then((computer) => {
@@ -37,6 +45,12 @@ export function createOpenspace(nb_desks) {
         chair.scale.set(1.5, 1.5, 1.5);
         chair.position.set(x+2.52 * i - j*0.5 + 0.4, 0.5, z+2.3+j*3.85);
         chair.rotation.y = Math.PI * (1+j);
+        chair.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+                n.userData.deskId = deskIdForThisSpot;  
+            }
+        });
         elements.add(chair);
       });
     }

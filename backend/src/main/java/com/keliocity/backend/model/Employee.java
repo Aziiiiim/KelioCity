@@ -1,14 +1,17 @@
 package com.keliocity.backend.model;
 	
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "EMPLOYEES")
-@Data
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -47,6 +50,11 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     @Column(name = "sprite", nullable = false)
     private Sprite sprite;
+    
+    @OneToOne(mappedBy = "employee")
+    @JsonIgnore
+    private Account account;
+
 
     @PrePersist
     public void setDefaultValues() {

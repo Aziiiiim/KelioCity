@@ -1,11 +1,13 @@
 import * as THREE from 'three';
 import { makeInstance } from '../utils/asset.js'; 
     
-export function createOffice2DesksB2(initDoor = null) {
+export function createOffice2DesksB2(deskIds = [], initDoor = null) {
     
     const elements = new THREE.Group();
     elements.userData.kind = "room";
     elements.userData.roomType = "Office2DeskB2";
+    const deskId1 = deskIds[0];
+    const deskId2 = deskIds[1];
 
     // Wall and floor
     const floorGeo = new THREE.PlaneGeometry(6, 4.49);
@@ -64,6 +66,14 @@ export function createOffice2DesksB2(initDoor = null) {
         .then((desk) => {
         desk.position.set(4.37, 0, 8.8);
         desk.scale.set(-1.1, 1.1, 1.1);
+
+        desk.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+                n.userData.deskId = deskId1;
+            }
+        });
+
         elements.add(desk);
         })
         .catch(console.error);
@@ -73,6 +83,14 @@ export function createOffice2DesksB2(initDoor = null) {
         .then((chair) => {
         chair.position.set(4.7, 0, 1);
         chair.scale.set(1.3, 1.3, 1.3);
+
+        chair.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+                n.userData.deskId = deskId1;
+            }
+        });
+
         elements.add(chair);
         })
         .catch(console.error);
@@ -83,6 +101,14 @@ export function createOffice2DesksB2(initDoor = null) {
         desk.position.set(1.61, 0, -4.4);
         desk.scale.set(-1.1, 1.1, 1.1);
         desk.rotation.y = Math.PI;
+
+        desk.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+                n.userData.deskId = deskId2;
+            }
+        });
+
         elements.add(desk);
         })
         .catch(console.error);
@@ -93,6 +119,14 @@ export function createOffice2DesksB2(initDoor = null) {
         chair.position.set(1.2, 0, 3.4);
         chair.scale.set(1.3, 1.3, 1.3);
         chair.rotation.y = Math.PI;
+
+        chair.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+                n.userData.deskId = deskId2;
+            }
+        });
+
         elements.add(chair);
         })
         .catch(console.error);

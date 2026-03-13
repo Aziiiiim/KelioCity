@@ -1,12 +1,15 @@
 import * as THREE from 'three';
 import { makeInstance } from '../utils/asset.js'; 
     
-export function createOffice2Desks(initDoor = null) {
+export function createOffice2Desks(deskIds = [],initDoor = null) {
     let x = -1;
     
     const elements = new THREE.Group();
     elements.userData.kind = "room";
     elements.userData.roomType = "Office2Desk"; 
+
+    const deskId1 = deskIds[0]; 
+    const deskId2 = deskIds[1]; 
 
     // Wall and floor
     const floorGeo = new THREE.PlaneGeometry(5, 6);
@@ -65,6 +68,13 @@ export function createOffice2Desks(initDoor = null) {
         desk.position.set(-5.43 + x, 0, 2.5);
         desk.scale.set(1.1, 1.1, 1.1);
         desk.rotation.y = -Math.PI * 0.5;
+
+        desk.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+                n.userData.deskId = deskId1;
+            }
+        });
         elements.add(desk);
         })
         .catch(console.error);
@@ -75,6 +85,12 @@ export function createOffice2Desks(initDoor = null) {
         chair.position.set(-4.7 + x, 0, -9.5);
         chair.scale.set(0.035, 0.035, 0.035);
         chair.rotation.y = -Math.PI * 0.5;
+        chair.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+                n.userData.deskId = deskId1;
+            }
+        });
         elements.add(chair);
         })
         .catch(console.error);
@@ -85,6 +101,12 @@ export function createOffice2Desks(initDoor = null) {
         desk.position.set(12.43 + x, 0, 3.6);
         desk.scale.set(1.1, 1.1, 1.1);
         desk.rotation.y = Math.PI * 0.5;
+        desk.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+                n.userData.deskId = deskId2;
+            }
+        });
         elements.add(desk);
         })
         .catch(console.error);
@@ -95,6 +117,12 @@ export function createOffice2Desks(initDoor = null) {
         chair.position.set(11.7 + x, 0, 15.7);
         chair.scale.set(0.035, 0.035, 0.035);
         chair.rotation.y = Math.PI * 0.5;
+        chair.traverse(n => {
+            if (n.isMesh) {
+                n.userData.kind = "desk";
+                n.userData.deskId = deskId2;
+            }
+        });
         elements.add(chair);
         })
         .catch(console.error);

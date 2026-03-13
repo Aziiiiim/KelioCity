@@ -1,0 +1,123 @@
+:root{
+  --bg1:#0b1220;
+  --bg2:#0f1f3a;
+  --card: rgba(255,255,255,.06);
+  --stroke: rgba(255,255,255,.10);
+  --text:#eaf0ff;
+  --muted: rgba(234,240,255,.7);
+  --primary:#2f7cff;
+  --primary2:#1f5fe6;
+  --radius:16px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(900px 600px at 20% 10%, rgba(47,124,255,.25), transparent 60%),
+    radial-gradient(900px 600px at 90% 30%, rgba(0,255,200,.10), transparent 55%),
+    linear-gradient(160deg, var(--bg1), var(--bg2));
+  padding:24px;
+
+  /* Important : pas de scroll si la scène grandit */
+  overflow:hidden;
+}
+
+.page{
+  width: min(920px, 100%);
+  height: calc(100dvh - 48px); /* 24px padding haut + bas */
+  margin: 0 auto;
+
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+
+  /* Important : autorise les enfants flex à rétrécir sans overflow */
+  min-height:0;
+}
+
+.top{
+  text-align:center;
+  padding-top: 6px;
+  padding-bottom: 20px;;
+}
+
+.top h1{
+  margin: 0;
+  line-height: 1.1;
+}
+
+
+.scene-container{
+  width:100%;
+  flex:1;
+  min-height:0;
+
+  display:flex;
+  gap:16px;
+}
+
+.scene-wrap{
+  flex:1;
+  min-height:0;
+  border-radius: var(--radius);
+  overflow:hidden;
+  background: rgba(255,255,255,.03);
+  border:1px solid var(--stroke);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.scene-wrap.selected {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 3px #4f8cff;
+}
+
+.scene-wrap canvas{
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+
+#three{
+  display:block;
+  width:100%;
+  height:100%;
+}
+
+.actions{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  padding-top: 14px;
+  padding-bottom: 6px;
+}
+
+.btn{
+  border:0;
+  border-radius: 12px;
+  padding:12px 18px;
+  font-weight:700;
+  cursor:pointer;
+  transition: transform .08s ease, filter .2s ease, background .2s ease;
+  min-width: 160px;
+}
+
+.btn:active{ transform: translateY(1px); }
+
+.btn-primary{
+  color:white;
+  background: linear-gradient(135deg, var(--primary), var(--primary2));
+}
+
+.btn-secondary{
+  color: var(--text);
+  background: rgba(255,255,255,.08);
+  border:1px solid var(--stroke);
+}

@@ -36,6 +36,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer> {
       LOWER(CONCAT(e.lastName, ' ', e.firstName)) LIKE LOWER(CONCAT('%', :name, '%')))
     """)
     List<Employee> searchByName(@Param("name") String name);
+    boolean existsByDeskId(Integer deskId);
 
     @Modifying
     @Transactional

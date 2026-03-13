@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KelioCity</title>
+  <link rel="stylesheet" href="../css/genderChoice.css" />
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Choisis ton genre</h1>
+    </header>
+
+    <div class="scene-container">
+      <div class="scene-wrap" data-scene="M">
+        <canvas class="three"></canvas>
+      </div>
+
+      <div class="scene-wrap" data-scene="F">
+        <canvas class="three"></canvas>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-secondary" id="btn-back">Retour</button>
+      <button class="btn btn-primary" id="btn-next">Suivant</button>
+    </div>
+  </main>
+</body>
+<script type="module" src="../js/genderChoice.js"></script>
+</html>

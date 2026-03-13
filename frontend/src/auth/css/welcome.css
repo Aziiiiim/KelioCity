@@ -1,0 +1,109 @@
+:root{
+  --bg1:#0b1220;
+  --bg2:#0f1f3a;
+  --card: rgba(255,255,255,.06);
+  --stroke: rgba(255,255,255,.10);
+  --text:#eaf0ff;
+  --muted: rgba(234,240,255,.7);
+  --primary:#2f7cff;
+  --primary2:#1f5fe6;
+  --radius:16px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(900px 600px at 20% 10%, rgba(47,124,255,.25), transparent 60%),
+    radial-gradient(900px 600px at 90% 30%, rgba(0,255,200,.10), transparent 55%),
+    linear-gradient(160deg, var(--bg1), var(--bg2));
+  padding:24px;
+}
+
+/* ✅ Le bloc principal prend de la hauteur et centre le contenu */
+.page{
+  width: min(920px, 100%);
+  min-height: calc(100vh - 48px); /* 100% hauteur - padding body */
+  margin: 0 auto;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:center; /* centre verticalement */
+  align-items:center;     /* centre horizontalement */
+  gap:18px;
+
+  text-align:center;      /* centre le texte */
+}
+
+/* Un peu plus d’air */
+.hero{
+  padding: 10px 10px 0;
+}
+
+.badge{
+  display:inline-flex;
+  align-items:center;
+  padding:8px 12px;
+  border:1px solid var(--stroke);
+  background: rgba(255,255,255,.04);
+  border-radius:999px;
+  font-weight:700;
+  letter-spacing:.2px;
+}
+
+h1{
+  margin:14px 0 8px;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height:1.1;
+}
+
+.card{
+  width: min(760px, 100%);
+  border:1px solid var(--stroke);
+  background: var(--card);
+  border-radius: var(--radius);
+  padding:22px;
+  backdrop-filter: blur(10px);
+}
+
+.auth-buttons{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  border:0;
+  border-radius: 12px;
+  padding:12px 18px;
+  font-weight:700;
+  cursor:pointer;
+  transition: transform .08s ease, filter .2s ease, background .2s ease;
+  min-width: 160px;
+}
+
+.btn:active{ transform: translateY(1px); }
+
+.btn-primary{
+  color:white;
+  background: linear-gradient(135deg, var(--primary), var(--primary2));
+}
+
+.btn-secondary{
+  color: var(--text);
+  background: rgba(255,255,255,.08);
+  border:1px solid var(--stroke);
+}
+
+.btn:hover{ filter: brightness(1.06); }
+
+.footer{
+  margin-top: auto;
+  color: rgba(234,240,255,.55);
+  padding: 8px 6px 0;
+}
