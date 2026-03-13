@@ -46,6 +46,16 @@ const sheets = [
             {type: 'dropdown', title: 'sprite', name: 'sprite', width:100, source: ["MAN1", "WOMAN1","MAN2", "WOMAN2","MAN3", "WOMAN3","MAN4", "WOMAN4"]}]
     },
     {
+        sheetName: 'Accounts',
+        minDimensions:[3,10],
+        columns: [
+            {type: 'text', title: 'email', name: 'email', width:160},
+            {type: 'text', title: 'lastName', name: 'lastName', width:160},
+            {type: 'text', title: 'firstName', name: 'firstName', width:160},
+            {type: 'dropdown', title: 'role', name: 'role', width:110, source: ["USER", "ADMIN"]},
+            {type: 'text', title: 'password', name: 'password', width:160}]
+    },
+    {
         sheetName: 'Meetings',
         minDimensions:[7,10],
         columns: [
@@ -117,7 +127,7 @@ function send() {
     });
 }
 
-const tables = ["floors", "rooms", "desks", "employees", "meetings", "meetingEmployees"];
+const tables = ["floors", "rooms", "desks", "employees", "accounts", "meetings", "meetingEmployees"];
 function getCleanedJson() {
     let excel = document.getElementById("spreadsheet").jexcel;
     let json = {};

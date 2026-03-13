@@ -12,6 +12,7 @@ public class DatabaseFillerDTO {
     private List<EmployeeDTO> employees;
     private List<MeetingDTO> meetings;
     private List<MeetingEmployeeDTO> meetingEmployees;
+    private List<AccountDTO> accounts;
 
     public String getAuth() {
         return auth;
@@ -43,5 +44,9 @@ public class DatabaseFillerDTO {
 
     public List<MeetingEmployeeDTO> getMeetingEmployees() {
         return meetingEmployees;
+    }
+
+    public List<AccountDTO> getAccounts() {
+        return accounts;
     }
 }
