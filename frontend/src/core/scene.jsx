@@ -17,7 +17,7 @@ import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filte
 import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar  } from '../utils/sidebar.js';
 import { apiFetch } from "../utils/apiFetch.js";
 //import { apiTest } from "../utils/apiTest.js";
-import { createSmallAmphi } from '../objects/SmallAmphi.jsx';
+import { createBigAmphi } from '../objects/BigAmphi.jsx';
 
 
 
@@ -415,15 +415,15 @@ export function createScene(floorId, mode){
             const isAmphisFloor = Number(floorId) === 3;
 
             if (isAmphisFloor) {
-                const amphiObj = createSmallAmphi();
+                const amphiObj = createBigAmphi();
                 const amphi = amphiObj.elements;
 
                 objectList.push(amphiObj);
 
                 amphi.userData.kind = "room";
-                amphi.userData.roomType = "SmallAmphi";
-                amphi.userData.roomId = "front-big-amphi";
-                amphi.userData.roomName = "Big Amphi";
+                amphi.userData.roomType = "BigAmphi";
+                amphi.userData.roomId = "big-amphi";
+                amphi.userData.roomName = "Grand Amphi";
 
                 amphi.position.set(20, 0, 12);
                 amphi.rotation.y = 0;
