@@ -153,7 +153,7 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("➡️ Initialisation de la base de données…");
 
             // --- FLOOR ---
-            Floor floor1 = floorRepo.save(
+            /*Floor floor1 = floorRepo.save(
                     Floor.builder()
                         .floorName("Etage1")
                         .lengthX(50f)
@@ -167,7 +167,7 @@ public class DataInitializer implements CommandLineRunner {
                         .lengthX(60f)
                         .lengthZ(24f)
                         .build()
-            );
+            );*/
             
             Floor floor3 = floorRepo.save(
             		Floor.builder()
@@ -699,7 +699,7 @@ public class DataInitializer implements CommandLineRunner {
             );
 
             // --- ROOMS ---
-            Room roomA101 = roomRepo.save(
+            /*Room roomA101 = roomRepo.save(
                     Room.builder()
                         .roomType(meetingRoom)
                         .roomName("A101")
@@ -988,7 +988,7 @@ public class DataInitializer implements CommandLineRunner {
                         .position("down")
                         .build()
             );
-            
+            */
             
             // AMPHIS
             
@@ -1019,7 +1019,7 @@ public class DataInitializer implements CommandLineRunner {
                         .coordX1(-20f).coordZ1(12f)
                         .orientationDeg(-90f)
                         .floor(floor3)
-                        .nextFloor(floor2)
+                        .nextFloor(null)
                         .position("down")
                         .build()
             );
@@ -1031,7 +1031,7 @@ public class DataInitializer implements CommandLineRunner {
                         .coordX1(-17f).coordZ1(12f)
                         .orientationDeg(-90f)
                         .floor(floor3)
-                        .nextFloor(floor2)
+                        .nextFloor(null)
                         .position("down")
                         .build()
             );
@@ -1040,7 +1040,7 @@ public class DataInitializer implements CommandLineRunner {
             Room amphi1 = roomRepo.save(
             		Room.builder()
             			.roomType(SmallAmphi)
-            			.roomName("Amphi 1")
+            			.roomName("A102")
             			.coordX1(-10f).coordZ1(22f)
             			.orientationDeg(-90f)
             			.floor(floor3)
@@ -1054,7 +1054,7 @@ public class DataInitializer implements CommandLineRunner {
                         .coordX1(50f).coordZ1(12f)
                         .orientationDeg(-90f)
                         .floor(floor3)
-                        .nextFloor(floor2)
+                        .nextFloor(null)
                         .position("down")
                         .build()
             );
@@ -1101,7 +1101,7 @@ public class DataInitializer implements CommandLineRunner {
             Room amphi2 = roomRepo.save(
             		Room.builder()
             			.roomType(SmallAmphi)
-            			.roomName("Amphi 2")
+            			.roomName("A103")
             			.coordX1(70f).coordZ1(22f)
             			.orientationDeg(-90f)
             			.floor(floor3)
@@ -1173,16 +1173,16 @@ public class DataInitializer implements CommandLineRunner {
         Room b244 = createRoom(office1DeskB2, "B244", -8.5f, 51.5f, 180f, floor4);
 
         Room cageEsc10 = createRoom(stairwellB2, "Cage Escalier 10 – B2", 2.5f, -55f, -90f, floor4);
-        Room esc10Up = createStairsRoom(stairsB2, "Escalier 10 – B2 montée", 2.51f, -55f, 90f, floor4, floor2, "up");
-        Room esc10Down = createStairsRoom(stairsB2, "Escalier 10 – B2 descente", 2.6f, -52.68f, -90f, floor4, floor2, "down");
+        Room esc10Up = createStairsRoom(stairsB2, "Escalier 10 – B2 montée", 2.51f, -55f, 90f, floor4, null, "up");
+        Room esc10Down = createStairsRoom(stairsB2, "Escalier 10 – B2 descente", 2.6f, -52.68f, -90f, floor4, null, "down");
 
         Room cageEsc11 = createRoom(stairwellB2, "Cage Escalier 11 – B2", 4.5f, 21.5f, 0f, floor4);
-        Room esc11Up = createStairsRoom(stairsB2, "Escalier 11 – B2 montée", 4.5f, 24.57f, 180f, floor4, floor2, "up");
-        Room esc11Down = createStairsRoom(stairsB2, "Escalier 11 – B2 descente", 6.82f, 24.35f, 0f, floor4, floor2, "down");
+        Room esc11Up = createStairsRoom(stairsB2, "Escalier 11 – B2 montée", 4.5f, 24.57f, 180f, floor4, null, "up");
+        Room esc11Down = createStairsRoom(stairsB2, "Escalier 11 – B2 descente", 6.82f, 24.35f, 0f, floor4, null, "down");
 
         Room cageEsc12 = createRoom(stairwellB2, "Cage Escalier 12 – B2", 4.5f, 49f, 0f, floor4);
-        Room esc12Up = createStairsRoom(stairsB2, "Escalier 12 – B2 montée", 4.5f, 52.07f, 180f, floor4, floor2, "up");
-        Room esc12Down = createStairsRoom(stairsB2, "Escalier 12 – B2 descente", 6.82f, 51.85f, 0f, floor4, floor2, "down");
+        Room esc12Up = createStairsRoom(stairsB2, "Escalier 12 – B2 montée", 4.5f, 52.07f, 180f, floor4, null, "up");
+        Room esc12Down = createStairsRoom(stairsB2, "Escalier 12 – B2 descente", 6.82f, 51.85f, 0f, floor4, null, "down");
         // --- DESKS COULOIR B2 ---
 	
 	        Desk deskB206_1 = createDesk(b206, desk1office3desksB2, "Desk B206 1");
@@ -1720,7 +1720,7 @@ public class DataInitializer implements CommandLineRunner {
     		meetingEmployeeRepo.flush();
             
             // --- DESKS ---
-            Desk deskA105 = deskRepo.save(
+            /*Desk deskA105 = deskRepo.save(
                     Desk.builder()
                         .deskName("Desk A105")
                         .room(roomA105)
@@ -1926,10 +1926,10 @@ public class DataInitializer implements CommandLineRunner {
                         .room(roomA212)
                         .deskType(desk1office1desk)
                         .build()
-            );
+            );*/
 
             // --- EMPLOYEES ---
-            Employee alice = createEmployeeWithAccount(
+            /*Employee alice = createEmployeeWithAccount(
                     "Alice",
                     "Dupont",
                     deskA105,
@@ -1941,7 +1941,7 @@ public class DataInitializer implements CommandLineRunner {
                     Sprite.WOMAN1
             );
 
-            /*Employee bob = createEmployeeWithAccount(
+            Employee bob = createEmployeeWithAccount(
                     "Bob",
                     "Martin",
                     deskA106,
@@ -1951,9 +1951,9 @@ public class DataInitializer implements CommandLineRunner {
                     WorkLocation.OFFICE,
                     EmployeeStatus.OCCUPIED,
                     Sprite.MAN1
-            );*/
+            );
 
-            /*Employee jade = createEmployeeWithAccount(
+            Employee jade = createEmployeeWithAccount(
                     "Jade",
                     "Bernard",
                     deskA107_1,
@@ -1963,7 +1963,7 @@ public class DataInitializer implements CommandLineRunner {
                     WorkLocation.OFFICE,
                     EmployeeStatus.AVAILABLE,
                     Sprite.WOMAN2
-            );*/
+            );
 
             Employee pol = createEmployeeWithAccount(
                     "Pol",
@@ -1977,7 +1977,7 @@ public class DataInitializer implements CommandLineRunner {
                     Sprite.MAN2
             );
 
-            /*Employee paul = createEmployeeWithAccount(
+            Employee paul = createEmployeeWithAccount(
                     "Paul",
                     "Lefevre",
                     deskA108_1,
@@ -1987,7 +1987,7 @@ public class DataInitializer implements CommandLineRunner {
                     WorkLocation.REMOTE,
                     EmployeeStatus.AVAILABLE,
                     Sprite.MAN2
-            );*/
+            );
 
             Employee jacob = createEmployeeWithAccount(
                     "Jacob",
@@ -2023,7 +2023,7 @@ public class DataInitializer implements CommandLineRunner {
                     WorkLocation.OFFICE,
                     EmployeeStatus.OCCUPIED,
                     Sprite.WOMAN1
-            );*/
+            );
 
             Employee alexis = createEmployeeWithAccount(
                     "Alexis",
@@ -2059,7 +2059,7 @@ public class DataInitializer implements CommandLineRunner {
                     WorkLocation.OFFICE,
                     EmployeeStatus.AVAILABLE,
                     Sprite.MAN4
-            );*/
+            );
 
             Employee jacques = createEmployeeWithAccount(
                     "Jacques",
@@ -2143,7 +2143,7 @@ public class DataInitializer implements CommandLineRunner {
                     WorkLocation.REMOTE,
                     EmployeeStatus.OCCUPIED,
                     Sprite.WOMAN4
-            );*/
+            );
 
             Employee ali = createEmployeeWithAccount(
                     "Ali",
@@ -2167,7 +2167,7 @@ public class DataInitializer implements CommandLineRunner {
                     WorkLocation.OFFICE,
                     EmployeeStatus.AVAILABLE,
                     Sprite.WOMAN1
-            );*/
+            );
 
             /*Employee james = createEmployeeWithAccount(
                     "James",
@@ -2179,7 +2179,7 @@ public class DataInitializer implements CommandLineRunner {
                     WorkLocation.OFFICE,
                     EmployeeStatus.OCCUPIED,
                     Sprite.MAN2
-            );*/
+            );
 
             Employee mel = createEmployeeWithAccount(
                     "Mel",
@@ -2227,7 +2227,7 @@ public class DataInitializer implements CommandLineRunner {
                     WorkLocation.REMOTE,
                     EmployeeStatus.AVAILABLE,
                     Sprite.MAN2
-            );*/
+            );
 
             Employee moly = createEmployeeWithAccount(
                     "Moly",
@@ -2239,10 +2239,10 @@ public class DataInitializer implements CommandLineRunner {
                     WorkLocation.OFFICE,
                     EmployeeStatus.OCCUPIED,
                     Sprite.WOMAN1
-            );
+            );*/
 
             // Employees and desks for openspaces
-            List<Person> people = List.of(
+            /*List<Person> people = List.of(
                 new Person("Mounier", "Astride", "F"),
                 new Person("Palvadeau", "Pierre", "H"),
                 new Person("Leblanc", "Juste", "H"),
@@ -2596,7 +2596,7 @@ public class DataInitializer implements CommandLineRunner {
                         )
                 );
             }
-            meetingEmployeeRepo.flush();
+            meetingEmployeeRepo.flush();*/
 
             System.out.println("✔ Base de données initialisée !");
         }
