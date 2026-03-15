@@ -192,7 +192,95 @@ public class DataInitializer implements CommandLineRunner {
             
             
             
-            
+            RoomType office1DeskB2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office1DeskB2")
+                        .lengthX(6f)
+                        .lengthZ(3.5f)
+                        .build()
+            );
+
+            RoomType office2DesksB2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office2DesksB2")
+                        .lengthX(6f)
+                        .lengthZ(4.5f)
+                        .build()
+            );
+
+            RoomType office3DesksB2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office3DesksB2")
+                        .lengthX(6f)
+                        .lengthZ(5.5f)
+                        .build()
+            );
+
+            RoomType office4DesksB2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office4DesksB2")
+                        .lengthX(6f)
+                        .lengthZ(6.5f)
+                        .build()
+            );
+
+            RoomType office5DesksB2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Office5DesksB2")
+                        .lengthX(6f)
+                        .lengthZ(10.5f)
+                        .build()
+            );
+
+            RoomType meetingRoomB2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("MeetingRoomB2")
+                        .lengthX(6f)
+                        .lengthZ(6.5f)
+                        .build()
+            );
+
+            RoomType stairwellB2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("StairwellB2")
+                        .lengthX(4f)
+                        .lengthZ(6f)
+                        .build()
+            );
+
+            RoomType stairsB2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("StairsB2")
+                        .lengthX(1.68f)
+                        .lengthZ(2.9f)
+                        .build()
+            );
+
+            RoomType local = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Local")
+                        .lengthX(6f)
+                        .lengthZ(3.5f)
+                        .build()
+            );
+
+            RoomType localB2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("LocalB2")
+                        .lengthX(6f)
+                        .lengthZ(8.5f)
+                        .build()
+            );
+
+            RoomType toilets = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Toilets")
+                        .lengthX(6f)
+                        .lengthZ(3.167f)
+                        .build()
+            );
+
+
             // --- DESK TYPE ---
             DeskType desk1office1desk = deskTypeRepo.save(
                     DeskType.builder()
@@ -322,6 +410,216 @@ public class DataInitializer implements CommandLineRunner {
                             .roomType(office6Desks)
                             .deskNumber(6)
                             .build()
+            );
+
+            DeskType desk1office1deskB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(4.7f)
+                        .coordZ(1.4f)
+                        .orientationDeg(0f)
+                        .roomType(office1DeskB2)
+                        .deskNumber(1)
+                        .build()
+            );
+
+            DeskType desk1office2desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(4.7f)
+                        .coordZ(1.4f)
+                        .orientationDeg(0f)
+                        .roomType(office2DesksB2)
+                        .deskNumber(1)
+                        .build()
+            );
+
+            DeskType desk2office2desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.2f)
+                        .coordZ(3.05f)
+                        .orientationDeg(180f)
+                        .roomType(office2DesksB2)
+                        .deskNumber(2)
+                        .build()
+            );
+
+            DeskType desk1office3desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(4.7f)
+                        .coordZ(1.4f)
+                        .orientationDeg(0f)
+                        .roomType(office3DesksB2)
+                        .deskNumber(1)
+                        .build()
+            );
+
+            DeskType desk2office3desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.2f)
+                        .coordZ(3.05f)
+                        .orientationDeg(180f)
+                        .roomType(office3DesksB2)
+                        .deskNumber(2)
+                        .build()
+            );
+
+            DeskType desk3office3desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(5.1f)
+                        .coordZ(3.5f)
+                        .orientationDeg(180f)
+                        .roomType(office3DesksB2)
+                        .deskNumber(3)
+                        .build()
+            );
+
+            DeskType desk1office4desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(4.7f)
+                        .coordZ(1.4f)
+                        .orientationDeg(0f)
+                        .roomType(office4DesksB2)
+                        .deskNumber(1)
+                        .build()
+            );
+
+            DeskType desk2office4desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.2f)
+                        .coordZ(3.05f)
+                        .orientationDeg(180f)
+                        .roomType(office4DesksB2)
+                        .deskNumber(2)
+                        .build()
+            );
+
+            DeskType desk3office4desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(5.1f)
+                        .coordZ(3.5f)
+                        .orientationDeg(180f)
+                        .roomType(office4DesksB2)
+                        .deskNumber(3)
+                        .build()
+            );
+
+            DeskType desk4office4desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.2f)
+                        .coordZ(5.45f)
+                        .orientationDeg(0f)
+                        .roomType(office4DesksB2)
+                        .deskNumber(4)
+                        .build()
+            );
+
+            DeskType desk1office5desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(4.7f)
+                        .coordZ(1.4f)
+                        .orientationDeg(0f)
+                        .roomType(office5DesksB2)
+                        .deskNumber(1)
+                        .build()
+            );
+
+            DeskType desk2office5desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.2f)
+                        .coordZ(3.05f)
+                        .orientationDeg(180f)
+                        .roomType(office5DesksB2)
+                        .deskNumber(2)
+                        .build()
+            );
+
+            DeskType desk3office5desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(5.1f)
+                        .coordZ(3.5f)
+                        .orientationDeg(180f)
+                        .roomType(office5DesksB2)
+                        .deskNumber(3)
+                        .build()
+            );
+
+            DeskType desk4office5desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.05f)
+                        .coordZ(5.8f)
+                        .orientationDeg(-90f)
+                        .roomType(office5DesksB2)
+                        .deskNumber(4)
+                        .build()
+            );
+
+            DeskType desk5office5desksB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.2f)
+                        .coordZ(9.45f)
+                        .orientationDeg(0f)
+                        .roomType(office5DesksB2)
+                        .deskNumber(5)
+                        .build()
+            );
+
+            DeskType desk1meetingRoomB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.4f)
+                        .coordZ(5f)
+                        .orientationDeg(90f)
+                        .roomType(meetingRoomB2)
+                        .deskNumber(1)
+                        .build()
+            );
+
+            DeskType desk2meetingRoomB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(1.4f)
+                        .coordZ(3.5f)
+                        .orientationDeg(90f)
+                        .roomType(meetingRoomB2)
+                        .deskNumber(2)
+                        .build()
+            );
+
+            DeskType desk3meetingRoomB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(2.2f)
+                        .coordZ(1.9f)
+                        .orientationDeg(0f)
+                        .roomType(meetingRoomB2)
+                        .deskNumber(3)
+                        .build()
+            );
+
+            DeskType desk4meetingRoomB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(3.8f)
+                        .coordZ(1.9f)
+                        .orientationDeg(0f)
+                        .roomType(meetingRoomB2)
+                        .deskNumber(4)
+                        .build()
+            );
+
+            DeskType desk5meetingRoomB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(4.6f)
+                        .coordZ(3.5f)
+                        .orientationDeg(-90f)
+                        .roomType(meetingRoomB2)
+                        .deskNumber(5)
+                        .build()
+            );
+
+            DeskType desk6meetingRoomB2 = deskTypeRepo.save(
+                    DeskType.builder()
+                        .coordX(4.6f)
+                        .coordZ(5f)
+                        .orientationDeg(-90f)
+                        .roomType(meetingRoomB2)
+                        .deskNumber(6)
+                        .build()
             );
 
             // --- ROOMS ---
@@ -684,6 +982,45 @@ public class DataInitializer implements CommandLineRunner {
                         .position("down")
                         .build()
             );
+            
+            Room toiletAmphis1 = roomRepo.save(
+            		Room.builder()
+            			.roomType(toilets)
+            			.roomName("Toilettes amphis")
+            			.coordX1(60f).coordZ1(7f)
+            			.orientationDeg(-90f)
+            			.floor(floor3)
+            			.build()
+            );
+            Room toiletAmphis2 = roomRepo.save(
+            		Room.builder()
+            			.roomType(toilets)
+            			.roomName("Toilettes amphis")
+            			.coordX1(63f).coordZ1(7f)
+            			.orientationDeg(-90f)
+            			.floor(floor3)
+            			.build()
+            );
+            Room toiletAmphis3 = roomRepo.save(
+            		Room.builder()
+            			.roomType(toilets)
+            			.roomName("Toilettes amphis")
+            			.coordX1(66f).coordZ1(7f)
+            			.orientationDeg(-90f)
+            			.floor(floor3)
+            			.build()
+            );
+            
+            Room toiletAmphis4 = roomRepo.save(
+            		Room.builder()
+            			.roomType(toilets)
+            			.roomName("Toilettes amphis")
+            			.coordX1(69f).coordZ1(7f)
+            			.orientationDeg(-90f)
+            			.floor(floor3)
+            			.build()
+            );
+            
             
             Room amphi2 = roomRepo.save(
             		Room.builder()
@@ -1307,7 +1644,7 @@ public class DataInitializer implements CommandLineRunner {
                             .coordZ(0.4f)
                             .orientationDeg(0f)
                             .roomType(openspace)
-                            .deskNumber(2*i)
+                            .deskNumber(2*i+1)
                             .build()
                 );
                 deskType_openspaces[1][i] = deskTypeRepo.save(
@@ -1316,7 +1653,7 @@ public class DataInitializer implements CommandLineRunner {
                             .coordZ(3.1f)
                             .orientationDeg(180f)
                             .roomType(openspace)
-                            .deskNumber(2*i+1)
+                            .deskNumber(2*i+2)
                             .build()
                 );
             }

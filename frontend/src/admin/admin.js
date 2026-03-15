@@ -12,12 +12,14 @@ const sheets = [
         minDimensions:[7,10],
         columns: [
             {type: 'text', title: 'roomName', name: 'roomName', width:150},
-            {type: 'dropdown', title: 'roomType', name: 'roomType', width:150, source: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Openspace", "Stairs"]},
+            {type: 'dropdown', title: 'roomType', name: 'roomType', width:150, source: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Openspace", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local", "LocalB2", "Toilets"]},
             {type: 'text', title: 'floorName', name: 'floorName', width:150},
-            {type: 'numeric', title: 'coordX1', name: 'coordX1', width:100},
-            {type: 'numeric', title: 'coordZ1', name: 'coordZ1', width:100},
+            {type: 'numeric', title: 'coordX1', name: 'coordX1', width:80},
+            {type: 'numeric', title: 'coordZ1', name: 'coordZ1', width:80},
             {type: 'numeric', title: 'orientationDeg', name: 'orientationDeg', width:140},
-            {type: 'numeric', title: 'openspaceNumber', name: 'openspaceNumber', width:160}]
+            {type: 'numeric', title: 'openspaceNumber', name: 'openspaceNumber', width:160},
+            {type: 'dropdown', title: 'position', name: 'position', width:100, source: ["up", "down"]},
+            {type: 'text', title: 'nextFloor', name: 'nextFloor', width:120}]
     },
     {
         sheetName: 'Desks',
@@ -36,12 +38,22 @@ const sheets = [
             {type: 'text', title: 'roomName', name: 'roomName', width:100},
             {type: 'numeric', title: 'deskNumber', name: 'deskNumber', width:100},
             {type: 'text', title: 'deskName', name: 'deskName', width:100},
-            {type: 'numeric', title: 'phoneNumber', name: 'phoneNumber', width:110},
-            {type: 'numeric', title: 'email', name: 'email', width:100},
-            {type: 'numeric', title: 'workingHours', name: 'workingHours', width:110},
+            {type: 'text', title: 'phoneNumber', name: 'phoneNumber', width:110},
+            {type: 'text', title: 'email', name: 'email', width:100},
+            {type: 'text', title: 'workingHours', name: 'workingHours', width:110},
             {type: 'dropdown', title: 'inOffice', name: 'inOffice', width:100, source: ["OFFICE", "REMOTE"]},
             {type: 'dropdown', title: 'status', name: 'status', width:100, source: ["AVAILABLE", "OCCUPIED", "ABSENT"]},
             {type: 'dropdown', title: 'sprite', name: 'sprite', width:100, source: ["MAN1", "WOMAN1","MAN2", "WOMAN2","MAN3", "WOMAN3","MAN4", "WOMAN4"]}]
+    },
+    {
+        sheetName: 'Accounts',
+        minDimensions:[3,10],
+        columns: [
+            {type: 'text', title: 'email', name: 'email', width:160},
+            {type: 'text', title: 'lastName', name: 'lastName', width:160},
+            {type: 'text', title: 'firstName', name: 'firstName', width:160},
+            {type: 'dropdown', title: 'role', name: 'role', width:110, source: ["USER", "ADMIN"]},
+            {type: 'text', title: 'password', name: 'password', width:160}]
     },
     {
         sheetName: 'Meetings',
@@ -96,7 +108,7 @@ function send() {
 
     fetch(`/api/database-filler`, {
         method: 'POST',
-        headers: {"Content-Type": "application/json"},
+        headers: {"Content-Type": "application/json", "Authorization": `Bearer ${sessionStorage.getItem("token")}`},
         body: JSON.stringify(json)
     }).then((response) => {
         if (!response.ok) {
@@ -115,7 +127,7 @@ function send() {
     });
 }
 
-const tables = ["floors", "rooms", "desks", "employees", "meetings", "meetingEmployees"];
+const tables = ["floors", "rooms", "desks", "employees", "accounts", "meetings", "meetingEmployees"];
 function getCleanedJson() {
     let excel = document.getElementById("spreadsheet").jexcel;
     let json = {};
@@ -154,6 +166,13 @@ function getCleanedJson() {
 document.getElementById("file-import").addEventListener("change", function(e) {
     const file = e.target.files[0];
     if (!file) return;
+
+    document.getElementById("reset").checked = false;
+    const excels = document.getElementById("spreadsheet").jexcel;
+    excels.forEach((sheet) => {
+        sheet.setData([]);
+    });
+    tabs[0].click();
 
     const reader = new FileReader();
     reader.onload = function (e) {

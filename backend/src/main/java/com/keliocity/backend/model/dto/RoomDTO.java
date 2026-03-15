@@ -9,6 +9,8 @@ public class RoomDTO {
     private float orientationDeg;
     private Integer openspaceNumber; // optional
     private String floorName;
+    private String nextFloor;
+    private String position;
 
     public String getRoomType() {
         return roomType;
@@ -36,5 +38,13 @@ public class RoomDTO {
 
     public String getFloorName() {
         return floorName;
+    }
+
+    public String getNextFloor() {
+        return nextFloor;
+    }
+
+    public String getPosition() {
+        return position;
     }
 }

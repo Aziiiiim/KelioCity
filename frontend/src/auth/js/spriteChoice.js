@@ -6,7 +6,7 @@ import { safeJson } from "./utils.js";
 const scenes = document.querySelectorAll(".scene-wrap");
 
 const gender = sessionStorage.getItem("gender");
-const SPRITES = {M: {1: "Man1", 2: "Man2",3: "Man3",},F: {1: "Woman1",2: "Woman2",3: "Woman3",}};
+const SPRITES = {M: {1: "Man1", 2: "Man2",3: "Man3",4: "Man4"},F: {1: "Woman1",2: "Woman2",3: "Woman3",4: "Woman4"}};
 let selectedScene = null;
 let selectedSpriteName = null;
 

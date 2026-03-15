@@ -208,6 +208,7 @@ function renderProfileEdit(me) {
             <div class="sprite-card" data-sprite="S1"><canvas></canvas></div>
             <div class="sprite-card" data-sprite="S2"><canvas></canvas></div>
             <div class="sprite-card" data-sprite="S3"><canvas></canvas></div>
+            <div class="sprite-card" data-sprite="S4"><canvas></canvas></div>
         </div>
     </div>
     <div class="profile-actions">
@@ -343,7 +344,7 @@ function attr(str) {
 function spritesFor(me){
   const s = String(me?.sprite || "").toUpperCase();
   const isMan = s.startsWith("MAN");
-  return isMan ? ["Man1","Man2","Man3"] : ["Woman1","Woman2","Woman3"];
+  return isMan ? ["Man1","Man2","Man3","Man4"] : ["Woman1","Woman2","Woman3","Woman4"];
 }
 
 function normalizeSpriteForGlb(spriteDb){
