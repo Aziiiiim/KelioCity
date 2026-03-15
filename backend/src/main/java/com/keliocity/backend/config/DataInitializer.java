@@ -171,7 +171,7 @@ public class DataInitializer implements CommandLineRunner {
             
             Floor floor3 = floorRepo.save(
             		Floor.builder()
-            		.floorName("Amphis")
+            		.floorName("Etage A1")
                     .lengthX(220f)
                     .lengthZ(15f)
                     .build()
