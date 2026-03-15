@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "MEETING_EMPLOYEES")
@@ -17,11 +19,13 @@ public class MeetingEmployee {
     @ManyToOne
     @MapsId("meetingId")
     @JoinColumn(name = "meeting_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Meeting meeting;
 
     @ManyToOne
     @MapsId("employeeId")
     @JoinColumn(name = "employee_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Employee employee;
 
     @Column(name = "present", nullable = false)

@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "EMPLOYEES")
@@ -28,6 +30,7 @@ public class Employee {
 
     @ManyToOne
     @JoinColumn(name = "desk_id")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Desk desk; // peut être null si pas de bureau attribué
 
     @Column(name = "phone_number")
@@ -52,6 +55,7 @@ public class Employee {
     private Sprite sprite;
     
     @OneToOne(mappedBy = "employee")
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     @JsonIgnore
     private Account account;
 

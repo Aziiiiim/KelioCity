@@ -50,21 +50,40 @@ public class DatabaseFillerController {
             return "not authentified";
         }
 
-        if (dbFillerDTO.getReset()) {
-            meetingEmployeeRepo.deleteAllInBatch();
+        if (dbFillerDTO.getReset().getMeetingEmployees()) {
+            meetingEmployeeRepo.deleteAll();
             meetingEmployeeRepo.resetAutoIncrement();
-            meetingRepo.deleteAllInBatch();
+            meetingEmployeeRepo.flush();
+        }
+        if (dbFillerDTO.getReset().getMeetings()) {
+            meetingRepo.deleteAll();
             meetingRepo.resetAutoIncrement();
-            accountRepo.deleteAllInBatch();
+            meetingRepo.flush();
+        }
+        if (dbFillerDTO.getReset().getAccounts()) {
+            accountRepo.deleteAll();
             accountRepo.resetAutoIncrement();
-            employeeRepo.deleteAllInBatch();
+            accountRepo.flush();
+        }
+        if (dbFillerDTO.getReset().getEmployees()) {
+            employeeRepo.deleteAll();
             employeeRepo.resetAutoIncrement();
-            deskRepo.deleteAllInBatch();
+            employeeRepo.flush();
+        }
+        if (dbFillerDTO.getReset().getDesks()) {
+            deskRepo.deleteAll();
             deskRepo.resetAutoIncrement();
-            roomRepo.deleteAllInBatch();
+            deskRepo.flush();
+        }
+        if (dbFillerDTO.getReset().getRooms()) {
+            roomRepo.deleteAll();
             roomRepo.resetAutoIncrement();
-            floorRepo.deleteAllInBatch();
+            roomRepo.flush();
+        }
+        if (dbFillerDTO.getReset().getFloors()) {
+            floorRepo.deleteAll();
             floorRepo.resetAutoIncrement();
+            floorRepo.flush();
         }
 
         HashMap<String, RoomType> roomTypes = new HashMap<String, RoomType>();
