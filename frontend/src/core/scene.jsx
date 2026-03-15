@@ -30,7 +30,7 @@ import { apiFetch } from "../utils/apiFetch.js";
 //import { apiTest } from "../utils/apiTest.js";
 import { createBigAmphi } from '../objects/BigAmphi.jsx';
 import { createSmallAmphi } from '../objects/SmallAmphi.jsx';
-
+import { createB2Access } from '../objects/B2Access.jsx';
 
 
 let _camera = null;
@@ -209,7 +209,7 @@ function enterNormalMode() {
         roomPlugin({
             camera: _camera,
             controls: _controls,
-            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local", "LocalB2", "Toilets", "SmallAmphi", "BigAmphi"]
+            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local", "LocalB2", "Toilets", "SmallAmphi", "BigAmphi", "B2Access"]
         })
     );
 
@@ -408,6 +408,9 @@ export function createScene(floorId, mode){
                     }
                     else if (roomType === "Toilets") {
                         roomObj = createToilets();
+                    }
+                    else if (roomType === "B2Access") {
+                        roomObj = createB2Access();
                     }
                     if (roomObj) {
                         roomElements = roomObj.elements;

@@ -85,6 +85,66 @@ public class DataInitializer implements CommandLineRunner {
         return (i + j) % 2 != 0;
     }
     
+    
+    private Room createRoom(RoomType roomType, String roomName, float x, float z, float orientation, Floor floor) {
+        return roomRepo.save(
+            Room.builder()
+                .roomType(roomType)
+                .roomName(roomName)
+                .coordX1(x) //52
+                .coordZ1(z) // 22
+                .orientationDeg(orientation)
+                .floor(floor)
+                .build()
+        );
+    }
+    
+    private Room createStairsRoom(RoomType roomType, String roomName, float x, float z, float orientation,
+            Floor floor, Floor nextFloor, String position) {
+		return roomRepo.save(
+			Room.builder()
+				.roomType(roomType)
+				.roomName(roomName)
+				.coordX1(x)
+				.coordZ1(z)
+				.orientationDeg(orientation)
+				.floor(floor)
+				.nextFloor(nextFloor)
+				.position(position)
+				.build()
+		);
+	}
+    
+    private Desk createDesk(Room room, DeskType deskType, String deskName) {
+        return deskRepo.save(
+            Desk.builder()
+                .deskName(deskName)
+                .room(room)
+                .deskType(deskType)
+                .build()
+        );
+    }
+    
+    private String normalizeForEmail(String value) {
+        String normalized = java.text.Normalizer.normalize(value, java.text.Normalizer.Form.NFD)
+            .replaceAll("\\p{M}", "");
+
+        normalized = normalized
+            .toLowerCase()
+            .replace("’", "-")
+            .replace("'", "-")
+            .replaceAll("[^a-z0-9-]+", "-")
+            .replaceAll("^-+", "")
+            .replaceAll("-+$", "")
+            .replaceAll("-{2,}", "-");
+
+        return normalized;
+    }
+
+    private String buildImtEmail(String firstName, String lastName) {
+        return normalizeForEmail(firstName) + "." + normalizeForEmail(lastName) + "@imt-atlantique.fr";
+    }
+    
     @Override
     @Transactional
     public void run(String... args) {
@@ -114,6 +174,14 @@ public class DataInitializer implements CommandLineRunner {
             		.floorName("Amphis")
                     .lengthX(220f)
                     .lengthZ(15f)
+                    .build()
+            );
+            
+            Floor floor4 = floorRepo.save(
+            		Floor.builder()
+            		.floorName("Etage B2")
+                    .lengthX(17f)
+                    .lengthZ(110f)
                     .build()
             );
             
@@ -281,6 +349,14 @@ public class DataInitializer implements CommandLineRunner {
             );
 
 
+            RoomType b2Access = roomTypeRepo.save(
+        	    RoomType.builder()
+        	        .roomtypeName("B2Access")
+        	        .lengthX(8f)
+        	        .lengthZ(8f)
+        	        .build()
+        	);
+            
             // --- DESK TYPE ---
             DeskType desk1office1desk = deskTypeRepo.save(
                     DeskType.builder()
@@ -1031,6 +1107,617 @@ public class DataInitializer implements CommandLineRunner {
             			.floor(floor3)
             			.build()
             );
+            
+            Room accessB2 = roomRepo.save(
+        	    Room.builder()
+        	        .roomType(b2Access)
+        	        .roomName("Accès étage B2")
+        	        .coordX1(52f)
+        	        .coordZ1(-15f)
+        	        .orientationDeg(0f)
+        	        .floor(floor3)
+        	        .nextFloor(floor4)
+        	        .position("portal")
+        	        .build()
+        	);
+            
+            
+         
+
+        Room b205 = createRoom(local, "B205", 2.5f, -51f, 0f, floor4);
+
+        Room b206 = createRoom(office3DesksB2, "B206", -8.5f, -55f, 180f, floor4);
+        Room b206b = createRoom(office1DeskB2, "B206b", -8.5f, -49.5f, 180f, floor4);
+        Room b207 = createRoom(office1DeskB2, "B207", 2.5f, -47.5f, 0f, floor4);
+        Room b208 = createRoom(office1DeskB2, "B208", -8.5f, -46f, 180f, floor4);
+        Room b209 = createRoom(office1DeskB2, "B209", 2.5f, -44f, 0f, floor4);
+        Room b210 = createRoom(office3DesksB2, "B210", -8.5f, -42.5f, 180f, floor4);
+        Room b211 = createRoom(office1DeskB2, "B211", 2.5f, -40.5f, 0f, floor4);
+        Room b211b = createRoom(office1DeskB2, "B211b", 2.5f, -37f, 0f, floor4);
+        Room b212a = createRoom(meetingRoomB2, "B212a", -8.5f, -37f, 180f, floor4);
+        Room b212b = createRoom(office1DeskB2, "B212b", -8.5f, -30.5f, 180f, floor4);
+        Room b213 = createRoom(office1DeskB2, "B213", 2.5f, -33.5f, 0f, floor4);
+        Room b214 = createRoom(office1DeskB2, "B214", -8.5f, -27f, 180f, floor4);
+        Room b215 = createRoom(office2DesksB2, "B215", 2.5f, -30f, 0f, floor4);
+        Room b216 = createRoom(office4DesksB2, "B216", -8.5f, -23.5f, 180f, floor4);
+        Room b217 = createRoom(office2DesksB2, "B217", 2.5f, -25.5f, 0f, floor4);
+        Room b218 = createRoom(meetingRoomB2, "B218", -8.5f, -17f, 180f, floor4);
+        Room b218b = createRoom(office2DesksB2, "B218b", -8.5f, -10.5f, 180f, floor4);
+        Room b219 = createRoom(office1DeskB2, "B219", 2.5f, -21f, 0f, floor4);
+        Room b220 = createRoom(office2DesksB2, "B220", -8.5f, -6f, 180f, floor4);
+        Room b221 = createRoom(office3DesksB2, "B221", 2.5f, -17.5f, 0f, floor4);
+        Room b222 = createRoom(office1DeskB2, "B222", -8.5f, -1.5f, 180f, floor4);
+        Room b223 = createRoom(office1DeskB2, "B223", 2.5f, -12f, 0f, floor4);
+        Room b224 = createRoom(office2DesksB2, "B224", -8.5f, 2f, 180f, floor4);
+        Room b225 = createRoom(office1DeskB2, "B225", 2.5f, -8.5f, 0f, floor4);
+        Room b226 = createRoom(office2DesksB2, "B226", -8.5f, 6.5f, 180f, floor4);
+        Room b227 = createRoom(office1DeskB2, "B227", 2.5f, -5f, 0f, floor4);
+        Room b228 = createRoom(localB2, "B228", -8.5f, 11f, 180f, floor4);
+        Room b229 = createRoom(office2DesksB2, "B229", 2.5f, -1.5f, 0f, floor4);
+        Room b231 = createRoom(office3DesksB2, "B231", 2.5f, 3f, 0f, floor4);
+        Room b232 = createRoom(localB2, "B232", -8.5f, 19.5f, 180f, floor4);
+        Room b233 = createRoom(office1DeskB2, "B233", 2.5f, 8.5f, 0f, floor4);
+        Room b234 = createRoom(localB2, "B234", -8.5f, 28f, 180f, floor4);
+
+        Room b235a = createRoom(toilets, "B235a", 2.5f, 12f, 0f, floor4);
+        Room b235b = createRoom(toilets, "B235b", 2.5f, 15.167f, 0f, floor4);
+        Room b235c = createRoom(toilets, "B235c", 2.5f, 18.334f, 0f, floor4);
+
+        Room b236 = createRoom(office1DeskB2, "B236", -8.5f, 36.5f, 180f, floor4);
+        Room b238 = createRoom(office1DeskB2, "B238", -8.5f, 40f, 180f, floor4);
+        Room b239 = createRoom(office3DesksB2, "B239", 2.5f, 27.5f, 0f, floor4);
+        Room b240 = createRoom(office2DesksB2, "B240", -8.5f, 43.5f, 180f, floor4);
+        Room b241 = createRoom(office3DesksB2, "B241", 2.5f, 33f, 0f, floor4);
+        Room b242 = createRoom(office1DeskB2, "B242", -8.5f, 48f, 180f, floor4);
+        Room b243 = createRoom(office5DesksB2, "B243", 2.5f, 38.5f, 0f, floor4);
+        Room b244 = createRoom(office1DeskB2, "B244", -8.5f, 51.5f, 180f, floor4);
+
+        Room cageEsc10 = createRoom(stairwellB2, "Cage Escalier 10 – B2", 2.5f, -55f, -90f, floor4);
+        Room esc10Up = createStairsRoom(stairsB2, "Escalier 10 – B2 montée", 2.51f, -55f, 90f, floor4, floor2, "up");
+        Room esc10Down = createStairsRoom(stairsB2, "Escalier 10 – B2 descente", 2.6f, -52.68f, -90f, floor4, floor2, "down");
+
+        Room cageEsc11 = createRoom(stairwellB2, "Cage Escalier 11 – B2", 4.5f, 21.5f, 0f, floor4);
+        Room esc11Up = createStairsRoom(stairsB2, "Escalier 11 – B2 montée", 4.5f, 24.57f, 180f, floor4, floor2, "up");
+        Room esc11Down = createStairsRoom(stairsB2, "Escalier 11 – B2 descente", 6.82f, 24.35f, 0f, floor4, floor2, "down");
+
+        Room cageEsc12 = createRoom(stairwellB2, "Cage Escalier 12 – B2", 4.5f, 49f, 0f, floor4);
+        Room esc12Up = createStairsRoom(stairsB2, "Escalier 12 – B2 montée", 4.5f, 52.07f, 180f, floor4, floor2, "up");
+        Room esc12Down = createStairsRoom(stairsB2, "Escalier 12 – B2 descente", 6.82f, 51.85f, 0f, floor4, floor2, "down");
+        // --- DESKS COULOIR B2 ---
+	
+	        Desk deskB206_1 = createDesk(b206, desk1office3desksB2, "Desk B206 1");
+	        Desk deskB206_2 = createDesk(b206, desk2office3desksB2, "Desk B206 2");
+	        Desk deskB206_3 = createDesk(b206, desk3office3desksB2, "Desk B206 3");
+	
+	        Desk deskB206b_1 = createDesk(b206b, desk1office1deskB2, "Desk B206b 1");
+	        Desk deskB207_1 = createDesk(b207, desk1office1deskB2, "Desk B207 1");
+	        Desk deskB208_1 = createDesk(b208, desk1office1deskB2, "Desk B208 1");
+	        Desk deskB209_1 = createDesk(b209, desk1office1deskB2, "Desk B209 1");
+	
+	        Desk deskB210_1 = createDesk(b210, desk1office3desksB2, "Desk B210 1");
+	        Desk deskB210_2 = createDesk(b210, desk2office3desksB2, "Desk B210 2");
+	        Desk deskB210_3 = createDesk(b210, desk3office3desksB2, "Desk B210 3");
+	
+	        Desk deskB211_1 = createDesk(b211, desk1office1deskB2, "Desk B211 1");
+	        Desk deskB211b_1 = createDesk(b211b, desk1office1deskB2, "Desk B211b 1");
+	
+	        Desk deskB212a_1 = createDesk(b212a, desk1meetingRoomB2, "Desk B212a 1");
+	        Desk deskB212a_2 = createDesk(b212a, desk2meetingRoomB2, "Desk B212a 2");
+	        Desk deskB212a_3 = createDesk(b212a, desk3meetingRoomB2, "Desk B212a 3");
+	        Desk deskB212a_4 = createDesk(b212a, desk4meetingRoomB2, "Desk B212a 4");
+	        Desk deskB212a_5 = createDesk(b212a, desk5meetingRoomB2, "Desk B212a 5");
+	        Desk deskB212a_6 = createDesk(b212a, desk6meetingRoomB2, "Desk B212a 6");
+	
+	        Desk deskB212b_1 = createDesk(b212b, desk1office1deskB2, "Desk B212b 1");
+	        Desk deskB213_1 = createDesk(b213, desk1office1deskB2, "Desk B213 1");
+	        Desk deskB214_1 = createDesk(b214, desk1office1deskB2, "Desk B214 1");
+	
+	        Desk deskB215_1 = createDesk(b215, desk1office2desksB2, "Desk B215 1");
+	        Desk deskB215_2 = createDesk(b215, desk2office2desksB2, "Desk B215 2");
+	
+	        Desk deskB216_1 = createDesk(b216, desk1office4desksB2, "Desk B216 1");
+	        Desk deskB216_2 = createDesk(b216, desk2office4desksB2, "Desk B216 2");
+	        Desk deskB216_3 = createDesk(b216, desk3office4desksB2, "Desk B216 3");
+	        Desk deskB216_4 = createDesk(b216, desk4office4desksB2, "Desk B216 4");
+	
+	        Desk deskB217_1 = createDesk(b217, desk1office2desksB2, "Desk B217 1");
+	        Desk deskB217_2 = createDesk(b217, desk2office2desksB2, "Desk B217 2");
+	
+	        Desk deskB218_1 = createDesk(b218, desk1meetingRoomB2, "Desk B218 1");
+	        Desk deskB218_2 = createDesk(b218, desk2meetingRoomB2, "Desk B218 2");
+	        Desk deskB218_3 = createDesk(b218, desk3meetingRoomB2, "Desk B218 3");
+	        Desk deskB218_4 = createDesk(b218, desk4meetingRoomB2, "Desk B218 4");
+	        Desk deskB218_5 = createDesk(b218, desk5meetingRoomB2, "Desk B218 5");
+	        Desk deskB218_6 = createDesk(b218, desk6meetingRoomB2, "Desk B218 6");
+	
+	        Desk deskB218b_1 = createDesk(b218b, desk1office2desksB2, "Desk B218b 1");
+	        Desk deskB218b_2 = createDesk(b218b, desk2office2desksB2, "Desk B218b 2");
+	
+	        Desk deskB219_1 = createDesk(b219, desk1office1deskB2, "Desk B219 1");
+	
+	        Desk deskB220_1 = createDesk(b220, desk1office2desksB2, "Desk B220 1");
+	        Desk deskB220_2 = createDesk(b220, desk2office2desksB2, "Desk B220 2");
+	
+	        Desk deskB221_1 = createDesk(b221, desk1office3desksB2, "Desk B221 1");
+	        Desk deskB221_2 = createDesk(b221, desk2office3desksB2, "Desk B221 2");
+	        Desk deskB221_3 = createDesk(b221, desk3office3desksB2, "Desk B221 3");
+	
+	        Desk deskB222_1 = createDesk(b222, desk1office1deskB2, "Desk B222 1");
+	        Desk deskB223_1 = createDesk(b223, desk1office1deskB2, "Desk B223 1");
+	
+	        Desk deskB224_1 = createDesk(b224, desk1office2desksB2, "Desk B224 1");
+	        Desk deskB224_2 = createDesk(b224, desk2office2desksB2, "Desk B224 2");
+	
+	        Desk deskB225_1 = createDesk(b225, desk1office1deskB2, "Desk B225 1");
+	
+	        Desk deskB226_1 = createDesk(b226, desk1office2desksB2, "Desk B226 1");
+	        Desk deskB226_2 = createDesk(b226, desk2office2desksB2, "Desk B226 2");
+	
+	        Desk deskB227_1 = createDesk(b227, desk1office1deskB2, "Desk B227 1");
+	
+	        Desk deskB229_1 = createDesk(b229, desk1office2desksB2, "Desk B229 1");
+	        Desk deskB229_2 = createDesk(b229, desk2office2desksB2, "Desk B229 2");
+	
+	        Desk deskB231_1 = createDesk(b231, desk1office3desksB2, "Desk B231 1");
+	        Desk deskB231_2 = createDesk(b231, desk2office3desksB2, "Desk B231 2");
+	        Desk deskB231_3 = createDesk(b231, desk3office3desksB2, "Desk B231 3");
+	
+	        Desk deskB233_1 = createDesk(b233, desk1office1deskB2, "Desk B233 1");
+	        Desk deskB236_1 = createDesk(b236, desk1office1deskB2, "Desk B236 1");
+	        Desk deskB238_1 = createDesk(b238, desk1office1deskB2, "Desk B238 1");
+	
+	        Desk deskB239_1 = createDesk(b239, desk1office3desksB2, "Desk B239 1");
+	        Desk deskB239_2 = createDesk(b239, desk2office3desksB2, "Desk B239 2");
+	        Desk deskB239_3 = createDesk(b239, desk3office3desksB2, "Desk B239 3");
+	
+	        Desk deskB240_1 = createDesk(b240, desk1office2desksB2, "Desk B240 1");
+	        Desk deskB240_2 = createDesk(b240, desk2office2desksB2, "Desk B240 2");
+	
+	        Desk deskB241_1 = createDesk(b241, desk1office3desksB2, "Desk B241 1");
+	        Desk deskB241_2 = createDesk(b241, desk2office3desksB2, "Desk B241 2");
+	        Desk deskB241_3 = createDesk(b241, desk3office3desksB2, "Desk B241 3");
+	
+	        Desk deskB242_1 = createDesk(b242, desk1office1deskB2, "Desk B242 1");
+	
+	        Desk deskB243_1 = createDesk(b243, desk1office5desksB2, "Desk B243 1");
+	        Desk deskB243_2 = createDesk(b243, desk2office5desksB2, "Desk B243 2");
+	        Desk deskB243_3 = createDesk(b243, desk3office5desksB2, "Desk B243 3");
+	        Desk deskB243_4 = createDesk(b243, desk4office5desksB2, "Desk B243 4");
+	        Desk deskB243_5 = createDesk(b243, desk5office5desksB2, "Desk B243 5");
+	
+	        Desk deskB244_1 = createDesk(b244, desk1office1deskB2, "Desk B244 1");
+	        
+         // --- EMPLOYEES COULOIR B2 ---
+
+            Employee hugoBruneliere = createEmployeeWithAccount(
+                "Hugo", "Bruneliere", deskB206_1,
+                buildImtEmail("Hugo", "Bruneliere"),
+                "02 51 85 82 21", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+            );
+
+            Employee theoLeCalvar = createEmployeeWithAccount(
+                "Théo", "Le Calvar", deskB206_2,
+                buildImtEmail("Théo", "Le Calvar"),
+                "02 51 85 87 95", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+            );
+
+            Employee dalilaTamzalit = createEmployeeWithAccount(
+                "Dalila", "Tamzalit", deskB206_3,
+                buildImtEmail("Dalila", "Tamzalit"),
+                "02 51 85 80 54", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.WOMAN1
+            );
+
+            Employee alexisBitaillou = createEmployeeWithAccount(
+                "Alexis", "Bitaillou", deskB206b_1,
+                buildImtEmail("Alexis", "Bitaillou"),
+                "", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN4
+            );
+
+            Employee charlesPrudhomme = createEmployeeWithAccount(
+                "Charles", "Prudhomme", deskB207_1,
+                buildImtEmail("Charles", "Prudhomme"),
+                "02 51 85 83 68", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN3
+            );
+
+            Employee julienCohen = createEmployeeWithAccount(
+                "Julien", "Cohen", deskB208_1,
+                buildImtEmail("Julien", "Cohen"),
+                "", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN4
+            );
+
+            Employee nicolasBeldiceanu = createEmployeeWithAccount(
+                "Nicolas", "Beldiceanu", deskB209_1,
+                buildImtEmail("Nicolas", "Beldiceanu"),
+                "02 51 85 82 42", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN1
+            );
+
+            Employee matthewCoyle = createEmployeeWithAccount(
+                "Matthew", "Coyle", deskB210_1,
+                buildImtEmail("Matthew", "Coyle"),
+                "", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+            );
+
+            Employee charlotteTruchet = createEmployeeWithAccount(
+                "Charlotte", "Truchet", deskB210_2,
+                buildImtEmail("Charlotte", "Truchet"),
+                "02 51 85 82 25", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.WOMAN3
+            );
+
+            Employee wedwangMenra = createEmployeeWithAccount(
+                "Wedwang Romial", "Menra", deskB210_3,
+                buildImtEmail("Wedwang Romial", "Menra"),
+                "07 51 09 16 32", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN4
+            );
+
+            Employee gillesSimonin = createEmployeeWithAccount(
+                "Gilles", "Simonin", deskB211b_1,
+                buildImtEmail("Gilles", "Simonin"),
+                "02 51 85 80 22", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN1
+            );
+
+            Employee anneClaireBinetruy = createEmployeeWithAccount(
+                "Anne Claire", "Binetruy", deskB212b_1,
+                buildImtEmail("Anne Claire", "Binetruy"),
+                "02 51 85 87 24", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.WOMAN3
+            );
+
+            Employee alexandreDolgui = createEmployeeWithAccount(
+                "Alexandre", "Dolgui", deskB213_1,
+                buildImtEmail("Alexandre", "Dolgui"),
+                "06 26 30 30 94", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN3
+            );
+
+            Employee catherineFourny = createEmployeeWithAccount(
+                "Catherine", "Fourny", deskB214_1,
+                buildImtEmail("Catherine", "Fourny"),
+                "02 51 85 82 12", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.WOMAN1
+            );
+
+            Employee samirLoudni = createEmployeeWithAccount(
+                "Samir", "Loudni", deskB215_1,
+                buildImtEmail("Samir", "Loudni"),
+                "02 51 85 83 04", "08:00-16:00",
+                WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN3
+            );
+
+            Employee tudorOpran = createEmployeeWithAccount(
+                "Tudor Matei", "Opran", deskB215_2,
+                buildImtEmail("Tudor Matei", "Opran"),
+                "", "08:00-16:00",
+                WorkLocation.REMOTE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+            );
+            Employee adrienLebre = createEmployeeWithAccount(
+        	    "Adrien", "Lebre", deskB216_1,
+        	    buildImtEmail("Adrien", "Lebre"),
+        	    "02 51 85 82 43", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN4
+        	);
+
+        	Employee pierreMariePedrot = createEmployeeWithAccount(
+        	    "Pierre-Marie", "Pedrot", deskB216_2,
+        	    buildImtEmail("Pierre-Marie", "Pedrot"),
+        	    "", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN1
+        	);
+
+        	Employee matthieuSozeau = createEmployeeWithAccount(
+        	    "Matthieu", "Sozeau", deskB216_3,
+        	    buildImtEmail("Matthieu", "Sozeau"),
+        	    "", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN3
+        	);
+
+        	Employee nicolasTabareau = createEmployeeWithAccount(
+        	    "Nicolas", "Tabareau", deskB216_4,
+        	    buildImtEmail("Nicolas", "Tabareau"),
+        	    "02 51 85 82 37", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+
+        	Employee baptisteJonglez = createEmployeeWithAccount(
+        	    "Baptiste", "Jonglez", deskB217_1,
+        	    buildImtEmail("Baptiste", "Jonglez"),
+        	    "", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+
+        	Employee lucienAstie = createEmployeeWithAccount(
+        	    "Lucien", "Astie", deskB217_2,
+        	    buildImtEmail("Lucien", "Astie"),
+        	    "", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN1
+        	);
+
+        	Employee danielBalouekThomert = createEmployeeWithAccount(
+        	    "Daniel", "Balouek-Thomert", deskB218_1,
+        	    buildImtEmail("Daniel", "Balouek-Thomert"),
+        	    "", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN4
+        	);
+
+        	Employee severinAnzie = createEmployeeWithAccount(
+        	    "Severin Bradley", "Anzie", deskB218_2,
+        	    buildImtEmail("Severin Bradley", "Anzie"),
+        	    "", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN3
+        	);
+
+        	Employee carinaHuynh = createEmployeeWithAccount(
+        	    "Carina", "Huynh", deskB218_6,
+        	    buildImtEmail("Carina", "Huynh"),
+        	    "02 51 85 82 25", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.WOMAN4
+        	);
+
+        	Employee heleneCoullon = createEmployeeWithAccount(
+        	    "Hélène", "Coullon", deskB218b_1,
+        	    buildImtEmail("Hélène", "Coullon"),
+        	    "02 51 85 82 96", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.WOMAN3
+        	);
+
+        	Employee gaetanPlisson = createEmployeeWithAccount(
+        	    "Gaetan", "Plisson", deskB218b_2,
+        	    buildImtEmail("Gaetan", "Plisson"),
+        	    "06 50 21 42 03", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+
+        	Employee philippeDavid = createEmployeeWithAccount(
+        	    "Philippe", "David", deskB219_1,
+        	    buildImtEmail("Philippe", "David"),
+        	    "02 51 85 82 27", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+
+        	Employee sanchjeevKarikalan = createEmployeeWithAccount(
+        	    "Sanchjeev", "Karikalan", deskB221_1,
+        	    buildImtEmail("Sanchjeev", "Karikalan"),
+        	    "07 67 50 01 46", "08:00-16:00",
+        	    WorkLocation.REMOTE, EmployeeStatus.ABSENT, Sprite.MAN3
+        	);
+
+        	Employee sulianLeBozec = createEmployeeWithAccount(
+        	    "Sulian", "Le Bozec Chiffoleau", deskB221_2,
+        	    buildImtEmail("Sulian", "Le Bozec Chiffoleau"),
+        	    "", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+
+        	Employee celesteGuimapi = createEmployeeWithAccount(
+        	    "Celeste Precil", "Guimapi Guefack", deskB221_3,
+        	    buildImtEmail("Celeste Precil", "Guimapi Guefack"),
+        	    "", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN4
+        	);
+
+        	Employee guillaumeRosinosky = createEmployeeWithAccount(
+        	    "Guillaume", "Rosinosky", deskB222_1,
+        	    buildImtEmail("Guillaume", "Rosinosky"),
+        	    "", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN1
+        	);
+
+        	Employee thomasLedoux = createEmployeeWithAccount(
+        	    "Thomas", "Ledoux", deskB223_1,
+        	    buildImtEmail("Thomas", "Ledoux"),
+        	    "02 51 85 82 19", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.OCCUPIED, Sprite.MAN2
+        	);
+
+        	Employee marioSudholt = createEmployeeWithAccount(
+        	    "Mario", "Sudholt", deskB224_1,
+        	    buildImtEmail("Mario", "Sudholt"),
+        	    "02 51 85 82 47", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.ABSENT, Sprite.MAN1
+        	);
+
+        	Employee carlosGonzalez = createEmployeeWithAccount(
+        	    "Carlos Javier", "Gonzalez Santamaria", deskB224_2,
+        	    buildImtEmail("Carlos Javier", "Gonzalez Santamaria"),
+        	    "02 51 85 80 28", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN3
+        	);
+
+        	Employee remiDouence = createEmployeeWithAccount(
+        	    "Remi", "Douence", deskB225_1,
+        	    buildImtEmail("Remi", "Douence"),
+        	    "02 51 85 82 15", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+
+        	Employee assiaMahboubi = createEmployeeWithAccount(
+        	    "Assia", "Mahboubi", deskB226_1,
+        	    buildImtEmail("Assia", "Mahboubi"),
+        	    "", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.WOMAN2
+        	);
+
+        	Employee romualdDebruyne = createEmployeeWithAccount(
+        	    "Romuald", "Debruyne", deskB227_1,
+        	    buildImtEmail("Romuald", "Debruyne"),
+        	    "02 51 85 82 11", "08:00-16:00",
+        	    WorkLocation.REMOTE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+
+        	Employee massimoTisi = createEmployeeWithAccount(
+        	    "Massimo", "Tisi", deskB229_1,
+        	    buildImtEmail("Massimo", "Tisi"),
+        	    "02 51 85 87 04", "08:00-16:00",
+        	    WorkLocation.REMOTE, EmployeeStatus.OCCUPIED, Sprite.MAN2
+        	);
+
+        	Employee jeanMarieMottu = createEmployeeWithAccount(
+        	    "Jean-Marie", "Mottu", deskB229_2,
+        	    buildImtEmail("Jean-Marie", "Mottu"),
+        	    "02 51 85 82 13", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN3
+        	);
+
+        	Employee hibaAjabri = createEmployeeWithAccount(
+        	    "Hiba", "Ajabri", deskB231_1,
+        	    buildImtEmail("Hiba", "Ajabri"),
+        	    "", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.WOMAN4
+        	);
+
+        	Employee fredericLievre = createEmployeeWithAccount(
+        	    "Frederic", "Lievre", deskB233_1,
+        	    buildImtEmail("Frederic", "Lievre"),
+        	    "02 51 85 81 76", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN1
+        	);
+
+        	Employee kaddourFellah = createEmployeeWithAccount(
+        	    "Kaddour", "Fellah", deskB236_1,
+        	    buildImtEmail("Kaddour", "Fellah"),
+        	    "02 51 85 81 79", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN3
+        	);
+
+        	Employee philippeGirod = createEmployeeWithAccount(
+        	    "Philippe", "Girod", deskB239_1,
+        	    buildImtEmail("Philippe", "Girod"),
+        	    "02 51 85 87 72", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN4
+        	);
+
+        	Employee herveRozec = createEmployeeWithAccount(
+        	    "Hervé", "Rozec", deskB239_2,
+        	    buildImtEmail("Hervé", "Rozec"),
+        	    "02 51 85 81 77", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+
+        	Employee simonVilchien = createEmployeeWithAccount(
+        	    "Simon", "Vilchien", deskB240_1,
+        	    buildImtEmail("Simon", "Vilchien"),
+        	    "02 51 85 87 73", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+
+        	Employee ludovicDelos = createEmployeeWithAccount(
+        	    "Ludovic", "Delos", deskB241_1,
+        	    buildImtEmail("Ludovic", "Delos"),
+        	    "02 51 85 81 83", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN4
+        	);
+
+        	Employee vincentBrard = createEmployeeWithAccount(
+        	    "Vincent", "Brard", deskB241_2,
+        	    buildImtEmail("Vincent", "Brard"),
+        	    "02 51 85 81 82", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN3
+        	);
+
+        	Employee gerardNguyenVanTu = createEmployeeWithAccount(
+        	    "Gerard", "Nguyen-Van-Tu", deskB241_3,
+        	    buildImtEmail("Gerard", "Nguyen-Van-Tu"),
+        	    "02 51 85 81 78", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+
+        	Employee delphineDevos = createEmployeeWithAccount(
+        	    "Delphine", "Devos", deskB242_1,
+        	    buildImtEmail("Delphine", "Devos"),
+        	    "02 51 85 87 91", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.WOMAN1
+        	);
+
+        	Employee loicDubocquet = createEmployeeWithAccount(
+        	    "Loic", "Dubocquet", deskB243_1,
+        	    buildImtEmail("Loic", "Dubocquet"),
+        	    "02 51 85 80 85", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+
+        	Employee pascalSakalakis = createEmployeeWithAccount(
+        	    "Pascal", "Sakalakis", deskB243_2,
+        	    buildImtEmail("Pascal", "Sakalakis"),
+        	    "02 51 85 80 90", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN1
+        	);
+
+        	Employee briceVerger = createEmployeeWithAccount(
+        	    "Brice", "Verger", deskB243_3,
+        	    buildImtEmail("Brice", "Verger"),
+        	    "02 51 85 81 74", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN3
+        	);
+
+        	Employee christianCormerais = createEmployeeWithAccount(
+        	    "Christian", "Cormerais", deskB243_4,
+        	    buildImtEmail("Christian", "Cormerais"),
+        	    "02 51 85 85 73", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+
+        	Employee brianGuedos = createEmployeeWithAccount(
+        	    "Brian Casimir", "Guedos", deskB243_5,
+        	    buildImtEmail("Brian Casimir", "Guedos"),
+        	    "02 29 00 15 82", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN1
+        	);
+
+        	Employee laurentMenuKerforn = createEmployeeWithAccount(
+        	    "Laurent", "Menu-Kerforn", deskB244_1,
+        	    buildImtEmail("Laurent", "Menu-Kerforn"),
+        	    "02 51 85 81 75", "08:00-16:00",
+        	    WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN2
+        	);
+            
+            Meeting prepLogin = meetingRepo.save(
+    		    Meeting.builder()
+    		        .room(b218)
+    		        .title("Préparation cours LOGIN")
+    		        .startingHour(LocalDateTime.of(2026, 3, 20, 13, 0))
+    		        .endHour(LocalDateTime.of(2026, 3, 20, 14, 0))
+    		        .description("Préparation de l’année 2026-2027 en TAF LOGIN")
+    		        .build()
+    		);
+
+    		Meeting prepDcl = meetingRepo.save(
+    		    Meeting.builder()
+    		        .room(b218)
+    		        .title("Préparation cours DCL")
+    		        .startingHour(LocalDateTime.of(2026, 3, 20, 14, 0))
+    		        .endHour(LocalDateTime.of(2026, 3, 20, 14, 30))
+    		        .description("Préparation de l’année 2026-2027 en TAF DCL")
+    		        .build()
+    		);
+    		meetingRepo.flush();
+    		
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepLogin, heleneCoullon, true, false));
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepLogin, theoLeCalvar, true, true));
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepLogin, baptisteJonglez, true, false));
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepLogin, danielBalouekThomert, true, false));
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepLogin, guillaumeRosinosky, true, false));
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepLogin, remiDouence, true, false));
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepLogin, massimoTisi, false, false));
+
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepDcl, theoLeCalvar, true, false));
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepDcl, remiDouence, true, false));
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepDcl, massimoTisi, true, false));
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepDcl, matthewCoyle, true, true));
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepDcl, sanchjeevKarikalan, true, true));
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepDcl, marioSudholt, false, false));
+    		meetingEmployeeRepo.save(new MeetingEmployee(prepDcl, carlosGonzalez, true, false));
+
+    		meetingEmployeeRepo.flush();
             
             // --- DESKS ---
             Desk deskA105 = deskRepo.save(
