@@ -1183,6 +1183,20 @@ public class DataInitializer implements CommandLineRunner {
         Room cageEsc12 = createRoom(stairwellB2, "Cage Escalier 12 – B2", 4.5f, 49f, 0f, floor4);
         Room esc12Up = createStairsRoom(stairsB2, "Escalier 12 – B2 montée", 4.5f, 52.07f, 180f, floor4, null, "up");
         Room esc12Down = createStairsRoom(stairsB2, "Escalier 12 – B2 descente", 6.82f, 51.85f, 0f, floor4, null, "down");
+        
+        Room accessAmphis = roomRepo.save(
+    	    Room.builder()
+    	        .roomType(b2Access)
+    	        .roomName("Accès étage Amphis")
+    	        .coordX1(0f)
+    	        .coordZ1(62.5f)
+    	        .orientationDeg(0f)
+    	        .floor(floor4)
+    	        .nextFloor(floor3)
+    	        .position("portal")
+    	        .build()
+        );
+        
         // --- DESKS COULOIR B2 ---
 	
 	        Desk deskB206_1 = createDesk(b206, desk1office3desksB2, "Desk B206 1");
