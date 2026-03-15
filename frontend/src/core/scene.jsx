@@ -12,6 +12,8 @@ import { createOffice6Desks } from '../objects/Office6Desks.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
 import { createForum } from '../objects/Forum.jsx';
 import { createStand } from '../objects/StandForum.jsx';
+import { createClassroom1 } from '../objects/Classroom1.jsx';
+import { createClassroom2 } from '../objects/Classroom2.jsx';
 import { createStairs } from '../objects/Stairs.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
@@ -196,7 +198,7 @@ function enterNormalMode() {
         roomPlugin({
             camera: _camera,
             controls: _controls,
-            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs"]
+            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Classroom1", "Classroom2", "StandForum"]
         })
     );
 
@@ -347,6 +349,12 @@ export function createScene(floorId, mode){
                     } 
                     else if (roomType === "Office1Desk") {
                         roomObj = createOffice1Desk(deskIds);
+                    } 
+                    else if (roomType === "Classroom1") {
+                        roomObj = createClassroom1();
+                    } 
+                    else if (roomType === "Classroom2") {
+                        roomObj = createClassroom2();
                     } 
                     else if (roomType === "Office2Desks") {
                         roomObj = createOffice2Desks(deskIds);

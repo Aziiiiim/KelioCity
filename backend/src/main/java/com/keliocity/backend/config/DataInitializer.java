@@ -112,7 +112,7 @@ public class DataInitializer implements CommandLineRunner {
             Floor floorForum = floorRepo.save(
                     Floor.builder()
                         .floorName("Forum")
-                        .lengthX(80f)
+                        .lengthX(100f)
                         .lengthZ(60f)
                         .build()
             );
@@ -139,6 +139,21 @@ public class DataInitializer implements CommandLineRunner {
                         .roomtypeName("StandForum")
                         .lengthX(10f)
                         .lengthZ(10f)
+                        .build()
+            );
+
+            RoomType classroom1 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Classroom1")
+                        .lengthX(10f)
+                        .lengthZ(12f)
+                        .build()
+            );
+            RoomType classroom2 = roomTypeRepo.save(
+                    RoomType.builder()
+                        .roomtypeName("Classroom2")
+                        .lengthX(10f)
+                        .lengthZ(12f)
                         .build()
             );
 
@@ -326,6 +341,7 @@ public class DataInitializer implements CommandLineRunner {
                             .coordZ(-0.1f)
                             .orientationDeg(135f)
                             .roomType(standForum)
+                            .deskNumber(1)
                             .build()
             );
             DeskType desk2StandForum = deskTypeRepo.save(
@@ -334,6 +350,7 @@ public class DataInitializer implements CommandLineRunner {
                             .coordZ(-0.9f)
                             .orientationDeg(135f)
                             .roomType(standForum)
+                            .deskNumber(2)
                             .build()
             );
 
@@ -343,7 +360,53 @@ public class DataInitializer implements CommandLineRunner {
                     Room.builder()
                         .roomType(forum)
                         .roomName("Forum")
-                        .coordX1(-40f).coordZ1(-30f)
+                        .coordX1(-45f).coordZ1(-30f)
+                        .orientationDeg(0f)
+                        .floor(floorForum)
+                        .build()
+            );
+
+            Room A001 = roomRepo.save(
+                    Room.builder()
+                        .roomType(classroom2)
+                        .roomName("A001")
+                        .coordX1(26f).coordZ1(18f)
+                        .orientationDeg(0f)
+                        .floor(floorForum)
+                        .build()
+            );
+            Room A002 = roomRepo.save(
+                    Room.builder()
+                        .roomType(classroom1)
+                        .roomName("A002")
+                        .coordX1(13f).coordZ1(18f)
+                        .orientationDeg(0f)
+                        .floor(floorForum)
+                        .build()
+            );
+            Room A003 = roomRepo.save(
+                    Room.builder()
+                        .roomType(classroom2)
+                        .roomName("A003")
+                        .coordX1(-7f).coordZ1(18f)
+                        .orientationDeg(0f)
+                        .floor(floorForum)
+                        .build()
+            );
+            Room A004 = roomRepo.save(
+                    Room.builder()
+                        .roomType(classroom1)
+                        .roomName("A004")
+                        .coordX1(-20f).coordZ1(18f)
+                        .orientationDeg(0f)
+                        .floor(floorForum)
+                        .build()
+            );
+            Room A005 = roomRepo.save(
+                    Room.builder()
+                        .roomType(classroom1)
+                        .roomName("A005")
+                        .coordX1(-41f).coordZ1(18f)
                         .orientationDeg(0f)
                         .floor(floorForum)
                         .build()
@@ -375,7 +438,7 @@ public class DataInitializer implements CommandLineRunner {
                     Room.builder()
                         .roomType(stairs)
                         .roomName("Escalier 1A Forum")
-                        .coordX1(25f).coordZ1(3f)
+                        .coordX1(44f).coordZ1(5f)
                         .orientationDeg(90f)
                         .floor(floorForum)
                         .build()
@@ -384,7 +447,7 @@ public class DataInitializer implements CommandLineRunner {
                     Room.builder()
                         .roomType(stairs)
                         .roomName("Escalier 1B Forum")
-                        .coordX1(28f).coordZ1(3f)
+                        .coordX1(47f).coordZ1(5f)
                         .orientationDeg(90f)
                         .floor(floorForum)
                         .build()
@@ -393,7 +456,7 @@ public class DataInitializer implements CommandLineRunner {
                     Room.builder()
                         .roomType(stairs)
                         .roomName("Escalier 2 Forum")
-                        .coordX1(5f).coordZ1(3f)
+                        .coordX1(6.5f).coordZ1(5f)
                         .orientationDeg(90f)
                         .floor(floorForum)
                         .build()
@@ -402,7 +465,7 @@ public class DataInitializer implements CommandLineRunner {
                     Room.builder()
                         .roomType(stairs)
                         .roomName("Escalier 3 Forum")
-                        .coordX1(-20f).coordZ1(3f)
+                        .coordX1(-27f).coordZ1(5f)
                         .orientationDeg(90f)
                         .floor(floorForum)
                         .build()

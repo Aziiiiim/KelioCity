@@ -12,6 +12,13 @@ export function createForum() {
     let z = 0
 
     
+    const floorGeo = new THREE.PlaneGeometry(100, 60);
+    const floorMat = new THREE.MeshBasicMaterial( { color: 0xb1b4bd, side: THREE.DoubleSide } );
+    const floorMesh = new THREE.Mesh(floorGeo, floorMat);
+    floorMesh.rotation.x = Math.PI /2;
+    floorMesh.position.set(x+45,0.01,z+30);
+    elements.add(floorMesh);
+    
     // FORUM //////////////////////////////////////////////////////////
     let doorPivot= null;
     let doorOpen= false;
@@ -79,39 +86,35 @@ export function createForum() {
 
     }
 
-    initChar('/assets/characters/Man1.glb', function(character){
-        character.scene.position.set(x+30,0,z+40);
-        character.play("Idle");
-        elements.add(character.scene);
-    });
+    // Groupe table haute
 
     for (let i=0; i<2; i++) {
         let delta = 30;
         makeInstance('/assets/models/StandingDesk.glb').then((desk) => {
             desk.scale.set(1.5, 1.5, 1.5);
-            desk.position.set(x+i*4+delta+21, 0.75, z+45);
+            desk.position.set(x+i*4+delta+32, 0.55, z+45);
             desk.rotation.y = Math.PI/2;
             elements.add(desk);
         });
 
-        makeInstance('/assets/models/Stool.glb').then((chair) => {
+        makeInstance('/assets/models/HighStool.glb').then((chair) => {
             chair.scale.set(0.1, 0.11, 0.1);
-            chair.position.set(x+i*4+delta+1+21, 0, z+45+0.6);
+            chair.position.set(x+i*4+delta+1+32, 0, z+45+0.6);
             elements.add(chair);
         });
-        makeInstance('/assets/models/Stool.glb').then((chair) => {
+        makeInstance('/assets/models/HighStool.glb').then((chair) => {
             chair.scale.set(0.1, 0.11, 0.1);
-            chair.position.set(x+i*4+delta-1+21, 0, z+45+0.6);
+            chair.position.set(x+i*4+delta-1+32, 0, z+45+0.6);
             elements.add(chair);
         });
-        makeInstance('/assets/models/Stool.glb').then((chair) => {
+        makeInstance('/assets/models/HighStool.glb').then((chair) => {
             chair.scale.set(0.1, 0.11, 0.1);
-            chair.position.set(x+i*4+delta+1+21, 0, z+45-0.6);
+            chair.position.set(x+i*4+delta+1+32, 0, z+45-0.6);
             elements.add(chair);
         });
-        makeInstance('/assets/models/Stool.glb').then((chair) => {
+        makeInstance('/assets/models/HighStool.glb').then((chair) => {
             chair.scale.set(0.1, 0.11, 0.1);
-            chair.position.set(x+i*4+delta-1+21, 0, z+45-0.6);
+            chair.position.set(x+i*4+delta-1+32, 0, z+45-0.6);
             elements.add(chair);
         });
 
@@ -121,9 +124,89 @@ export function createForum() {
                 wallMat
             );
             MiniWall.rotation.y = Math.PI/2;
-            MiniWall.position.set(x+i*4+delta-2+21, 1.5, z+45);
+            MiniWall.position.set(x+i*4+delta-2+32, 1.5, z+45);
             elements.add(MiniWall);
         
+    }
+
+    for (let i=0; i<3; i++) {
+        for (let j=0; j<2; j++) {
+            makeInstance('/assets/models/Column.glb').then((column) => {
+                column.scale.set(1.5, 1, 2.5);
+                column.position.set(x+i*12+24+j*34, 2.4, z+44);
+                elements.add(column);
+            });
+        }   
+    }
+    makeInstance('/assets/models/Column.glb').then((column) => {
+        column.scale.set(1.5, 1, 2.5);
+        column.position.set(x+3, 2.4, z+44);
+        elements.add(column);
+    });
+    makeInstance('/assets/models/Column.glb').then((column) => {
+        column.scale.set(1.5, 1, 2.5);
+        column.position.set(x+12+3, 2.4, z+44);
+        elements.add(column);
+    });
+
+    // Groupe Table + 8 tabourets
+    makeInstance('/assets/models/Table.glb').then((table) => {
+        table.scale.set(0.13,0.15,0.20);
+        table.position.set(x+76,0,z+45);
+        table.rotation.y=Math.PI/2;
+        elements.add(table);
+    })
+    for (let i=0; i<4; i++) {
+        for (let j=0; j<2; j++) {
+            makeInstance('/assets/models/Stool.glb').then((stool) => {
+                stool.scale.set(1.1,1.1,1.1);
+                stool.position.set(x+i*0.7+75,0.75,z+j*1.2+44.4);
+                stool.rotation.y=Math.PI/2;
+                elements.add(stool);
+            })
+        }
+    }
+
+    for (let n=0; n<2; n++) {
+        makeInstance('/assets/models/Table.glb').then((table) => {
+            table.scale.set(0.13,0.15,0.20);
+            table.position.set(x+6.5+n*5,0,z+44);
+            elements.add(table);
+        })
+        for (let i=0; i<4; i++) {
+            for (let j=0; j<2; j++) {
+                makeInstance('/assets/models/Stool.glb').then((stool) => {
+                    stool.scale.set(1.1,1.1,1.1);
+                    stool.position.set(x+j*1.2+5.9+n*5,0.75,z+i*0.7+43);
+                    stool.rotation.y=Math.PI/2;
+                    elements.add(stool);
+                })
+            }
+        }
+    }
+
+
+    for (let i=0; i<2; i++) {
+        makeInstance('/assets/models/Houseplant.glb').then((plant) => {
+            plant.scale.set(2,2,2);
+            plant.position.set(x+20+i*33,0,z+45);
+            elements.add(plant);
+        })
+        makeInstance('/assets/models/Houseplant1.glb').then((plant) => {
+            plant.scale.set(1.5,1.5,1.5);
+            plant.position.set(x+19+i*33,0,z+46);
+            elements.add(plant);
+        })
+        makeInstance('/assets/models/FlowerPot.glb').then((plant) => {
+            plant.scale.set(1.5,1.5,1.5);
+            plant.position.set(x+20.5+i*33,1.55,z+46);
+            elements.add(plant);
+        })
+        makeInstance('/assets/models/PotPlant.glb').then((plant) => {
+            plant.scale.set(2,2,2);
+            plant.position.set(x+19+i*33,0.63,z+44.5);
+            elements.add(plant);
+        })
     }
 
     // Espace Manif //////////////////////////////////////////////////////////
@@ -145,7 +228,7 @@ export function createForum() {
 
     makeInstance('/assets/models/CouchSmall.glb').then((couch) => {
         couch.scale.set(0.5, 0.5, 0.5);
-        couch.position.set(x+40, 0, z+2);
+        couch.position.set(x+40, 0, z+1);
         elements.add(couch);
     });
 
@@ -204,8 +287,8 @@ export function createForum() {
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);
 
-    const endX = x+80;
-    const endZ = z+55;
+    const endX = x+100;
+    const endZ = z+60;
 
     elements.focusPosition = new THREE.Vector3(0, 9, 4);
     return {elements, endX, endZ, openDoor, toggleDoor };
