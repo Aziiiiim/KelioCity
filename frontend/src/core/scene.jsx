@@ -18,6 +18,7 @@ import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar  } from '../util
 import { apiFetch } from "../utils/apiFetch.js";
 //import { apiTest } from "../utils/apiTest.js";
 import { createBigAmphi } from '../objects/BigAmphi.jsx';
+import { createSmallAmphi } from '../objects/SmallAmphi.jsx';
 
 
 
@@ -197,7 +198,7 @@ function enterNormalMode() {
         roomPlugin({
             camera: _camera,
             controls: _controls,
-            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs"]
+            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "SmallAmphi", "BigAmphi"]
         })
     );
 
@@ -358,6 +359,15 @@ export function createScene(floorId, mode){
                     else if (roomType === "Stairs") {
                         roomObj = createStairs();
                     }
+                    else if (roomType === "BigAmphi") {
+                        roomObj = createBigAmphi();
+                    }
+                    else if (roomType === "SmallAmphi") {
+                        roomObj = createSmallAmphi();
+                    }
+                
+
+
                     if (roomObj) {
                         roomElements = roomObj.elements;
                         objectList.push(roomObj);
@@ -412,26 +422,6 @@ export function createScene(floorId, mode){
                     scene.groupRooms.add(roomElements);
             }
             
-            const isAmphisFloor = Number(floorId) === 3;
-
-            if (isAmphisFloor) {
-                const amphiObj = createBigAmphi();
-                const amphi = amphiObj.elements;
-
-                objectList.push(amphiObj);
-
-                amphi.userData.kind = "room";
-                amphi.userData.roomType = "BigAmphi";
-                amphi.userData.roomId = "big-amphi";
-                amphi.userData.roomName = "Grand Amphi";
-
-                amphi.position.set(20, 0, 12);
-                amphi.rotation.y = 0;
-
-                roomList.push(amphi);
-                scene.groupRooms.add(amphi);
-            }
-
             setMode(currentMode);
             apiFetch("/api/floors/"+floorId)
             .then(res => res.json())

@@ -112,8 +112,8 @@ public class DataInitializer implements CommandLineRunner {
             Floor floor3 = floorRepo.save(
             		Floor.builder()
             		.floorName("Amphis")
-                    .lengthX(60f)
-                    .lengthZ(24f)
+                    .lengthX(220f)
+                    .lengthZ(15f)
                     .build()
             );
             
@@ -173,6 +173,26 @@ public class DataInitializer implements CommandLineRunner {
                         .lengthZ(3f)
                         .build()
             );
+            
+            RoomType SmallAmphi = roomTypeRepo.save(
+            		RoomType.builder()
+            			.roomtypeName("SmallAmphi")
+            			.lengthX(30f)
+            			.lengthZ(30f)
+            			.build()
+            );
+            
+            RoomType BigAmphi = roomTypeRepo.save(
+            		RoomType.builder()
+            			.roomtypeName("BigAmphi")
+            			.lengthX(30f)
+            			.lengthZ(30f)
+            			.build()
+            );
+            
+            
+            
+            
             // --- DESK TYPE ---
             DeskType desk1office1desk = deskTypeRepo.save(
                     DeskType.builder()
@@ -594,7 +614,87 @@ public class DataInitializer implements CommandLineRunner {
                         .position("down")
                         .build()
             );
+            
+            
+            // AMPHIS
+            
+            Room charpak = roomRepo.save(
+            		Room.builder()
+            			.roomType(BigAmphi)
+            			.roomName("Amphi Charpak")
+            			.coordX1(-85f).coordZ1(-52f)
+            			.orientationDeg(90f)
+            			.floor(floor3)
+            			.build()
+            );
+            
+            Room kastler = roomRepo.save(
+            		Room.builder()
+            			.roomType(BigAmphi)
+            			.roomName("Amphi Kastler")
+            			.coordX1(-40f).coordZ1(-52f)
+            			.orientationDeg(90f)
+            			.floor(floor3)
+            			.build()
+            );
+            
+            Room stairsKastler1 = roomRepo.save(
+                    Room.builder()
+                        .roomType(stairs)
+                        .roomName("Escalier Kastler")
+                        .coordX1(-20f).coordZ1(12f)
+                        .orientationDeg(-90f)
+                        .floor(floor3)
+                        .nextFloor(floor2)
+                        .position("down")
+                        .build()
+            );
+            
+            Room stairsKastler2 = roomRepo.save(
+                    Room.builder()
+                        .roomType(stairs)
+                        .roomName("Escalier Kastler")
+                        .coordX1(-17f).coordZ1(12f)
+                        .orientationDeg(-90f)
+                        .floor(floor3)
+                        .nextFloor(floor2)
+                        .position("down")
+                        .build()
+            );
 
+            
+            Room amphi1 = roomRepo.save(
+            		Room.builder()
+            			.roomType(SmallAmphi)
+            			.roomName("Amphi 1")
+            			.coordX1(-10f).coordZ1(22f)
+            			.orientationDeg(-90f)
+            			.floor(floor3)
+            			.build()
+            );
+            
+            Room stairsA102 = roomRepo.save(
+                    Room.builder()
+                        .roomType(stairs)
+                        .roomName("Escalier A102")
+                        .coordX1(50f).coordZ1(12f)
+                        .orientationDeg(-90f)
+                        .floor(floor3)
+                        .nextFloor(floor2)
+                        .position("down")
+                        .build()
+            );
+            
+            Room amphi2 = roomRepo.save(
+            		Room.builder()
+            			.roomType(SmallAmphi)
+            			.roomName("Amphi 2")
+            			.coordX1(70f).coordZ1(22f)
+            			.orientationDeg(-90f)
+            			.floor(floor3)
+            			.build()
+            );
+            
             // --- DESKS ---
             Desk deskA105 = deskRepo.save(
                     Desk.builder()
