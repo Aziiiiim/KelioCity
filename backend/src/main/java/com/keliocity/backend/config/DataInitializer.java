@@ -2336,7 +2336,7 @@ public class DataInitializer implements CommandLineRunner {
             );
 
             Room[] openspaces = {openspace_1, openspace_2, openspace_3, openspace_4, openspace_5};
-
+            */
             DeskType[][] deskType_openspaces = new DeskType[2][10];
             for (int i=0; i<10; i++) {
                  deskType_openspaces[0][i] = deskTypeRepo.save(
@@ -2359,7 +2359,7 @@ public class DataInitializer implements CommandLineRunner {
                 );
             }
             deskTypeRepo.flush();
-
+            /*
             for (int j=0; j<3; j++) {
                 for (int i=0; i<7; i++) {
                     if (j != 2 || i < 5) {
