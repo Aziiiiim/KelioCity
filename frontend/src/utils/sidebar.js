@@ -362,11 +362,12 @@ export function openOfficeSidebar(room) {
 }
 
 function capacityFromRoomType(roomType) {
-  if (roomType.includes("Office1Desk")) return 1;
-  if (roomType.includes("Office2Desks")) return 2;
-  if (roomType.includes("Office3Desks")) return 3;
-  if (roomType.includes("Office4Desks")) return 4;
-  if (roomType.includes("Office6Desks")) return 6;
+  if (roomType === "Office1Desk") return 1;
+  if (roomType === "Office2Desks") return 2;
+  if (roomType === "Office4Desks") return 4;
+  if (roomType === "Office6Desks") return 6;
+  if (roomType === "BigAmphi") return 180;
+  if (roomType == "SmallAmphi") return 50;
   return 0;
 }
 

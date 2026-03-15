@@ -28,6 +28,10 @@ import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filte
 import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar  } from '../utils/sidebar.js';
 import { apiFetch } from "../utils/apiFetch.js";
 //import { apiTest } from "../utils/apiTest.js";
+import { createBigAmphi } from '../objects/BigAmphi.jsx';
+import { createSmallAmphi } from '../objects/SmallAmphi.jsx';
+import { createB2Access } from '../objects/B2Access.jsx';
+
 
 let _camera = null;
 let _controls = null;
@@ -205,7 +209,7 @@ function enterNormalMode() {
         roomPlugin({
             camera: _camera,
             controls: _controls,
-            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local", "LocalB2", "Toilets"]
+            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local", "LocalB2", "Toilets", "SmallAmphi", "BigAmphi", "B2Access"]
         })
     );
 
@@ -366,6 +370,12 @@ export function createScene(floorId, mode){
                     else if (roomType === "Stairs") {
                         roomObj = createStairs();
                     }
+                    else if (roomType === "BigAmphi") {
+                        roomObj = createBigAmphi();
+                    }
+                    else if (roomType === "SmallAmphi") {
+                        roomObj = createSmallAmphi();
+                    }
                     else if (roomType === "Office1DeskB2") {
                         roomObj = createOffice1DeskB2(deskIds);
                     }
@@ -398,6 +408,9 @@ export function createScene(floorId, mode){
                     }
                     else if (roomType === "Toilets") {
                         roomObj = createToilets();
+                    }
+                    else if (roomType === "B2Access") {
+                        roomObj = createB2Access();
                     }
                     if (roomObj) {
                         roomElements = roomObj.elements;
@@ -463,7 +476,6 @@ export function createScene(floorId, mode){
                         hole.lineTo(p1.x, p1.z);
                         holes.push(hole);
                     }
-
                     roomList.push(roomElements);
                     scene.groupRooms.add(roomElements);
             }
@@ -560,7 +572,7 @@ export function createScene(floorId, mode){
 
             characters.forEach(c => c.mixer.update(delta));
             objectList.forEach(room => room.openDoor?.(delta));
-
+            
             renderer.render(scene, camera);
         });
         }
