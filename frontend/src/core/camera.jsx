@@ -56,6 +56,10 @@ export function cameraOn (camera, controls, obj) {
     let angle = 0;
     if (obj.userData.employee) {
         angle = (obj.userData.employee.desk.deskType.orientationDeg + obj.userData.employee.desk.room.orientationDeg) / 180 * Math.PI;
+        if (window.floorId !== obj.userData.employee.desk.room.floor.id) {
+            window.floorId = obj.userData.employee.desk.room.floor.id;
+            window.scene.updateFloor(window.floorId);
+        }
     }
     const rotatedFocus = focus.clone().applyAxisAngle(new THREE.Vector3(0,1,0), angle);
 

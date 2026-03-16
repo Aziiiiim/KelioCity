@@ -10,13 +10,32 @@ import { createOffice2Desks } from '../objects/Office2Desks.jsx';
 import { createOffice4Desks } from '../objects/Office4Desks.jsx';
 import { createOffice6Desks } from '../objects/Office6Desks.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
+import { createForum } from '../objects/Forum.jsx';
+import { createStand } from '../objects/StandForum.jsx';
+import { createClassroom1 } from '../objects/Classroom1.jsx';
+import { createClassroom2 } from '../objects/Classroom2.jsx';
 import { createStairs } from '../objects/Stairs.jsx';
+import { createOffice1DeskB2 } from '../objects/Office1DeskB2.jsx';
+import { createOffice2DesksB2 } from '../objects/Office2DesksB2.jsx';
+import { createOffice3DesksB2 } from '../objects/Office3DesksB2.jsx';
+import { createOffice4DesksB2 } from '../objects/Office4DesksB2.jsx';
+import { createOffice5DesksB2 } from '../objects/Office5DesksB2.jsx';
+import { createMeetingRoomB2 } from '../objects/MeetingRoomB2.jsx';
+import { createStairwellB2 } from '../objects/StairwellB2.jsx';
+import { createStairsB2 } from '../objects/StairsB2.jsx';
+import { createLocal } from '../objects/Local.jsx';
+import { createLocalB2 } from '../objects/LocalB2.jsx';
+import { createToilets } from '../objects/Toilets.jsx';
 import { initChar } from '../objects/Characters.jsx';
 import { createOpenspace } from '../objects/Openspace.jsx';
 import { createInteractionManager, doorPlugin, employeePlugin, roomPlugin, filtersPlugin, deskSelectionPlugin } from "../utils/interactionManager.js";
 import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar  } from '../utils/sidebar.js';
 import { apiFetch } from "../utils/apiFetch.js";
 //import { apiTest } from "../utils/apiTest.js";
+import { createBigAmphi } from '../objects/BigAmphi.jsx';
+import { createSmallAmphi } from '../objects/SmallAmphi.jsx';
+import { createB2Access } from '../objects/B2Access.jsx';
+
 
 let _camera = null;
 let _controls = null;
@@ -194,7 +213,7 @@ function enterNormalMode() {
         roomPlugin({
             camera: _camera,
             controls: _controls,
-            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs"]
+            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local", "LocalB2", "Toilets", "SmallAmphi", "BigAmphi", "B2Access", "Classroom1", "Classroom2", "StandForum"]
         })
     );
 
@@ -337,8 +356,20 @@ export function createScene(floorId, mode){
                     if (roomType === "MeetingRoom") {
                         roomObj = createMeetingRoom();
                     } 
+                    else if (roomType === "Forum") {
+                        roomObj = createForum();
+                    } 
+                    else if (roomType === "StandForum") {
+                        roomObj = createStand();
+                    } 
                     else if (roomType === "Office1Desk") {
                         roomObj = createOffice1Desk(deskIds);
+                    } 
+                    else if (roomType === "Classroom1") {
+                        roomObj = createClassroom1();
+                    } 
+                    else if (roomType === "Classroom2") {
+                        roomObj = createClassroom2();
                     } 
                     else if (roomType === "Office2Desks") {
                         roomObj = createOffice2Desks(deskIds);
@@ -355,10 +386,51 @@ export function createScene(floorId, mode){
                     else if (roomType === "Stairs") {
                         roomObj = createStairs();
                     }
+                    else if (roomType === "BigAmphi") {
+                        roomObj = createBigAmphi();
+                    }
+                    else if (roomType === "SmallAmphi") {
+                        roomObj = createSmallAmphi();
+                    }
+                    else if (roomType === "Office1DeskB2") {
+                        roomObj = createOffice1DeskB2(deskIds);
+                    }
+                    else if (roomType === "Office2DesksB2") {
+                        roomObj = createOffice2DesksB2(deskIds);
+                    }
+                    else if (roomType === "Office3DesksB2") {
+                        roomObj = createOffice3DesksB2(deskIds);
+                    }
+                    else if (roomType === "Office4DesksB2") {
+                        roomObj = createOffice4DesksB2(deskIds);
+                    }
+                    else if (roomType === "Office5DesksB2") {
+                        roomObj = createOffice5DesksB2(deskIds);
+                    }
+                    else if (roomType === "MeetingRoomB2") {
+                        roomObj = createMeetingRoomB2(deskIds);
+                    }
+                    else if (roomType === "StairwellB2") {
+                        roomObj = createStairwellB2();
+                    }
+                    else if (roomType === "StairsB2") {
+                        roomObj = createStairsB2();
+                    }
+                    else if (roomType === "Local") {
+                        roomObj = createLocal();
+                    }
+                    else if (roomType === "LocalB2") {
+                        roomObj = createLocalB2();
+                    }
+                    else if (roomType === "Toilets") {
+                        roomObj = createToilets();
+                    }
+                    else if (roomType === "B2Access") {
+                        roomObj = createB2Access();
+                    }
                     if (roomObj) {
                         roomElements = roomObj.elements;
                         objectList.push(roomObj);
-                        
                     }
                     if (!roomElements) continue;
 
@@ -391,24 +463,37 @@ export function createScene(floorId, mode){
                         newZ = rooms[i]["coordZ1"] - rooms[i]["roomType"]["lengthZ"]*cosAngle;
                     }
                     roomElements.position.set(newX, 0, newZ);
-                    if (roomElements.userData.roomType == "Stairs" && roomElements.userData.position == "down") {
-                        roomElements.position.set(newX, -5, newZ);
+                    if (roomElements.userData.roomType.includes("Stairs") && roomElements.userData.position === "down") {
+                        if (roomElements.userData.roomType === "StairsB2") {
+                            roomElements.position.set(newX, -2.19, newZ);
+                        } else {
+                            roomElements.position.set(newX, -5, newZ);
+                        }
                         const hole = new THREE.Path();
-                        const lengthX = sinAngle*rooms[i]["roomType"]["lengthZ"]; 
-                        const lengthZ = -sinAngle*rooms[i]["roomType"]["lengthX"];
-                        const centerX = newX ;
-                        const centerZ = -newZ ;
-                        hole.moveTo(centerX , centerZ ); 
-                        hole.lineTo(centerX , centerZ + lengthZ);
-                        hole.lineTo(centerX + lengthX, centerZ + lengthZ); 
-                        hole.lineTo(centerX + lengthX, centerZ ); 
-                        hole.lineTo(centerX , centerZ);
+                        const dx = rooms[i]["roomType"]["lengthX"];
+                        const dz = rooms[i]["roomType"]["lengthZ"];
+                        const startX = newX;
+                        const startZ = - newZ;
+                        const getRotatedPoint = (localX, localZ) => {
+                            if (roomElements.userData.roomType === "Stairs") localX -= dx;
+                            const rotX = localX * cosAngle - localZ * sinAngle;
+                            const rotZ = localX * sinAngle + localZ * cosAngle;
+                            return { x: startX + rotX, z: startZ + rotZ };
+                        };
+                        const p1 = getRotatedPoint(0, -dz);
+                        const p2 = getRotatedPoint(0, 0);
+                        const p3 = getRotatedPoint(dx, 0);
+                        const p4 = getRotatedPoint(dx, -dz);
+
+                        hole.moveTo(p1.x, p1.z);
+                        hole.lineTo(p2.x, p2.z);
+                        hole.lineTo(p3.x, p3.z);
+                        hole.lineTo(p4.x, p4.z);
+                        hole.lineTo(p1.x, p1.z);
                         holes.push(hole);
                     }
-
                     roomList.push(roomElements);
                     scene.groupRooms.add(roomElements);
-                    
             }
             
             setMode(currentMode);
@@ -473,6 +558,7 @@ export function createScene(floorId, mode){
         .catch(err => console.error("Erreur API:", err));
     };
     _reloadFloor = loadFloor;
+
     loadFloor();
     const lights = createSetupLight();
     for (let i=0; i<lights.length; i++) {           
@@ -503,7 +589,7 @@ export function createScene(floorId, mode){
 
             characters.forEach(c => c.mixer.update(delta));
             objectList.forEach(room => room.openDoor?.(delta));
-
+            
             renderer.render(scene, camera);
         });
         }
@@ -574,9 +660,9 @@ export function selectObject(type, id) {
     if (type === "room") {
         const roomObj = findRoomById(id);
         if (!roomObj) return;
-    
+
         const roomType = roomObj.userData?.roomType;
-        if (roomType === "MeetingRoom") {
+        if (roomType.includes("MeetingRoom")) {
             openMeetingRoomSidebar(roomObj);
         }
         else{

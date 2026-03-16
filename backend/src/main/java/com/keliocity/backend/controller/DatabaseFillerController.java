@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RestController
 @RequestMapping("/api/database-filler")
@@ -25,9 +26,11 @@ public class DatabaseFillerController {
     private final MeetingRepository meetingRepo;
     private final RoomRepository roomRepo;
     private final RoomTypeRepository roomTypeRepo;
+    private final AccountRepository accountRepo;
+    private final PasswordEncoder passwordEncoder;
 
 
-    public DatabaseFillerController(DeskRepository deskRepo, EmployeeRepository employeeRepo, FloorRepository floorRepo, MeetingEmployeeRepository meetingEmployeeRepo, MeetingRepository meetingRepo, RoomRepository roomRepo, RoomTypeRepository roomTypeRepo, DeskTypeRepository deskTypeRepo) {
+    public DatabaseFillerController(DeskRepository deskRepo, EmployeeRepository employeeRepo, FloorRepository floorRepo, MeetingEmployeeRepository meetingEmployeeRepo, MeetingRepository meetingRepo, RoomRepository roomRepo, RoomTypeRepository roomTypeRepo, DeskTypeRepository deskTypeRepo, AccountRepository accountRepo, PasswordEncoder passwordEncoder) {
         this.deskRepo = deskRepo;
         this.deskTypeRepo = deskTypeRepo;
         this.employeeRepo = employeeRepo;
@@ -36,6 +39,8 @@ public class DatabaseFillerController {
         this.meetingRepo = meetingRepo;
         this.roomRepo = roomRepo;
         this.roomTypeRepo = roomTypeRepo;
+        this.accountRepo = accountRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping
@@ -45,19 +50,40 @@ public class DatabaseFillerController {
             return "not authentified";
         }
 
-        if (dbFillerDTO.getReset()) {
+        if (dbFillerDTO.getReset().getMeetingEmployees()) {
             meetingEmployeeRepo.deleteAll();
             meetingEmployeeRepo.resetAutoIncrement();
+            meetingEmployeeRepo.flush();
+        }
+        if (dbFillerDTO.getReset().getMeetings()) {
             meetingRepo.deleteAll();
             meetingRepo.resetAutoIncrement();
+            meetingRepo.flush();
+        }
+        if (dbFillerDTO.getReset().getAccounts()) {
+            accountRepo.deleteAll();
+            accountRepo.resetAutoIncrement();
+            accountRepo.flush();
+        }
+        if (dbFillerDTO.getReset().getEmployees()) {
             employeeRepo.deleteAll();
             employeeRepo.resetAutoIncrement();
+            employeeRepo.flush();
+        }
+        if (dbFillerDTO.getReset().getDesks()) {
             deskRepo.deleteAll();
             deskRepo.resetAutoIncrement();
+            deskRepo.flush();
+        }
+        if (dbFillerDTO.getReset().getRooms()) {
             roomRepo.deleteAll();
             roomRepo.resetAutoIncrement();
+            roomRepo.flush();
+        }
+        if (dbFillerDTO.getReset().getFloors()) {
             floorRepo.deleteAll();
             floorRepo.resetAutoIncrement();
+            floorRepo.flush();
         }
 
         HashMap<String, RoomType> roomTypes = new HashMap<String, RoomType>();
@@ -106,6 +132,10 @@ public class DatabaseFillerController {
             if (roomname == null) {
                 roomname = floorname+"_room_"+rooms.size();
             }
+            String nextFloorName = dbFillerDTO.getRooms().get(i).getNextFloor();
+            if (nextFloorName != null) {
+                nextFloorName = nextFloorName.trim().toUpperCase();
+            }
             rooms.put(dbFillerDTO.getRooms().get(i).getRoomName().trim().toUpperCase(), roomRepo.save(
                 Room.builder()
                     .roomType(roomTypes.get(dbFillerDTO.getRooms().get(i).getRoomType().trim().toUpperCase()))
@@ -114,6 +144,8 @@ public class DatabaseFillerController {
                     .orientationDeg(dbFillerDTO.getRooms().get(i).getOrientationDeg())
                     .openspaceNumber(dbFillerDTO.getRooms().get(i).getOpenspaceNumber())
                     .floor(floors.get(floorname))
+                    .nextFloor(floors.get(nextFloorName))
+                    .position(dbFillerDTO.getRooms().get(i).getPosition())
                     .build()
             ));
         }
@@ -205,6 +237,36 @@ public class DatabaseFillerController {
             ));
         }
         employeeRepo.flush();
+
+        HashMap<String, Account> accounts = new HashMap<String, Account>();
+        List<Account> accountList = accountRepo.findAll();
+        for (int i=0; i<accountList.size(); i++) {
+            accounts.put(accountList.get(i).getEmail(), accountList.get(i));
+        }
+        for (int i=0; i<dbFillerDTO.getAccounts().size(); i++) {
+            String role = dbFillerDTO.getAccounts().get(i).getRole();
+            if (role == null) {
+                role = "USER";
+            }
+            role.trim().toUpperCase();
+            String email = dbFillerDTO.getAccounts().get(i).getEmail();
+            if (email == null) {
+                email = dbFillerDTO.getAccounts().get(i).getFirstName().toLowerCase()+"."+dbFillerDTO.getAccounts().get(i).getLastName().toLowerCase()+"@keliocity.com";
+            }
+            String password = dbFillerDTO.getAccounts().get(i).getPassword();
+            if (password == null) {
+                password = "mdp";
+            }
+
+            Account acc = new Account();
+            acc.setEmail(email);
+            acc.setPassword(passwordEncoder.encode(password));
+            acc.setRole(AccountRole.valueOf(role));
+            acc.setEmployee(employees.get((dbFillerDTO.getAccounts().get(i).getFirstName()+"_"+dbFillerDTO.getAccounts().get(i).getLastName()).trim().toUpperCase()));
+            accountRepo.save(acc);
+            accounts.put(dbFillerDTO.getAccounts().get(i).getEmail(), acc);
+        }
+        accountRepo.flush();
 
         HashMap<String, Meeting> meetings = new HashMap<String, Meeting>();
         List<Meeting> meetingList = meetingRepo.findAll();

@@ -5,19 +5,20 @@ import java.util.List;
 public class DatabaseFillerDTO {
 
     private String auth;
-    private boolean reset;
+    private ResetDTO reset;
     private List<FloorDTO> floors;
     private List<RoomDTO> rooms;
     private List<DeskDTO> desks;
     private List<EmployeeDTO> employees;
     private List<MeetingDTO> meetings;
     private List<MeetingEmployeeDTO> meetingEmployees;
+    private List<AccountDTO> accounts;
 
     public String getAuth() {
         return auth;
     }
 
-    public boolean getReset() {
+    public ResetDTO getReset() {
         return reset;
     }
 
@@ -43,5 +44,9 @@ public class DatabaseFillerDTO {
 
     public List<MeetingEmployeeDTO> getMeetingEmployees() {
         return meetingEmployees;
+    }
+
+    public List<AccountDTO> getAccounts() {
+        return accounts;
     }
 }

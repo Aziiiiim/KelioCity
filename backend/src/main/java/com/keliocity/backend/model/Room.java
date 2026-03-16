@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "ROOMS")
@@ -38,7 +40,16 @@ public class Room {
 
     @ManyToOne
     @JoinColumn(name = "floor", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Floor floor;
+
+    @ManyToOne
+    @JoinColumn(name = "next_floor_name", nullable = true)
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    private Floor nextFloor;
+
+    @Column(name = "position", nullable = true)
+    private String position; //up or down
 
     @PrePersist
 	public void setDefaultValues() {
@@ -52,12 +63,4 @@ public class Room {
             this.coordZ1 = 0f;
         }
     }
-
-    @ManyToOne
-    @JoinColumn(name = "next_floor_name", nullable = true)
-    private Floor nextFloor;
-    
-    @Column(name = "position", nullable = true)
-    private String position; //up or down
-
 }

@@ -51,10 +51,4 @@ public class AuthController {
     	changeService.inc();
     	authService.assignDesk(email, dto.deskId());
     }
-    
-    /*@PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("admin/me")
-    public String caca() {
-    	return "caca";
-    }*/
 }

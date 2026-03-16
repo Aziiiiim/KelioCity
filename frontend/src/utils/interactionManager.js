@@ -294,9 +294,11 @@ export function roomPlugin({camera, controls, onlyTypes = null } = {}) {
 
     getStyle: () => ({ color: 0x6666ff, emissive: 0x000022 }),
     onClick: (root) => {
-      if(root.userData.roomType == "MeetingRoom") openMeetingRoomSidebar(root);
-      if(root.userData.roomType.toLowerCase().includes("desk")) openOfficeSidebar(root);
-      if(root.userData.roomType == "Stairs") {
+      if(root.userData.roomType.includes("MeetingRoom")) openMeetingRoomSidebar(root);
+      if(root.userData.roomType.toLowerCase().includes("desk") || root.userData.roomType.toLowerCase().includes("local") || root.userData.roomType.toLowerCase().includes("toilets") || root.userData.roomType.toLowerCase().includes("amphi")) openOfficeSidebar(root);
+      if(root.userData.roomType.toLowerCase().includes("stand")) openOfficeSidebar(root);
+      if(root.userData.roomType.toLowerCase().includes("classroom")) openOfficeSidebar(root);
+      if(root.userData.roomType.includes("Stairs") || root.userData.roomType.includes("Access")) {
         if (root.userData.nextFloor) {
           updateFloorByStairs(root.userData.nextFloor.id);
         }

@@ -366,6 +366,8 @@ function capacityFromRoomType(roomType) {
   if (roomType === "Office2Desks") return 2;
   if (roomType === "Office4Desks") return 4;
   if (roomType === "Office6Desks") return 6;
+  if (roomType === "BigAmphi") return 180;
+  if (roomType == "SmallAmphi") return 50;
   return 0;
 }
 

@@ -49,7 +49,7 @@ header h2 {
 }
 
 .spreadsheet-wrapper {
-    height: 337px;
+    min-height: 356px;
     overflow: auto;
     border: 1px solid var(--gray);
     background: white;

@@ -1,0 +1,13 @@
+(si dans déploiement) --> aller à ~/actions-runner/_work/Keliocity/Keliocity
+
+--> docker exec -it mysql_keliocity sh
+
+--> mysql -uroot -p$MYSQL_ROOT_PASSWORD
+
+--> USE keliocity
+
+--> UPDATE account
+    SET role = 'ADMIN'
+    WHERE email = 'truc'
+
+--> puis, se déconnecter et se reconnecter
