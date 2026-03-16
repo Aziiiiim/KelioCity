@@ -109,7 +109,7 @@ public class DataInitializer implements CommandLineRunner {
 			 * .lengthX(60f) .lengthZ(24f) .build() );
 			 */
 
-			Floor floor3 = floorRepo.save(Floor.builder().floorName("Amphis").lengthX(220f).lengthZ(15f).build());
+			Floor floor3 = floorRepo.save(Floor.builder().floorName("Etage A1").lengthX(220f).lengthZ(15f).build());
 
 			Floor floor4 = floorRepo.save(Floor.builder().floorName("Etage B2").lengthX(17f).lengthZ(110f).build());
 
@@ -433,10 +433,9 @@ public class DataInitializer implements CommandLineRunner {
 			Room escUpAmphi = createStairsRoom(stairsB2, "Escalier Amphi – B2 montée", 85f, -9.3f, -90f, floor3, floor4,
 					"up");
 			Room cageEscAmphi = createRoom(stairwellB2, "Cage Amphi – B2", 82f, -11.5f, 90f, floor3);
-			Room escDownAmphi = createStairsRoom(stairsB2, "Escalier Amphi – B2 montée", 84.8f, -11.5f, -90f, floor3, null,
-					"down");
-			
-			
+			Room escDownAmphi = createStairsRoom(stairsB2, "Escalier Amphi – B2 montée", 84.8f, -11.5f, -90f, floor3,
+					null, "down");
+
 			Room b205 = createRoom(local, "B205", 2.5f, -51f, 0f, floor4);
 
 			Room b206 = createRoom(office3DesksB2, "B206", -8.5f, -55f, 180f, floor4);
@@ -487,8 +486,8 @@ public class DataInitializer implements CommandLineRunner {
 
 			Room cageEsc10 = createRoom(stairwellB2, "Cage Escalier 10 – B2", 2.5f, -55f, -90f, floor4);
 			Room esc10Up = createStairsRoom(stairsB2, "Escalier 10 – B2 montée", 2.51f, -55f, 90f, floor4, null, "up");
-			Room esc10Down = createStairsRoom(stairsB2, "Escalier 10 – B2 descente", 2.6f, -52.68f, -90f, floor4, floor3,
-					"down");
+			Room esc10Down = createStairsRoom(stairsB2, "Escalier 10 – B2 descente", 2.6f, -52.68f, -90f, floor4,
+					floor3, "down");
 
 			Room cageEsc11 = createRoom(stairwellB2, "Cage Escalier 11 – B2", 4.5f, 21.5f, 0f, floor4);
 			Room esc11Up = createStairsRoom(stairsB2, "Escalier 11 – B2 montée", 4.5f, 24.57f, 180f, floor4, null,
@@ -502,7 +501,6 @@ public class DataInitializer implements CommandLineRunner {
 			Room esc12Down = createStairsRoom(stairsB2, "Escalier 12 – B2 descente", 6.82f, 51.85f, 0f, floor4, floor3,
 					"down");
 
-			
 			// --- DESKS COULOIR B2 ---
 
 			Desk deskB206_1 = createDesk(b206, desk1office3desksB2, "Desk B206 1");
@@ -1097,14 +1095,17 @@ public class DataInitializer implements CommandLineRunner {
 			 * Room[] openspaces = {openspace_1, openspace_2, openspace_3, openspace_4,
 			 * openspace_5};
 			 * 
-			 * DeskType[][] deskType_openspaces = new DeskType[2][10]; for (int i=0; i<10;
-			 * i++) { deskType_openspaces[0][i] = deskTypeRepo.save( DeskType.builder()
-			 * .coordX(2.2f + 2.52f * i) .coordZ(0.4f) .orientationDeg(0f)
-			 * .roomType(openspace) .deskNumber(2*i+1) .build() ); deskType_openspaces[1][i]
-			 * = deskTypeRepo.save( DeskType.builder() .coordX(1.68f + 2.52f * i)
-			 * .coordZ(3.1f) .orientationDeg(180f) .roomType(openspace) .deskNumber(2*i+2)
-			 * .build() ); } deskTypeRepo.flush();
-			 * 
+			 */
+			DeskType[][] deskType_openspaces = new DeskType[2][10];
+			for (int i = 0; i < 10; i++) {
+				deskType_openspaces[0][i] = deskTypeRepo.save(DeskType.builder().coordX(2.2f + 2.52f * i).coordZ(0.4f)
+						.orientationDeg(0f).roomType(openspace).deskNumber(2 * i + 1).build());
+				deskType_openspaces[1][i] = deskTypeRepo.save(DeskType.builder().coordX(1.68f + 2.52f * i).coordZ(3.1f)
+						.orientationDeg(180f).roomType(openspace).deskNumber(2 * i + 2).build());
+			}
+			deskTypeRepo.flush();
+
+			/*
 			 * for (int j=0; j<3; j++) { for (int i=0; i<7; i++) { if (j != 2 || i < 5) {
 			 * Desk deskD_openspace = deskRepo.save( Desk.builder()
 			 * .deskName("Desk OA100_00"+(j+1)+" "+(2*i+1)) .room(openspaces[j])
@@ -1238,4 +1239,5 @@ public class DataInitializer implements CommandLineRunner {
 
 	public static record Person(String lastname, String firstname, String gender) {
 	}
+
 }

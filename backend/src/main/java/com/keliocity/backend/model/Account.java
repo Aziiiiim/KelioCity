@@ -3,6 +3,8 @@ package com.keliocity.backend.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 @Table(name = "ACCOUNT")
@@ -24,6 +26,7 @@ public class Account {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "employee_id", unique = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Employee employee;
     
     public Account(){

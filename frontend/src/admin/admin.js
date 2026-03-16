@@ -1,6 +1,7 @@
 const sheets = [
     {
         sheetName: 'Floors',
+        resetTable: false,
         minDimensions:[3,10],
         columns: [
             {type: 'text', title: 'floorName', name: 'floorName', width:200},
@@ -9,11 +10,12 @@ const sheets = [
     },
     {
         sheetName: 'Rooms',
+        resetTable: false,
         minDimensions:[7,10],
         columns: [
             {type: 'text', title: 'roomName', name: 'roomName', width:150},
-            {type: 'dropdown', title: 'roomType', name: 'roomType', width:150, source: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Openspace", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local", "LocalB2", "Toilets"]},
-            {type: 'text', title: 'floorName', name: 'floorName', width:150},
+            {type: 'dropdown', title: 'roomType', name: 'roomType', width:150, source: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Openspace", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local", "LocalB2", "Toilets", "SmallAmphi", "BigAmphi", "B2Access"]},
+            {type: 'text', title: 'floorName', name: 'floorName', width:140},
             {type: 'numeric', title: 'coordX1', name: 'coordX1', width:80},
             {type: 'numeric', title: 'coordZ1', name: 'coordZ1', width:80},
             {type: 'numeric', title: 'orientationDeg', name: 'orientationDeg', width:140},
@@ -23,6 +25,7 @@ const sheets = [
     },
     {
         sheetName: 'Desks',
+        resetTable: false,
         minDimensions:[3,10],
         columns: [
             {type: 'text', title: 'deskName', name: 'deskName', width:160},
@@ -31,6 +34,7 @@ const sheets = [
     },
     {
         sheetName: 'Employees',
+        resetTable: false,
         minDimensions:[11,10],
         columns: [
             {type: 'text', title: 'lastName', name: 'lastName', width:100},
@@ -47,6 +51,7 @@ const sheets = [
     },
     {
         sheetName: 'Accounts',
+        resetTable: false,
         minDimensions:[3,10],
         columns: [
             {type: 'text', title: 'email', name: 'email', width:160},
@@ -57,6 +62,7 @@ const sheets = [
     },
     {
         sheetName: 'Meetings',
+        resetTable: false,
         minDimensions:[7,10],
         columns: [
             {type: 'text', title: 'title', name: 'title', width:150},
@@ -69,6 +75,7 @@ const sheets = [
     },
     {
         sheetName: 'MeetingEmployees',
+        resetTable: false,
         minDimensions:[5,10],
         columns: [
             {type: 'text', title: 'meetingTitle', name: 'meetingTitle', width:200},
@@ -83,16 +90,49 @@ let spreadsheet = jspreadsheet.tabs(document.getElementById('spreadsheet'), shee
 const tabs = document.getElementsByClassName("jexcel_tab_link")
 tabs[0].click();
 
+// reset checkboxes
+const containers = document.querySelectorAll('.jexcel_container');
+containers.forEach((container, index) => {
+    const resetDiv = document.createElement('div');
+    resetDiv.className = 'individual-reset-container';
+    resetDiv.innerHTML = `
+        <label class="checkbox-container small">
+            <input type="checkbox" class="reset-tab" data-index="${index}"/>
+            <span class="checkmark"></span>
+            Réinitialiser cette table
+        </label>`;
+    container.insertBefore(resetDiv, container.firstChild);
+});
+
+// link general checkbox and individual checkboxes
+const globalReset = document.getElementById("reset");
+const tabResets = document.querySelectorAll(".reset-tab");
+
+globalReset.addEventListener('change', (e) => {
+    tabResets.forEach(checkbox => {
+        checkbox.checked = e.target.checked;
+    });
+});
+
+tabResets.forEach(checkbox => {
+    checkbox.addEventListener('change', () => {
+        const allChecked = Array.from(tabResets).every(c => c.checked);
+        const noneChecked = Array.from(tabResets).every(c => !c.checked);
+        if (allChecked) globalReset.checked = true;
+        else if (!allChecked) globalReset.checked = false;
+    });
+});
+
 tabs[tabs.length-1].addEventListener("click", () => {
-    document.getElementsByClassName("spreadsheet-wrapper")[0].style.height = "351px";
+    document.getElementsByClassName("spreadsheet-wrapper")[0].style.height = "356px";
 })
 
 for (let i=0; i<tabs.length; i++) {
     let px;
     if (i === tabs.length-1) {
-        px = "351px";
+        px = "370px";
     } else {
-        px = "337px";
+        px = "356px";
     }
     tabs[i].addEventListener("click", () => {
         document.getElementsByClassName("spreadsheet-wrapper")[0].style.height = px;
@@ -100,11 +140,9 @@ for (let i=0; i<tabs.length; i++) {
 }
 
 function send() {
-    const reset = document.getElementById("reset").checked;
     const auth = "AUTH_PR0C0M_k3l10c1ty";
     let json = getCleanedJson();
     json["auth"] = auth;
-    json["reset"] = reset;
 
     fetch(`/api/database-filler`, {
         method: 'POST',
@@ -120,6 +158,9 @@ function send() {
         excels.forEach((sheet) => {
             sheet.setData([]);
         });
+        tabResets.forEach(checkbox => {
+            checkbox.checked = false;
+        });
         tabs[0].click();
     }).catch((error) => {
         console.log(error);
@@ -130,9 +171,10 @@ function send() {
 const tables = ["floors", "rooms", "desks", "employees", "accounts", "meetings", "meetingEmployees"];
 function getCleanedJson() {
     let excel = document.getElementById("spreadsheet").jexcel;
-    let json = {};
+    let json = {"reset": {}};
     for (let i=0; i<excel.length; i++) {
         const columns = excel[i].getConfig().columns;
+        json["reset"][tables[i]] = tabResets[i].checked;
         json[tables[i]] = excel[i].getJson().map(row => {
            let hasContent = false;
            let processedRow = {};

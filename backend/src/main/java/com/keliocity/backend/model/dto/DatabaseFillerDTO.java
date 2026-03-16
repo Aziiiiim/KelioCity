@@ -5,7 +5,7 @@ import java.util.List;
 public class DatabaseFillerDTO {
 
     private String auth;
-    private boolean reset;
+    private ResetDTO reset;
     private List<FloorDTO> floors;
     private List<RoomDTO> rooms;
     private List<DeskDTO> desks;
@@ -18,7 +18,7 @@ public class DatabaseFillerDTO {
         return auth;
     }
 
-    public boolean getReset() {
+    public ResetDTO getReset() {
         return reset;
     }
 
