@@ -10,6 +10,10 @@ import { createOffice2Desks } from '../objects/Office2Desks.jsx';
 import { createOffice4Desks } from '../objects/Office4Desks.jsx';
 import { createOffice6Desks } from '../objects/Office6Desks.jsx';
 import { createMeetingRoom } from '../objects/MeetingRoom.jsx';
+import { createForum } from '../objects/Forum.jsx';
+import { createStand } from '../objects/StandForum.jsx';
+import { createClassroom1 } from '../objects/Classroom1.jsx';
+import { createClassroom2 } from '../objects/Classroom2.jsx';
 import { createStairs } from '../objects/Stairs.jsx';
 import { createOffice1DeskB2 } from '../objects/Office1DeskB2.jsx';
 import { createOffice2DesksB2 } from '../objects/Office2DesksB2.jsx';
@@ -209,7 +213,7 @@ function enterNormalMode() {
         roomPlugin({
             camera: _camera,
             controls: _controls,
-            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local", "LocalB2", "Toilets", "SmallAmphi", "BigAmphi", "B2Access"]
+            onlyTypes: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local", "LocalB2", "Toilets", "SmallAmphi", "BigAmphi", "B2Access", "Classroom1", "Classroom2", "StandForum"]
         })
     );
 
@@ -352,8 +356,20 @@ export function createScene(floorId, mode){
                     if (roomType === "MeetingRoom") {
                         roomObj = createMeetingRoom();
                     } 
+                    else if (roomType === "Forum") {
+                        roomObj = createForum();
+                    } 
+                    else if (roomType === "StandForum") {
+                        roomObj = createStand();
+                    } 
                     else if (roomType === "Office1Desk") {
                         roomObj = createOffice1Desk(deskIds);
+                    } 
+                    else if (roomType === "Classroom1") {
+                        roomObj = createClassroom1();
+                    } 
+                    else if (roomType === "Classroom2") {
+                        roomObj = createClassroom2();
                     } 
                     else if (roomType === "Office2Desks") {
                         roomObj = createOffice2Desks(deskIds);
@@ -542,6 +558,7 @@ export function createScene(floorId, mode){
         .catch(err => console.error("Erreur API:", err));
     };
     _reloadFloor = loadFloor;
+
     loadFloor();
     const lights = createSetupLight();
     for (let i=0; i<lights.length; i++) {           
