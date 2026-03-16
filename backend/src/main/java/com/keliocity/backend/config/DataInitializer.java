@@ -48,9 +48,15 @@ public class DataInitializer implements CommandLineRunner {
 		Account acc = new Account();
 		acc.setEmail(email);
 		acc.setPassword(passwordEncoder.encode("mdp"));
-		acc.setRole(AccountRole.USER);
+		if ("Admin".equals(firstName)) {
+		    acc.setRole(AccountRole.ADMIN);
+		} else {
+		    acc.setRole(AccountRole.USER);
+		}
 		acc.setEmployee(emp);
 
+		
+		
 		accountRepo.save(acc);
 		return acc.getEmployee();
 	}
@@ -1091,6 +1097,9 @@ public class DataInitializer implements CommandLineRunner {
 					.save(Desk.builder().deskName("Desk A212").room(roomA212).deskType(desk1office1desk).build());
 
 			// --- EMPLOYEES ---
+			Employee admin = createEmployeeWithAccount("Admin", "", deskA109_2, "admin@keliocity.com","666", "09:00-17:00", WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.MAN1);
+			
+			
 			Employee alice = createEmployeeWithAccount("Alice", "Dupont", deskA105, "alice.dupont@keliocity.com",
 					"0601020304", "09:00-17:00", WorkLocation.OFFICE, EmployeeStatus.AVAILABLE, Sprite.WOMAN1);
 
