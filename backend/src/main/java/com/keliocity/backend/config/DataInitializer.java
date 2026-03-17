@@ -114,7 +114,7 @@ public class DataInitializer implements CommandLineRunner {
 
 			Floor floor3 = floorRepo.save(
 			        Floor.builder()
-			            .floorName("Forum")
+			            .floorName("Etage A0")
 			            .lengthX(100f)
 			            .lengthZ(60f)
 			            .build()
@@ -593,7 +593,7 @@ public class DataInitializer implements CommandLineRunner {
 			Room escUpAmphi = createStairsRoom(stairsB2, "Escalier Amphi – B2 montée", 85f, -9.3f, -90f, floor4, floor5,
 					"up");
 			Room cageEscAmphi = createRoom(stairwellB2, "Cage Amphi – B2", 82f, -11.5f, 90f, floor4);
-			Room escDownAmphi = createStairsRoom(stairsB2, "Escalier Amphi – B2 montée", 84.8f, -11.5f, -90f, floor4,
+			Room escDownAmphi = createStairsRoom(stairsB2, "Escalier Amphi – B2 descente", 84.8f, -11.5f, -90f, floor4,
 					floor3, "down");
 
 			Room b205 = createRoom(local, "B205", 2.5f, -51f, 0f, floor5);

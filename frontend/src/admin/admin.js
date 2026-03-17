@@ -167,6 +167,7 @@ function send() {
         alert("Echec de la requête. Vérifiez le tableur.");
     });
 }
+document.getElementById("send").addEventListener("click", send);
 
 const tables = ["floors", "rooms", "desks", "employees", "accounts", "meetings", "meetingEmployees"];
 function getCleanedJson() {
@@ -257,3 +258,4 @@ function downloadSpreadsheet() {
     const fileName = `KelioCity_Export_${new Date().toISOString()}.ods`;
     XLSX.writeFile(workbook, fileName, { bookType: 'ods' });
 }
+document.getElementById("file-export").addEventListener("click", downloadSpreadsheet);
