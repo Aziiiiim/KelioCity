@@ -241,13 +241,20 @@ export function createForum() {
         }
     }
 
+    makeInstance('/assets/models/Screen.glb').then((screen) => {
+        screen.scale.set(20, 20, 20);
+        screen.rotation.y = Math.PI/2;
+        screen.position.set(x+7, 0, z+15);
+        elements.add(screen);
+    })
+
     for (let i=0; i<8; i++) {
         makeInstance('/assets/models/GlassWall.glb').then((wall) => {
             wall.scale.set(5, 4.75, 2);
             wall.position.set(x+i*9+10, 0, z);
             elements.add(wall);
-        })
-    };
+        });
+    }
 
     const wallMat = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
     const BackWall = new THREE.Mesh(
