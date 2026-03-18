@@ -186,25 +186,26 @@ public class DatabaseFillerController {
         Desk desk = null;
         for (int i=0; i<dbFillerDTO.getEmployees().size(); i++) {
             Integer desknumber = dbFillerDTO.getEmployees().get(i).getDeskNumber();
-            if (rooms.get(dbFillerDTO.getEmployees().get(i).getRoomName().trim().toUpperCase()).getRoomType().getRoomtypeName().equals("Office1Desk") && (desknumber == null || desknumber == 0)) {
+            String roomname = dbFillerDTO.getEmployees().get(i).getRoomName();
+            if (roomname != null && rooms.get(roomname.trim().toUpperCase()).getRoomType().getRoomtypeName().equals("Office1Desk") && (desknumber == null || desknumber == 0)) {
                 desknumber = 1;
             }
-            if (dbFillerDTO.getEmployees().get(i).getRoomName() != null && desknumber != null) {
-                desk = desks.get(deskNames.get((dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber()).trim().toUpperCase()));
+            if (roomname != null && desknumber != null) {
+                desk = desks.get(deskNames.get((roomname+"_"+dbFillerDTO.getEmployees().get(i).getDeskNumber()).trim().toUpperCase()));
                 if (desk == null) {
-                    String deskname = (dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+desknumber);
+                    String deskname = (roomname+"_"+desknumber);
                     if (dbFillerDTO.getEmployees().get(i).getDeskName() != null) {
                         deskname = dbFillerDTO.getEmployees().get(i).getDeskName();
                     }
                     desk = deskRepo.save(
                         Desk.builder()
                             .deskName(deskname)
-                            .room(rooms.get(dbFillerDTO.getEmployees().get(i).getRoomName().trim().toUpperCase()))
-                            .deskType(deskTypes.get((rooms.get(dbFillerDTO.getEmployees().get(i).getRoomName().trim().toUpperCase()).getRoomType().getRoomtypeName()+"_"+desknumber).trim().toUpperCase()))
+                            .room(rooms.get(roomname.trim().toUpperCase()))
+                            .deskType(deskTypes.get((rooms.get(roomname.trim().toUpperCase()).getRoomType().getRoomtypeName()+"_"+desknumber).trim().toUpperCase()))
                             .build()
                     );
                     desks.put(deskname.trim().toUpperCase(), desk);
-                    deskNames.put((dbFillerDTO.getEmployees().get(i).getRoomName()+"_"+desknumber).trim().toUpperCase(),deskname);
+                    deskNames.put((roomname+"_"+desknumber).trim().toUpperCase(),deskname);
                 }
             } else if (dbFillerDTO.getEmployees().get(i).getDeskName() != null) {
                 desk = desks.get(dbFillerDTO.getEmployees().get(i).getDeskName().trim().toUpperCase());
