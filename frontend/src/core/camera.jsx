@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import gsap from "gsap"
 import { openSidebar } from '../utils/sidebar';
+import {selectObject} from "./scene.jsx";
 // file to create and manage the camera
 
 // create the camera and attach camera buttons (reset camera, zoom on me...) to their functionalities
@@ -13,7 +14,7 @@ export function createCamera(container) {
   );
   camera.position.set(10,20,20);
 
-  // we configure the initial point (reset camera point) and link it the the reset camera button
+  // we configure the initial point (reset camera point) and link it the reset camera button
   const initialPoint = new THREE.Object3D();
   initialPoint.position.set(0, 0, 0);
   initialPoint.focusPosition = new THREE.Vector3(10, 20, 20);
@@ -27,7 +28,7 @@ export function createCamera(container) {
     cameraOn(camera, controls, initialPoint);
   }
 
-  // we make the zoom on me button to go on ourselves and open the employee side bar
+  // we make the zoom on me button to go on ourselves and open the employee sidebar
   function attachZoomSelfButton(controls, getSelf){
       const btn = document.getElementById("zoom-self-btn");
       btn.addEventListener("click", () =>{
@@ -35,8 +36,26 @@ export function createCamera(container) {
           if (!self) {
               return;
           }
-          cameraOn(camera,controls,self);
-          openSidebar(self.userData.employee);
+
+          let objectFloorId = self.userData.employee.desk.room.floor.id;
+          if (window.floorId !== objectFloorId) {
+            window.floorId = objectFloorId;
+
+            window.scene.updateFloor(window.floorId);
+            // Wait for the assets and employees to load (approximately 500-800ms)
+            setTimeout(() => {
+                cameraOn(camera,controls,self);
+                openSidebar(self.userData.employee);
+
+                const select = document.getElementsByClassName("select-floor")[0];
+                if (select) {
+                    select.value = window.floorId;
+                }
+            }, 600);
+        } else {
+            cameraOn(camera,controls,self);
+            openSidebar(self.userData.employee);
+        }
       });
   }
 
