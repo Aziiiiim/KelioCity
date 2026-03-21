@@ -51,7 +51,7 @@ export function createCamera(container) {
                 if (select) {
                     select.value = window.floorId;
                 }
-            }, 600);
+            }, 800);
         } else {
             cameraOn(camera,controls,self);
             openSidebar(self.userData.employee);
