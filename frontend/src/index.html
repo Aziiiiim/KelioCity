@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./styles/sidebar.css">
     <link rel="stylesheet" href="./styles/menu.css">
     <link rel="icon" type="image/png" href="kelio.png">
+    <!-- Check if authenticated otherwise redirect to welcome page -->
     <script>
       const token = sessionStorage.getItem("token");
       if (!token) {
@@ -19,14 +20,20 @@
   <body>
     <div id="root-window">
       <div id="render-target"></div>
+
+        <!-- Banner to choose a seat when registering -->
         <div id="register-banner" class="register-banner hidden">
           CHOISIS UN BUREAU OU UN SIEGE LIBRE
         </div>
+
+        <!-- Filter buttons for search bar -->
         <div id="filter-wrapper" class="filter-wrapper">
           <button class="filter-btn" onclick="selectFilter(this)" data-type="employee">Employé</button>
           <button class="filter-btn" onclick="selectFilter(this)" data-type="room">Salle</button>
           <button class="filter-btn" onclick="selectFilter(this)" data-type="desk">Bureau</button>
         </div>
+
+        <!-- Search bar -->
         <div id="search-wrapper" class="search-wrapper">
           <input type="text" class="search-bar" placeholder="Rechercher une personne, un bureau..."/>
           <button class="search-btn" aria-label="Rechercher" onclick="search()">
@@ -38,28 +45,44 @@
           <ul class="search-dropdown hidden">
           </ul>
         </div>
+
+        <!-- Floor selector -->
         <div class="floor-wrapper">
           <select class="select-floor">
           </select>
         </div>
+
+        <!-- Reset camera to a preset point -->
         <button id="reset-camera-btn" class="reset-btn">Reset Camera</button>
+
+        <!-- Sidebar (hidden if no employee or room clicked -->
         <div id="sidebar" class="sidebar hidden">
           <h2>Informations</h2>
           <p>Clique sur un personnage pour afficher ses infos.</p>
         </div>
+
+        <!-- Menu profile of the account (hidden if not clicked) -->
         <div id="menu" class="menu hidden"></div>
+
+        <!-- Filter buttons to show availability or presences -->
         <button id="available-btn" class="available-btn"><img class="img-btn" src="/assets/icons/available.png" alt="icone disponible par Icons8"></button>
         <button id="occupied-btn" class="occupied-btn"><img class="img-btn" src="/assets/icons/occupied.png" alt="icone occupé par Icons8"></button>
-      <button id="zoom-self-btn" class="zoom-self-btn" title="Zoom sur moi">
-        <img src="/assets/icons/target.png" class="img-btn" alt="Zoom sur moi">
-      </button>
-      <button id="menu-btn" class="menu-btn" aria-label="Ouvrir le menu">
-        <img class="menu-icon" src="/assets/icons/menu.png" alt="">
-      </button>
-      <button id="logout-btn" class="logout-btn">Déconnexion</button>
-      <button id="admin-btn" class="admin-btn hidden">Admin</button>
+
+        <!-- Button to zoom on ourself -->
+        <button id="zoom-self-btn" class="zoom-self-btn" title="Zoom sur moi">
+          <img src="/assets/icons/target.png" class="img-btn" alt="Zoom sur moi">
+        </button>
+
+        <!-- Button to open the menu profile -->
+        <button id="menu-btn" class="menu-btn" aria-label="Ouvrir le menu">
+          <img class="menu-icon" src="/assets/icons/menu.png" alt="">
+        </button>
+
+        <!-- Disconnect button and admin button (hidden if not admin) -->
+        <button id="logout-btn" class="logout-btn">Déconnexion</button>
+        <button id="admin-btn" class="admin-btn hidden">Admin</button>
       </div>
-    <script type="module">
+    <script type="module"> // module to start the floor creation and check for updates
       import { createScene } from './core/scene.jsx';
       import { startChangesWatcher } from "./utils/changesWatcher.js";
       function getModeFromUrl() {
@@ -73,13 +96,14 @@
         window.scene = createScene(window.floorId, mode);
         window.scene.start();
 
+        // check for changes each 2s
         startChangesWatcher(() => {
           window.scene.reload();
         }, { intervalMs: 2000 });
       };
     </script>
-    <script type="module">
-      import { openMenu, closeMenu } from "./utils/menu.js";
+    <script type="module"> // module for disconnect button and open menu button
+      import { openMenu } from "./utils/menu.js";
       const logoutBtn = document.getElementById("logout-btn");
       logoutBtn.addEventListener("click", () => {
         sessionStorage.removeItem("token");
@@ -90,7 +114,7 @@
         openMenu();
       });
     </script>
-    <script type="module">
+    <script type="module"> // module to manage admin button
       import { apiFetch } from "./utils/apiFetch.js";
       const adminBtn = document.getElementById("admin-btn");
 
