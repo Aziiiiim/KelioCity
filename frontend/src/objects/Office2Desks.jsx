@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { makeInstance } from '../utils/asset.js'; 
-    
-export function createOffice2Desks(deskIds = [],initDoor = null) {
+
+// office with two desks
+export function createOffice2Desks(deskIds = []) {
     let x = -1;
     
     const elements = new THREE.Group();
@@ -62,114 +63,114 @@ export function createOffice2Desks(deskIds = [],initDoor = null) {
     let doorPivot = null;
     let doorOpen = false;
     let doorProgress = 0;
+
     // Desk1
     makeInstance('/assets/models/decoratedDesk.glb')
         .then((desk) => {
-        desk.position.set(-5.43 + x, 0, 2.5);
-        desk.scale.set(1.1, 1.1, 1.1);
-        desk.rotation.y = -Math.PI * 0.5;
+            desk.position.set(-5.43 + x, 0, 2.5);
+            desk.scale.set(1.1, 1.1, 1.1);
+            desk.rotation.y = -Math.PI * 0.5;
 
-        desk.traverse(n => {
-            if (n.isMesh) {
-                n.userData.kind = "desk";
-                n.userData.deskId = deskId1;
-            }
-        });
-        elements.add(desk);
+            desk.traverse(n => {
+                if (n.isMesh) {
+                    n.userData.kind = "desk";
+                    n.userData.deskId = deskId1;
+                }
+            });
+            elements.add(desk);
         })
         .catch(console.error);
 
     // Chair1
     makeInstance('/assets/models/chair.glb')
         .then((chair) => {
-        chair.position.set(-4.7 + x, 0, -9.5);
-        chair.scale.set(0.035, 0.035, 0.035);
-        chair.rotation.y = -Math.PI * 0.5;
-        chair.traverse(n => {
-            if (n.isMesh) {
-                n.userData.kind = "desk";
-                n.userData.deskId = deskId1;
-            }
-        });
-        elements.add(chair);
+            chair.position.set(-4.7 + x, 0, -9.5);
+            chair.scale.set(0.035, 0.035, 0.035);
+            chair.rotation.y = -Math.PI * 0.5;
+            chair.traverse(n => {
+                if (n.isMesh) {
+                    n.userData.kind = "desk";
+                    n.userData.deskId = deskId1;
+                }
+            });
+            elements.add(chair);
         })
         .catch(console.error);
 
     // Desk2
     makeInstance('/assets/models/decoratedDesk.glb')
         .then((desk) => {
-        desk.position.set(12.43 + x, 0, 3.6);
-        desk.scale.set(1.1, 1.1, 1.1);
-        desk.rotation.y = Math.PI * 0.5;
-        desk.traverse(n => {
-            if (n.isMesh) {
-                n.userData.kind = "desk";
-                n.userData.deskId = deskId2;
-            }
-        });
-        elements.add(desk);
+            desk.position.set(12.43 + x, 0, 3.6);
+            desk.scale.set(1.1, 1.1, 1.1);
+            desk.rotation.y = Math.PI * 0.5;
+            desk.traverse(n => {
+                if (n.isMesh) {
+                    n.userData.kind = "desk";
+                    n.userData.deskId = deskId2;
+                }
+            });
+            elements.add(desk);
         })
         .catch(console.error);
 
     // Chair2
     makeInstance('/assets/models/chair.glb')
         .then((chair) => {
-        chair.position.set(11.7 + x, 0, 15.7);
-        chair.scale.set(0.035, 0.035, 0.035);
-        chair.rotation.y = Math.PI * 0.5;
-        chair.traverse(n => {
-            if (n.isMesh) {
-                n.userData.kind = "desk";
-                n.userData.deskId = deskId2;
-            }
-        });
-        elements.add(chair);
+            chair.position.set(11.7 + x, 0, 15.7);
+            chair.scale.set(0.035, 0.035, 0.035);
+            chair.rotation.y = Math.PI * 0.5;
+            chair.traverse(n => {
+                if (n.isMesh) {
+                    n.userData.kind = "desk";
+                    n.userData.deskId = deskId2;
+                }
+            });
+            elements.add(chair);
         })
         .catch(console.error);
 
     // Message Board
     makeInstance('/assets/models/messageBoard.glb')
         .then((board) => {
-        board.position.set(3 + x, 1, 0.1);
-        board.scale.set(0.02, 0.02, 0.02);
-        board.rotation.y = Math.PI * -0.5;
-        elements.add(board);
+            board.position.set(3 + x, 1, 0.1);
+            board.scale.set(0.02, 0.02, 0.02);
+            board.rotation.y = Math.PI * -0.5;
+            elements.add(board);
         })
         .catch(console.error);
 
     // Shelf
     makeInstance('/assets/models/containerShelf.glb')
         .then((shelf) => {
-        shelf.position.set(5.6 + x, 1.14, 0.8);
-        shelf.scale.set(0.03, 0.03, 0.03);
-        shelf.rotation.y = Math.PI * 0.5;
-        elements.add(shelf);
+            shelf.position.set(5.6 + x, 1.14, 0.8);
+            shelf.scale.set(0.03, 0.03, 0.03);
+            shelf.rotation.y = Math.PI * 0.5;
+            elements.add(shelf);
         })
         .catch(console.error);
 
-    // Door
+    // Door and functions to open the door
     makeInstance('/assets/models/door.glb')
         .then((doorObj) => {
-        doorObj.scale.set(4, 4, 4);
+            doorObj.scale.set(4, 4, 4);
 
-        doorPivot = new THREE.Group();
-        doorPivot.userData.kind = "door";
-        doorPivot.userData.action = "toggleDoor";
-        doorPivot.userData.toggleDoor = toggleDoor;
+            doorPivot = new THREE.Group();
+            doorPivot.userData.kind = "door";
+            doorPivot.userData.action = "toggleDoor";
+            doorPivot.userData.toggleDoor = toggleDoor;
 
-        doorPivot.position.set(1 + x, 1.5, 5.48);
-        doorObj.position.set(-0.88, 0, 0);
+            doorPivot.position.set(1 + x, 1.5, 5.48);
+            doorObj.position.set(-0.88, 0, 0);
 
-        doorPivot.add(doorObj);
-        doorPivot.rotation.y = Math.PI;
+            doorPivot.add(doorObj);
+            doorPivot.rotation.y = Math.PI;
 
-        elements.add(doorPivot);
-        //initDoor(doorPivot, toggleDoor);
+            elements.add(doorPivot);
         })
         .catch(console.error);
 
     function openDoor(delta) {
-        if (!doorPivot) return; // porte pas encore chargée
+        if (!doorPivot) return; // door not loaded
 
         const target = doorOpen ? 1 : 0;
 
@@ -182,6 +183,7 @@ export function createOffice2Desks(deskIds = [],initDoor = null) {
         doorOpen = !doorOpen;
     }
 
+    // center the room
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);

@@ -1,6 +1,5 @@
 import * as THREE from 'three';
-import { makeInstance, loadTexture } from '../utils/asset.js';
-import { initChar } from './Characters.jsx';
+import { makeInstance } from '../utils/asset.js';
 
 export function createForum() {
     const elements = new THREE.Group();
@@ -24,7 +23,7 @@ export function createForum() {
     let doorProgress = 0;
 
     for (let i=0; i<11; i++) {
-        if (i==6) {
+        if (i === 6) {
             makeInstance('/assets/models/GlassDoor.glb').then((door) => {
 
                 doorPivot= new THREE.Group();

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
-
+// file to create and manage the controls (currently we can zoom, change direction and move)
 
 export function createControls(camera,container) {
     const controls = new OrbitControls(camera,container);

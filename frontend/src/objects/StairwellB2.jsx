@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import {loadTexture, makeInstance} from '../utils/asset.js';
-    
-export function createStairwellB2(initDoor = null) {
+import {loadTexture} from '../utils/asset.js';
+
+// stairwell used in floor B2. You can insert two StairsB2 inside
+export function createStairwellB2() {
     
     const elements = new THREE.Group();
     elements.userData.kind = "room";
@@ -67,6 +68,7 @@ export function createStairwellB2(initDoor = null) {
         elements.add(wallMesh4);
     });
 
+    // center the room
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);

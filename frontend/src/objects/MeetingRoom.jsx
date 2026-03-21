@@ -52,6 +52,7 @@ export function createMeetingRoom() {
             elements.add(chair);
         });
     }
+
     // Projector screen
     makeInstance('/assets/models/ProjectorScreen.glb').then((proj) => {
         proj.scale.set(2, 3, 4);
@@ -59,30 +60,7 @@ export function createMeetingRoom() {
         elements.add(proj);
     });
 
-    // Door (avec cache)
-    let doorPivot = null;
-    let doorOpen = false;
-    let doorProgress = 0;
-    makeInstance('/assets/models/door.glb').then((doorObj) => {
-        doorObj.scale.set(4, 4, 4);
-
-        doorPivot = new THREE.Group();
-
-        doorPivot.userData.kind = "door";
-        doorPivot.userData.action = "toggleDoor";
-        doorPivot.userData.toggleDoor = toggleDoor;
-
-        doorPivot.position.set(x + 10.7, 1.5, z - 5.88);
-
-        // même offset que toi
-        doorObj.position.set(-0.88, 0, 0);
-
-        doorPivot.add(doorObj);
-        doorPivot.rotation.y = Math.PI / 2;
-
-        elements.add(doorPivot);
-    });
-
+    // Walls
     loadTexture('/assets/textures/painted_plaster.jpg').then((wallTexture) => {
         wallTexture.wrapS = THREE.RepeatWrapping;
         wallTexture.wrapT = THREE.RepeatWrapping;
@@ -108,10 +86,6 @@ export function createMeetingRoom() {
         wallLeft.position.set(x-4.29, 2.45, z);
         elements.add(wallLeft);
 
-        /*const wallRight = wallLeft.clone();
-        wallRight.rotation.y = Math.PI/2;
-        wallRight.position.set(x+10.7, 2.45, z);
-        elements.add(wallRight);*/
         const wallRight1 = new THREE.Mesh(
         new THREE.PlaneGeometry(10.3, 5),
         wallMaterial
@@ -135,6 +109,28 @@ export function createMeetingRoom() {
         elements.add(wallRight3);
     });
 
+    // Door and functions to open the door
+    let doorPivot = null;
+    let doorOpen = false;
+    let doorProgress = 0;
+    makeInstance('/assets/models/door.glb').then((doorObj) => {
+        doorObj.scale.set(4, 4, 4);
+
+        doorPivot = new THREE.Group();
+
+        doorPivot.userData.kind = "door";
+        doorPivot.userData.action = "toggleDoor";
+        doorPivot.userData.toggleDoor = toggleDoor;
+
+        doorPivot.position.set(x + 10.7, 1.5, z - 5.88);
+        doorObj.position.set(-0.88, 0, 0);
+
+        doorPivot.add(doorObj);
+        doorPivot.rotation.y = Math.PI / 2;
+
+        elements.add(doorPivot);
+    });
+
     function openDoor(delta) {
         if (!doorPivot) return;
 
@@ -149,14 +145,11 @@ export function createMeetingRoom() {
         doorOpen = !doorOpen;
     }
 
-
+    // center the room
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);
 
-    const endX = x+10.7;
-    const endZ = z+6;
-
     elements.focusPosition = new THREE.Vector3(0, 9, 4);
-    return {elements, endX, endZ, openDoor, doorPivot };
+    return {elements, openDoor, doorPivot };
 }

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import floorDiffuseUrl from '/assets/textures/laminate_floor.jpg';
-import {loadTexture } from '../utils/asset.js';
+import floorDiffuseUrl from '/assets/textures/laminate_floor.jpg'; // floor texture
+import { loadTexture } from '../utils/asset.js';
 
-
+// create a rectangular floor with texture and holes for stairs
 export function createGround(lengthX, lengthZ, holes){
   const material = new THREE.MeshPhongMaterial();
 
@@ -13,7 +13,7 @@ export function createGround(lengthX, lengthZ, holes){
     material.needsUpdate = true;
   });
 
-  // Créer la forme rectangulaire pour le sol
+  // Create the rectangular shape for the floor
   const shape = new THREE.Shape();
   shape.moveTo(-lengthX/2, -lengthZ/2);
   shape.lineTo(-lengthX/2, lengthZ/2);
@@ -21,7 +21,7 @@ export function createGround(lengthX, lengthZ, holes){
   shape.lineTo(lengthX/2, -lengthZ/2);
   shape.lineTo(-lengthX/2, -lengthZ/2);
 
-  // Ajouter les trous
+  // Add holes for stairs
   for (let hole of holes) {
     shape.holes.push(hole);
   }

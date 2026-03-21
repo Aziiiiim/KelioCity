@@ -1,7 +1,9 @@
 import { selectObject } from "../core/scene.jsx";
 import { apiFetch } from "./apiFetch.js";
 
+// we set up event listener
 window.addEventListener("DOMContentLoaded", () => {
+  // we add an event listener to the searchbar to search by pressing enter key
   const searchbar = document.getElementsByClassName("search-bar")[0];
   searchbar.addEventListener("keypress", function (e) {
     if (e.key === "Enter") {
@@ -10,9 +12,9 @@ window.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  // we show the dropdown when typing in the searchbar and hide it when quitting
   const dropdown = document.getElementsByClassName("search-dropdown")[0];
   searchbar.addEventListener('input', () => {
-    const dropdown = document.getElementsByClassName("search-dropdown")[0];
     dropdown.innerHTML = "";
     dropdown.classList.remove('hidden');
     showResults();
@@ -20,8 +22,9 @@ window.addEventListener("DOMContentLoaded", () => {
   searchbar.addEventListener('blur', () => {
     setTimeout(() => dropdown.classList.add('hidden'), 150);
   });
-})
+});
 
+// we manage filter selection display
 window.selectFilter = function(btn) {
     if (btn.classList.contains("active")) {
         btn.classList.remove("active");
@@ -36,7 +39,6 @@ window.selectFilter = function(btn) {
 
 function showResults() {
     let btnType = "";
-    const floorId = document.getElementsByClassName("select-floor")[0].value;
     if (document.getElementsByClassName("filter-btn active")[0]) {
         btnType = document.getElementsByClassName("filter-btn active")[0].dataset.type;
     }
@@ -212,6 +214,7 @@ function showResults() {
     }
 }
 
+// if there is one result in the dropdown, we search that one
 window.search = function() {
     const dropdown = document.getElementsByClassName("search-dropdown")[0];
     if (dropdown.children.length === 1 && dropdown.children[0].textContent !== "Aucun Résultat") {
@@ -219,17 +222,19 @@ window.search = function() {
     }
 }
 
+// we select the selected object of the dropdown and zoom on it (and open sidebar if needed)
 function goToResult(elem) {
+    // we get object info
     let objectId = elem.dataset.id;
     let objectType = elem.dataset.type;
     let objectFloorId = elem.dataset.floorId;
-    console.log(elem.dataset);
 
-    if (window.floorId != objectFloorId) {
+    // we change the floor if needed and select the object
+    if (window.floorId !== objectFloorId) {
         window.floorId = objectFloorId; 
 
         window.scene.updateFloor(window.floorId);
-        // Attendre que les assets et employés soient chargés (environ 500-800ms)
+        // Wait for the assets and employees to load (approximately 500-800ms)
         setTimeout(() => {
             selectObject(objectType, objectId);
 
@@ -241,7 +246,8 @@ function goToResult(elem) {
     } else {
         selectObject(objectType, objectId);
     }
-    
+
+    // we reset the search bar and filters
     document.getElementsByClassName("search-bar")[0].value = "";
     const dropdown = document.getElementsByClassName("search-dropdown")[0];
     dropdown.innerHTML = "";

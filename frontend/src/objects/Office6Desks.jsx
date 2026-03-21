@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { makeInstance } from '../utils/asset.js'; 
     
-
+// function to assign deskId to desk mesh
 function tagGroupAsDesk(group, deskId) {
   group.traverse(n => {
     if (n.isMesh) {
@@ -11,7 +11,8 @@ function tagGroupAsDesk(group, deskId) {
   });
 }
 
-export function createOffice6Desks(deskIds = [],initDoor = null) {
+// office with six desks
+export function createOffice6Desks(deskIds = []) {
     let x = -1;
 
     const elements = new THREE.Group();
@@ -73,30 +74,33 @@ export function createOffice6Desks(deskIds = [],initDoor = null) {
     const groupDesk1 = new THREE.Group();
 
     Promise.all([
+        // Desks
         makeInstance('/assets/models/decoratedDesk.glb').then((desk) => {
-        desk.position.set(-1.93, 0, 3);
-        desk.scale.set(1.1, 1.1, 1.1);
-        desk.rotation.y = -Math.PI * 0.5;
-        desk.traverse(n => {
-            if (n.isMesh) {
-                n.userData.kind = "desk";
-            }
-        });
-        groupDesk1.add(desk);
+            desk.position.set(-1.93, 0, 3);
+            desk.scale.set(1.1, 1.1, 1.1);
+            desk.rotation.y = -Math.PI * 0.5;
+            desk.traverse(n => {
+                if (n.isMesh) {
+                    n.userData.kind = "desk";
+                }
+            });
+            groupDesk1.add(desk);
         }),
+        // Chair
         makeInstance('/assets/models/chair.glb').then((chair) => {
-        chair.position.set(-4.7 + 3.5, 0, -9);
-        chair.scale.set(0.035, 0.035, 0.035);
-        chair.rotation.y = -Math.PI * 0.5;
-        chair.traverse(n => {
-            if (n.isMesh) {
-                n.userData.kind = "desk";
-            }
-        });
-        groupDesk1.add(chair);
+            chair.position.set(-4.7 + 3.5, 0, -9);
+            chair.scale.set(0.035, 0.035, 0.035);
+            chair.rotation.y = -Math.PI * 0.5;
+            chair.traverse(n => {
+                if (n.isMesh) {
+                    n.userData.kind = "desk";
+                }
+            });
+            groupDesk1.add(chair);
         }),
     ])
         .then(() => {
+        // we clone desk and chair five times and change their coordinates
         const groupDesk2 = groupDesk1.clone(true);
         const groupDesk3 = groupDesk1.clone(true);
         const groupDesk4 = groupDesk1.clone(true);
@@ -130,24 +134,24 @@ export function createOffice6Desks(deskIds = [],initDoor = null) {
     // Message Board
     makeInstance('/assets/models/messageBoard.glb')
         .then((board) => {
-        board.position.set(4.5 + x, 1, 0.1);
-        board.scale.set(0.02, 0.02, 0.02);
-        board.rotation.y = Math.PI * -0.5;
-        elements.add(board);
+            board.position.set(4.5 + x, 1, 0.1);
+            board.scale.set(0.02, 0.02, 0.02);
+            board.rotation.y = Math.PI * -0.5;
+            elements.add(board);
         })
         .catch(console.error);
 
     // Shelf
     makeInstance('/assets/models/containerShelf.glb')
         .then((shelf) => {
-        shelf.position.set(7.6 + x, 1.14, 0.8);
-        shelf.scale.set(0.03, 0.03, 0.03);
-        shelf.rotation.y = Math.PI * 0.5;
-        elements.add(shelf);
+            shelf.position.set(7.6 + x, 1.14, 0.8);
+            shelf.scale.set(0.03, 0.03, 0.03);
+            shelf.rotation.y = Math.PI * 0.5;
+            elements.add(shelf);
         })
         .catch(console.error);
 
-    // Door
+    // Door and functions to open the door
     makeInstance('/assets/models/door.glb')
         .then((doorObj) => {
         doorObj.scale.set(4, 4, 4);
@@ -164,12 +168,11 @@ export function createOffice6Desks(deskIds = [],initDoor = null) {
         elements.add(doorPivot);
 
         doorPivot.rotation.y = Math.PI / 2;
-        //initDoor(doorPivot, toggleDoor);
         })
         .catch(console.error);
 
     function openDoor(delta) {
-        if (!doorPivot) return; // porte pas encore chargée
+        if (!doorPivot) return; // door not loaded
 
         const target = doorOpen ? 1 : 0;
 
@@ -182,6 +185,7 @@ export function createOffice6Desks(deskIds = [],initDoor = null) {
         doorOpen = !doorOpen;
     }
 
+    // center the room
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);

@@ -2,6 +2,7 @@ import { apiFetch } from "../utils/apiFetch.js";
 
 const API = "http://localhost:8080/api";
 
+// test back end API
 export async function apiTest() {
 
     console.log("=== 🚀 DÉBUT DES TESTS API ===");

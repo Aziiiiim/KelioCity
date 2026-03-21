@@ -1,3 +1,5 @@
+// we define all tables and fields of the spreadsheet
+// you should change that if you want to add/remove fields or if you add room types
 const sheets = [
     {
         sheetName: 'Floors',
@@ -14,6 +16,7 @@ const sheets = [
         minDimensions:[7,10],
         columns: [
             {type: 'text', title: 'roomName', name: 'roomName', width:150},
+            // source contains the list of all room types available, you can change that
             {type: 'dropdown', title: 'roomType', name: 'roomType', width:150, source: ["MeetingRoom", "Office1Desk", "Office2Desks", "Office4Desks", "Office6Desks", "Openspace", "Stairs", "Office1DeskB2", "Office2DesksB2", "Office3DesksB2", "Office4DesksB2", "Office5DesksB2", "MeetingRoomB2", "StairwellB2", "StairsB2", "Local", "LocalB2", "Toilets", "SmallAmphi", "BigAmphi", "B2Access", "Classroom1", "Classroom2", "Forum", "StandForum"]},
             {type: 'text', title: 'floorName', name: 'floorName', width:140},
             {type: 'numeric', title: 'coordX1', name: 'coordX1', width:80},
@@ -47,6 +50,7 @@ const sheets = [
             {type: 'text', title: 'workingHours', name: 'workingHours', width:110},
             {type: 'dropdown', title: 'inOffice', name: 'inOffice', width:100, source: ["OFFICE", "REMOTE"]},
             {type: 'dropdown', title: 'status', name: 'status', width:100, source: ["AVAILABLE", "OCCUPIED", "ABSENT"]},
+            // source contains the list of all sprite available for employees, you can change that
             {type: 'dropdown', title: 'sprite', name: 'sprite', width:100, source: ["MAN1", "WOMAN1","MAN2", "WOMAN2","MAN3", "WOMAN3","MAN4", "WOMAN4"]}]
     },
     {
@@ -86,7 +90,8 @@ const sheets = [
     }
 ];
 
-let spreadsheet = jspreadsheet.tabs(document.getElementById('spreadsheet'), sheets);
+//we load our tables in the spreadsheets and display the first one
+jspreadsheet.tabs(document.getElementById('spreadsheet'), sheets);
 const tabs = document.getElementsByClassName("jexcel_tab_link")
 tabs[0].click();
 
@@ -117,12 +122,12 @@ globalReset.addEventListener('change', (e) => {
 tabResets.forEach(checkbox => {
     checkbox.addEventListener('change', () => {
         const allChecked = Array.from(tabResets).every(c => c.checked);
-        const noneChecked = Array.from(tabResets).every(c => !c.checked);
         if (allChecked) globalReset.checked = true;
         else if (!allChecked) globalReset.checked = false;
     });
 });
 
+// we manage the height of the spreadsheets to be not so ugly
 tabs[tabs.length-1].addEventListener("click", () => {
     document.getElementsByClassName("spreadsheet-wrapper")[0].style.height = "356px";
 })
@@ -139,7 +144,9 @@ for (let i=0; i<tabs.length; i++) {
     })
 }
 
+// function called by the send button that call getCleanedJson() and send info to the API
 function send() {
+    // auth is an old security, can be removed if removed in the API too (but we should manage better access to admin page and API with JWT first)
     const auth = "AUTH_PR0C0M_k3l10c1ty";
     let json = getCleanedJson();
     json["auth"] = auth;
@@ -153,6 +160,7 @@ function send() {
             console.log(response);
             alert("Echec de la requête. Vérifiez le tableur");
         }
+        // if the modifications are done, we reset the admin page
         document.getElementById("reset").checked = false;
         const excels = document.getElementById("spreadsheet").jexcel;
         excels.forEach((sheet) => {
@@ -169,13 +177,16 @@ function send() {
 }
 document.getElementById("send").addEventListener("click", send);
 
+// we get data from the spreadsheets and make a cleaned json usable by the API
 const tables = ["floors", "rooms", "desks", "employees", "accounts", "meetings", "meetingEmployees"];
 function getCleanedJson() {
     let excel = document.getElementById("spreadsheet").jexcel;
     let json = {"reset": {}};
     for (let i=0; i<excel.length; i++) {
+        // we check for each table if the API need to reset it
         const columns = excel[i].getConfig().columns;
         json["reset"][tables[i]] = tabResets[i].checked;
+        // we get data for that table (only lines with data and get it in the right format)
         json[tables[i]] = excel[i].getJson().map(row => {
            let hasContent = false;
            let processedRow = {};
@@ -206,10 +217,12 @@ function getCleanedJson() {
     return json;
 }
 
+// manage file import
 document.getElementById("file-import").addEventListener("change", function(e) {
     const file = e.target.files[0];
     if (!file) return;
 
+    // reset the spreadsheets and reset checkboxes
     document.getElementById("reset").checked = false;
     const excels = document.getElementById("spreadsheet").jexcel;
     excels.forEach((sheet) => {
@@ -217,6 +230,7 @@ document.getElementById("file-import").addEventListener("change", function(e) {
     });
     tabs[0].click();
 
+    // extract data from the file and put it in the spreadsheets
     const reader = new FileReader();
     reader.onload = function (e) {
         const data = new Uint8Array(e.target.result);
@@ -239,6 +253,7 @@ document.getElementById("file-import").addEventListener("change", function(e) {
     reader.readAsArrayBuffer(file);
 });
 
+// function to download the data currently in the spreadsheets (we get data, check if there is something and download it in .ods)
 function downloadSpreadsheet() {
     const data = getCleanedJson();
     const workbook = XLSX.utils.book_new();

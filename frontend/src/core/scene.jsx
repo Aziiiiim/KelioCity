@@ -360,7 +360,7 @@ export function createScene(floorId, mode){
                         roomObj = createForum();
                     } 
                     else if (roomType === "StandForum") {
-                        roomObj = createStand();
+                        roomObj = createStand(deskIds);
                     } 
                     else if (roomType === "Office1Desk") {
                         roomObj = createOffice1Desk(deskIds);

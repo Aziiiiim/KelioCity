@@ -1,42 +1,43 @@
 import * as THREE from 'three';
 import gsap from "gsap"
 import { openSidebar } from '../utils/sidebar';
+// file to create and manage the camera
 
+// create the camera and attach camera buttons (reset camera, zoom on me...) to their functionalities
 export function createCamera(container) {
   const camera = new THREE.PerspectiveCamera(
-    75,
-    container.clientWidth / container.clientHeight,
-    0.1,
-    1000
+    75, // fov
+    container.clientWidth / container.clientHeight, // aspect ratio
+    0.1, // near
+    1000 // far
   );
   camera.position.set(10,20,20);
+
+  // we configure the initial point (reset camera point) and link it the the reset camera button
   const initialPoint = new THREE.Object3D();
   initialPoint.position.set(0, 0, 0);
-  initialPoint.focusPosition = new THREE.Vector3(10, 20, 20); 
-
-
-
+  initialPoint.focusPosition = new THREE.Vector3(10, 20, 20);
   function attachResetButton(controls) {
       const btn = document.getElementById("reset-camera-btn");
       btn.addEventListener("click", () => {
           reset(controls);
       });
   }
-
-    function attachZoomSelfButton(controls, getSelf){
-        const btn = document.getElementById("zoom-self-btn");
-        btn.addEventListener("click", () =>{
-            const self = getSelf?.();
-            if (!self) {
-                return;
-            }
-            cameraOn(camera,controls,self);
-            openSidebar(self.userData.employee);
-        });
-    }
-
   function reset(controls) {
     cameraOn(camera, controls, initialPoint);
+  }
+
+  // we make the zoom on me button to go on ourselves and open the employee side bar
+  function attachZoomSelfButton(controls, getSelf){
+      const btn = document.getElementById("zoom-self-btn");
+      btn.addEventListener("click", () =>{
+          const self = getSelf?.();
+          if (!self) {
+              return;
+          }
+          cameraOn(camera,controls,self);
+          openSidebar(self.userData.employee);
+      });
   }
 
   function resize() {
@@ -44,14 +45,16 @@ export function createCamera(container) {
     camera.updateProjectionMatrix();
   }
 
-  return { camera, resize,attachResetButton, attachZoomSelfButton };
+  return { camera, resize, attachResetButton, attachZoomSelfButton };
 }
 
+// function to spot an object on the camera
 export function cameraOn (camera, controls, obj) {
     const box = new THREE.Box3().setFromObject(obj);
     const center = new THREE.Vector3();
     box.getCenter(center);
 
+    // we get the focus position with the right angle (and update the floor if we are not on the right one)
     const focus = obj.focusPosition.clone();
     let angle = 0;
     if (obj.userData.employee) {
@@ -63,7 +66,7 @@ export function cameraOn (camera, controls, obj) {
     }
     const rotatedFocus = focus.clone().applyAxisAngle(new THREE.Vector3(0,1,0), angle);
 
-    // Position de caméra souhaitée 
+    // camera position wanted
     const camPos = center.clone().add(rotatedFocus);
     const startTarget = controls.target.clone();
 
@@ -80,12 +83,11 @@ export function cameraOn (camera, controls, obj) {
         z: camPos.z,
         ease: "power2.inOut",
         onUpdate: () => {
-            // Mise à jour progressive de la target pendant le mouvement
+            // Progressive target update during movement
             controls.target.set(targetProxy.x, targetProxy.y, targetProxy.z);
             controls.update();
         }
     });
-
 
     gsap.to(targetProxy, {
         duration: 1.5,
@@ -95,20 +97,3 @@ export function cameraOn (camera, controls, obj) {
         ease: "power2.inOut"
     });
 }
-
-/*
-function hideWallsBetweenCameraAndObj (camera, obj, walls) {
-    const origin = camera.position.clone();
-    const target = new THREE.Vector3();
-    obj.getWorldPosition(target);
-
-    const direction = target.clone().sub(origin).normalize();
-    const ray = new THREE.Raycaster(origin, direction);
-
-    const hits = ray.intersectObjects(walls, false);
-
-    hits.forEach(hit => {
-        hit.object.visible = false;
-    });
-}
-*/

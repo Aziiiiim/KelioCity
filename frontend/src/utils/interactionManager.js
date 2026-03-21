@@ -1,4 +1,4 @@
-import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar, closeSidebar } from "./sidebar.js";
+import { openSidebar, openMeetingRoomSidebar, openOfficeSidebar } from "./sidebar.js";
 import { cameraOn } from "../core/camera.jsx";
 import { apiFetch } from "./apiFetch.js";
 import {updateFloorByStairs} from "./selectFloor.js"

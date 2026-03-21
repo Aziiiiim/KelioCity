@@ -1,3 +1,4 @@
+// fetch an API (you can give options), token is checked
 export async function apiFetch(url, options = {}) {
   const token = sessionStorage.getItem("token");
 

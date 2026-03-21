@@ -2,10 +2,7 @@ import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { initChar } from "../objects/Characters.jsx";
 
-/**
- * Render un perso (glb) dans un canvas.
- * Retourne un objet { dispose, setSprite } si tu veux changer plus tard.
- */
+// Render a 3D sprite
 export function mountAvatar3D(canvas, spriteName) {
   const renderer = new THREE.WebGLRenderer({
     canvas,
@@ -58,7 +55,7 @@ export function mountAvatar3D(canvas, spriteName) {
   }
 
   function loadSprite(name) {
-    // Si on change, on enlève l'ancien
+    // If we make a change, we remove the old one.
     if (characterRef?.scene) {
       scene.remove(characterRef.scene);
     }

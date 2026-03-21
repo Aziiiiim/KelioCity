@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { makeInstance, loadTexture } from '../utils/asset.js';
+import { makeInstance } from '../utils/asset.js';
 
-export function createOffice1Desk(deskIds = [],initDoor = null) {
+// office with one desk
+export function createOffice1Desk(deskIds = []) {
     const elements = new THREE.Group();
     elements.userData.kind = "room";
     elements.userData.roomType = "Office1Desk"; 
@@ -71,7 +72,6 @@ export function createOffice1Desk(deskIds = [],initDoor = null) {
             }
         });
 
-
         elements.add(desk);
     }).catch(console.error);
 
@@ -106,7 +106,7 @@ export function createOffice1Desk(deskIds = [],initDoor = null) {
         elements.add(shelf);
     }).catch(console.error);
 
-    // Door (avec pivot)
+    // Door and functions to open the door
     let doorPivot = null;
     let doorOpen = false;
     let doorProgress = 0;
@@ -127,11 +127,10 @@ export function createOffice1Desk(deskIds = [],initDoor = null) {
         doorPivot.rotation.y = Math.PI / 2;
 
         elements.add(doorPivot);
-        //initDoor(doorPivot, toggleDoor);
     }).catch(console.error);
 
     function openDoor(delta) {
-        if (!doorPivot) return; // porte pas encore chargée
+        if (!doorPivot) return; // door not loaded
 
         const target = doorOpen ? 1 : 0;
 
@@ -145,6 +144,7 @@ export function createOffice1Desk(deskIds = [],initDoor = null) {
         doorOpen = !doorOpen;
     }
 
+    // center the room
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);

@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { makeInstance } from '../utils/asset.js'; 
-    
+
+// function to assign deskID to desk mesh
 function tagGroupAsDesk(group, deskId) {
   group.traverse(n => {
     if (n.isMesh) {
@@ -10,12 +11,13 @@ function tagGroupAsDesk(group, deskId) {
   });
 }
 
-
-export function createOffice4Desks(deskIds = [],initDoor = null) {
+// office with four desks
+export function createOffice4Desks(deskIds = []) {
     let x = -1;
     const elements = new THREE.Group();
     elements.userData.kind = "room";
-    elements.userData.roomType = "Office4Desk"; 
+    elements.userData.roomType = "Office4Desk";
+
     // Wall and floor
     const floorGeo = new THREE.PlaneGeometry(7, 6);
     const floorMat = new THREE.MeshBasicMaterial( { color: 0xdedede } );
@@ -73,30 +75,33 @@ export function createOffice4Desks(deskIds = [],initDoor = null) {
 
     
     Promise.all([
+        // Desk
         makeInstance('/assets/models/decoratedDesk.glb').then((desk) => {
-        desk.position.set(-5.43 + 3.5, 0, 2.5);
-        desk.scale.set(1.1, 1.1, 1.1);
-        desk.rotation.y = -Math.PI * 0.5;
-        desk.traverse(n => {
-            if (n.isMesh) {
-                n.userData.kind = "desk";
-            }
-        });
-        groupDesk1.add(desk);
+            desk.position.set(-5.43 + 3.5, 0, 2.5);
+            desk.scale.set(1.1, 1.1, 1.1);
+            desk.rotation.y = -Math.PI * 0.5;
+            desk.traverse(n => {
+                if (n.isMesh) {
+                    n.userData.kind = "desk";
+                }
+            });
+            groupDesk1.add(desk);
         }),
+        // Chair
         makeInstance('/assets/models/chair.glb').then((chair) => {
-        chair.position.set(-4.7 + 3.5, 0, -9.5);
-        chair.scale.set(0.035, 0.035, 0.035);
-        chair.rotation.y = -Math.PI * 0.5;
-        chair.traverse(n => {
-            if (n.isMesh) {
-                n.userData.kind = "desk";
-            }
-        });
-        groupDesk1.add(chair);
+            chair.position.set(-4.7 + 3.5, 0, -9.5);
+            chair.scale.set(0.035, 0.035, 0.035);
+            chair.rotation.y = -Math.PI * 0.5;
+            chair.traverse(n => {
+                if (n.isMesh) {
+                    n.userData.kind = "desk";
+                }
+            });
+            groupDesk1.add(chair);
         }),
     ])
         .then(() => {
+        // we clone desk and chair 3 times and change their coordinates
         const groupDesk2 = groupDesk1.clone(true);
         const groupDesk3 = groupDesk1.clone(true);
         const groupDesk4 = groupDesk1.clone(true);
@@ -140,7 +145,7 @@ export function createOffice4Desks(deskIds = [],initDoor = null) {
         })
         .catch(console.error);
 
-    // Door
+    // Door and functions to open the door
     makeInstance('/assets/models/door.glb')
         .then((doorObj) => {
         doorObj.scale.set(4, 4, 4);
@@ -156,12 +161,10 @@ export function createOffice4Desks(deskIds = [],initDoor = null) {
 
         doorPivot.add(doorObj);
         elements.add(doorPivot);
-
-        //initDoor(doorPivot, toggleDoor);
         })
         .catch(console.error);
     function openDoor(delta) {
-        if (!doorPivot) return; // porte pas encore chargée
+        if (!doorPivot) return; // door not loaded
 
         const target = doorOpen ? 1 : 0;
 
@@ -174,6 +177,7 @@ export function createOffice4Desks(deskIds = [],initDoor = null) {
         doorOpen = !doorOpen;
     }
 
+    // center the room
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);

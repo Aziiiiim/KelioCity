@@ -1,4 +1,3 @@
-import { createScene } from "../core/scene";
 import { apiFetch } from "./apiFetch.js";
 
 // display the floor list in the select box
@@ -9,7 +8,6 @@ window.addEventListener("DOMContentLoaded", () => {
         .then (listFloors => {
             for (let i=0; i<listFloors.length; i++){
                 var option = new Option(listFloors[i]["floorName"], listFloors[i]["id"]);
-                //option.setAttribute('id', 'option-floor'+listFloors[i]["id"]);
                 select.appendChild(option);
             }
             select.value = window.floorId;
@@ -19,7 +17,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
 })
 
-/// Note: utiliser optgroup pour faire des sous catégories ex Bat 1, Bat 2
+/// Note: Use optgroup to create subcategories, e.g., Bat 1, Bat 2
 
 function updateFloor() {
     const select = document.getElementsByClassName("select-floor")[0];

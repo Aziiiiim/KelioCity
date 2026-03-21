@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import {loadTexture, makeInstance} from '../utils/asset.js';
-    
-export function createToilets(initDoor = null) {
+
+// Toilets room
+export function createToilets() {
     
     const elements = new THREE.Group();
     elements.userData.kind = "room";
@@ -97,87 +98,86 @@ export function createToilets(initDoor = null) {
     // Bin
     makeInstance('/assets/models/Bin.glb')
         .then((bin) => {
-        bin.position.set(0.5, 0.39, 0.5);
-        bin.scale.set(0.5, 0.5, 1);
-        bin.rotation.y = Math.PI;
-        elements.add(bin);
+            bin.position.set(0.5, 0.39, 0.5);
+            bin.scale.set(0.5, 0.5, 1);
+            bin.rotation.y = Math.PI;
+            elements.add(bin);
         })
         .catch(console.error);
 
     // Sink
     makeInstance('/assets/models/Sink.glb')
         .then((sink) => {
-        sink.position.set(1.8, 0, 0.3);
-        sink.traverse((child) => {
-            if (child.isMesh) {
-                child.material.color.set(0xFFFFFF);
-            }
-        });
-        elements.add(sink);
+            sink.position.set(1.8, 0, 0.3);
+            sink.traverse((child) => {
+                if (child.isMesh) {
+                    child.material.color.set(0xFFFFFF);
+                }
+            });
+            elements.add(sink);
         })
         .catch(console.error);
 
     // Door toilets
     makeInstance('/assets/models/door.glb')
         .then((doorObj) => {
-        doorObj.scale.set(4, 4, 4);
-        doorObj.position.set(4, 1.5, 2.25);
-        doorObj.rotation.y = Math.PI/2;
-        elements.add(doorObj);
+            doorObj.scale.set(4, 4, 4);
+            doorObj.position.set(4, 1.5, 2.25);
+            doorObj.rotation.y = Math.PI/2;
+            elements.add(doorObj);
         })
         .catch(console.error);
 
     // Sink
     makeInstance('/assets/models/Toilet.glb')
         .then((toilet) => {
-        toilet.position.set(5, 0, 0.9);
-        toilet.scale.set(0.15, 0.15, 0.15);
-        elements.add(toilet);
+            toilet.position.set(5, 0, 0.9);
+            toilet.scale.set(0.15, 0.15, 0.15);
+            elements.add(toilet);
         })
         .catch(console.error);
 
     // PaperTowel
     makeInstance('/assets/models/PaperTowel.glb')
         .then((pt) => {
-        pt.position.set(5.74, 1.3, 1.5);
-        pt.rotation.y = Math.PI/2;
-        pt.scale.set(1.5, 1.5, 1.5);
-        elements.add(pt);
+            pt.position.set(5.74, 1.3, 1.5);
+            pt.rotation.y = Math.PI/2;
+            pt.scale.set(1.5, 1.5, 1.5);
+            elements.add(pt);
         })
         .catch(console.error);
 
     // WallPaperTowel
     makeInstance('/assets/models/WallPapertowel.glb')
         .then((pt) => {
-        pt.position.set(3.22, 1.7, 0.05);
-        pt.scale.set(0.7, 0.7, 0.7);
-        elements.add(pt);
+            pt.position.set(3.22, 1.7, 0.05);
+            pt.scale.set(0.7, 0.7, 0.7);
+            elements.add(pt);
         })
         .catch(console.error);
 
     // Door
     makeInstance('/assets/models/door.glb')
         .then((doorObj) => {
-        doorObj.scale.set(4, 4, 4);
+            doorObj.scale.set(4, 4, 4);
 
-        doorPivot = new THREE.Group();
-        doorPivot.userData.kind = "door";
-        doorPivot.userData.action = "toggleDoor";
-        doorPivot.userData.toggleDoor = toggleDoor;
+            doorPivot = new THREE.Group();
+            doorPivot.userData.kind = "door";
+            doorPivot.userData.action = "toggleDoor";
+            doorPivot.userData.toggleDoor = toggleDoor;
 
-        doorPivot.position.set(0, 1.5, 3);
-        doorObj.position.set(-0.88, 0, 0);
+            doorPivot.position.set(0, 1.5, 3);
+            doorObj.position.set(-0.88, 0, 0);
 
-        doorPivot.add(doorObj);
-        doorPivot.rotation.y = Math.PI;
+            doorPivot.add(doorObj);
+            doorPivot.rotation.y = Math.PI;
 
-        elements.add(doorPivot);
-        //initDoor(doorPivot, toggleDoor);
+            elements.add(doorPivot);
         })
         .catch(console.error);
 
     function openDoor(delta) {
-        if (!doorPivot) return; // porte pas encore chargée
+        if (!doorPivot) return; // door not loaded
 
         const target = doorOpen ? 1 : 0;
 
@@ -190,6 +190,7 @@ export function createToilets(initDoor = null) {
         doorOpen = !doorOpen;
     }
 
+    // center the room
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);

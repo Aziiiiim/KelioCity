@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { makeInstance, loadTexture } from '../utils/asset.js';
+import { makeInstance } from '../utils/asset.js';
 
-
+// openspace chunk
 export function createOpenspace(nb_desks, deskIds = []) {
   const elements = new THREE.Group();
   elements.userData.kind = "room";
@@ -18,11 +18,13 @@ export function createOpenspace(nb_desks, deskIds = []) {
   fst_wall_between.position.set(x+1.9 + 2.55 * -1, 1, z+0.37);
   fst_wall_between.rotation.y = Math.PI / 2;
   elements.add(fst_wall_between);
+
   // For each desk, we load the desk, its computer, its chair and the wall between 2 desks
   for (let i=0; i<nb_desks; i++) {
     for (let j=-1; j<1; j++) {
       const idx = i * 2 + (j === -1 ? 0 : 1);
-      const deskIdForThisSpot = deskIds[idx]; 
+      const deskIdForThisSpot = deskIds[idx];
+      // Desk
       makeInstance('/assets/models/Desk.glb').then((desk) => {
         desk.scale.set(2, 2, 2);
         desk.position.set(x+2.52 * i - j*1.28, 0, z+1+j*1.25);
@@ -35,12 +37,14 @@ export function createOpenspace(nb_desks, deskIds = []) {
         });
         elements.add(desk);
       });
+      // Laptop
       makeInstance('/assets/models/Laptop.glb').then((computer) => {
         computer.scale.set(0.3,0.3,0.3);
         computer.position.set(x+2.52 * i - j*0.7 +0.37, 0.87, z+1+j*1.25);
         computer.rotation.y = Math.PI * j;
         elements.add(computer);
       });
+      // Chair
       makeInstance('/assets/models/OpenChair.glb').then((chair) => {
         chair.scale.set(1.5, 1.5, 1.5);
         chair.position.set(x+2.52 * i - j*0.5 + 0.4, 0.5, z+2.3+j*3.85);
@@ -70,6 +74,7 @@ export function createOpenspace(nb_desks, deskIds = []) {
   wall_long.position.set(x+nb_desks*1.26-0.6, 1, z+0.37);
   elements.add(wall_long);
 
+  // center the room
   const box = new THREE.Box3().setFromObject(elements);
   const center = box.getCenter(new THREE.Vector3());
   elements.position.sub(center);

@@ -1,4 +1,5 @@
 import * as THREE from "three";
+// Access between to spaces from the same floor
 
 export function createB2Access() {
     const group = new THREE.Group();

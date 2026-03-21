@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { makeInstance, loadTexture } from '../utils/asset.js';
+import { makeInstance } from '../utils/asset.js';
 
-export function createStairs(initDoor = null) {
+// classic stairs
+export function createStairs() {
     const elements = new THREE.Group();
     elements.userData.kind = "room";
     elements.userData.roomType = "Stairs";
@@ -13,6 +14,7 @@ export function createStairs(initDoor = null) {
         elements.add(stair);
     }).catch(console.error);
 
+    // center the room
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);

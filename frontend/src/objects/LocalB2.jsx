@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { makeInstance } from '../utils/asset.js';
-    
-export function createLocalB2(initDoor = null) {
+
+// Bigger local used in floor B2
+export function createLocalB2() {
     
     const elements = new THREE.Group();
     elements.userData.kind = "room";
@@ -149,7 +150,8 @@ export function createLocalB2(initDoor = null) {
         })
         .catch(console.error);
 
-    // Door
+
+    // Door and functions to open the door
     makeInstance('/assets/models/door.glb')
         .then((doorObj) => {
         doorObj.scale.set(4, 4, 4);
@@ -166,12 +168,11 @@ export function createLocalB2(initDoor = null) {
         doorPivot.rotation.y = Math.PI;
 
         elements.add(doorPivot);
-        //initDoor(doorPivot, toggleDoor);
         })
         .catch(console.error);
 
     function openDoor(delta) {
-        if (!doorPivot) return; // porte pas encore chargée
+        if (!doorPivot) return; // door not loaded
 
         const target = doorOpen ? 1 : 0;
 
@@ -184,6 +185,7 @@ export function createLocalB2(initDoor = null) {
         doorOpen = !doorOpen;
     }
 
+    // center the room
     const box = new THREE.Box3().setFromObject(elements);
     const center = box.getCenter(new THREE.Vector3());
     elements.position.sub(center);
