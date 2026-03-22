@@ -39,6 +39,9 @@ public class DataInitializer implements CommandLineRunner {
 		this.passwordEncoder = passwordEncoder;
 	}
 
+    /*---------------------------------------------------------------*/
+
+    // function to create employee and account with some info
 	private Employee createEmployeeWithAccount(String firstName, String lastName, Desk desk, String email,
 			String phoneNumber, String workingHours, WorkLocation inOffice, EmployeeStatus status, Sprite sprite) {
 		Employee emp = Employee.builder().firstName(firstName).lastName(lastName).desk(desk).email(email)
@@ -55,12 +58,11 @@ public class DataInitializer implements CommandLineRunner {
 		}
 		acc.setEmployee(emp);
 
-		
-		
 		accountRepo.save(acc);
 		return acc.getEmployee();
 	}
 
+    // function to create only some employees on base floors
 	private boolean shouldCreateEmployeeOnDeskD(int j, int i) {
 		return (i + j) % 2 == 0;
 	}
@@ -69,6 +71,7 @@ public class DataInitializer implements CommandLineRunner {
 		return (i + j) % 2 != 0;
 	}
 
+    // functions to create rooms, stairs, desks...
 	private Room createRoom(RoomType roomType, String roomName, float x, float z, float orientation, Floor floor) {
 		return roomRepo.save(Room.builder().roomType(roomType).roomName(roomName).coordX1(x) // 52
 				.coordZ1(z) // 22
@@ -99,6 +102,8 @@ public class DataInitializer implements CommandLineRunner {
 		return normalizeForEmail(firstName) + "." + normalizeForEmail(lastName) + "@imt-atlantique.fr";
 	}
 
+    /*---------------------------------------------------------------*/
+
 	@Override
 	@Transactional
 	public void run(String... args) {
@@ -106,25 +111,10 @@ public class DataInitializer implements CommandLineRunner {
 		if (roomRepo.count() == 0) {
 			System.out.println("➡️ Initialisation de la base de données…");
 
-			// --- FLOOR ---
+            /*---------------------------------------------------------------*/
+            // First we should create roomTypes and deskType (mandatory !)
 
-			Floor floor1 = floorRepo.save(Floor.builder().floorName("Etage1").lengthX(50f).lengthZ(50f).build());
-
-			Floor floor2 = floorRepo.save(Floor.builder().floorName("Etage2").lengthX(60f).lengthZ(24f).build());
-
-			Floor floor3 = floorRepo.save(
-			        Floor.builder()
-			            .floorName("Etage A0")
-			            .lengthX(100f)
-			            .lengthZ(60f)
-			            .build()
-			);
-			
-			Floor floor4 = floorRepo.save(Floor.builder().floorName("Etage A1").lengthX(220f).lengthZ(15f).build());
-
-			Floor floor5 = floorRepo.save(Floor.builder().floorName("Etage B2").lengthX(17f).lengthZ(110f).build());
-
-			// --- ROOM TYPE ---
+            // --- ROOM TYPE ---
 			RoomType meetingRoom = roomTypeRepo
 					.save(RoomType.builder().roomtypeName("MeetingRoom").lengthX(15f).lengthZ(12f).build());
 
@@ -185,8 +175,6 @@ public class DataInitializer implements CommandLineRunner {
 			RoomType toilets = roomTypeRepo
 					.save(RoomType.builder().roomtypeName("Toilets").lengthX(6f).lengthZ(3.167f).build());
 
-
-			
 			RoomType forum = roomTypeRepo.save(
 			        RoomType.builder()
 			            .roomtypeName("Forum")
@@ -218,7 +206,7 @@ public class DataInitializer implements CommandLineRunner {
 			            .lengthZ(12f)
 			            .build()
 			);
-			
+
 			// --- DESK TYPE ---
 			DeskType desk1office1desk = deskTypeRepo.save(DeskType.builder().coordX(3.1f).coordZ(2f).orientationDeg(0f)
 					.roomType(office1Desk).deskNumber(1).build());
@@ -258,6 +246,17 @@ public class DataInitializer implements CommandLineRunner {
 
 			DeskType desk6office6desks = deskTypeRepo.save(DeskType.builder().coordX(2.2f).coordZ(6.7f)
 					.orientationDeg(90f).roomType(office6Desks).deskNumber(6).build());
+
+            // deskTypes for openspaces (you should adapt max_openspace_length to the actual length you need)
+            int max_openspace_length = 10;
+            DeskType[][] deskType_openspaces = new DeskType[2][max_openspace_length];
+			for (int i = 0; i < max_openspace_length; i++) {
+				deskType_openspaces[0][i] = deskTypeRepo.save(DeskType.builder().coordX(2.2f + 2.52f * i).coordZ(0.4f)
+						.orientationDeg(0f).roomType(openspace).deskNumber(2 * i + 1).build());
+				deskType_openspaces[1][i] = deskTypeRepo.save(DeskType.builder().coordX(1.68f + 2.52f * i).coordZ(3.1f)
+						.orientationDeg(180f).roomType(openspace).deskNumber(2 * i + 2).build());
+			}
+			deskTypeRepo.flush();
 
 			DeskType desk1office1deskB2 = deskTypeRepo.save(DeskType.builder().coordX(4.7f).coordZ(1.4f)
 					.orientationDeg(0f).roomType(office1DeskB2).deskNumber(1).build());
@@ -340,7 +339,28 @@ public class DataInitializer implements CommandLineRunner {
 			                .deskNumber(2)
 			                .build()
 			);
+
+            /*---------------------------------------------------------------*/
+            // Then we can create floors, rooms (and so on) directly in the db when starting (not mandatory: we can create from admin page too)
+
+			// --- FLOOR ---
+
+			Floor floor1 = floorRepo.save(Floor.builder().floorName("Etage1").lengthX(50f).lengthZ(50f).build());
+
+			Floor floor2 = floorRepo.save(Floor.builder().floorName("Etage2").lengthX(60f).lengthZ(24f).build());
+
+			Floor floor3 = floorRepo.save(
+			        Floor.builder()
+			            .floorName("Etage A0")
+			            .lengthX(100f)
+			            .lengthZ(60f)
+			            .build()
+			);
 			
+			Floor floor4 = floorRepo.save(Floor.builder().floorName("Etage A1").lengthX(220f).lengthZ(15f).build());
+
+			Floor floor5 = floorRepo.save(Floor.builder().floorName("Etage B2").lengthX(17f).lengthZ(110f).build());
+
 			// --- ROOMS ---
 
 			Room roomA101 = roomRepo.save(Room.builder().roomType(meetingRoom).roomName("A101").coordX1(-25f)
@@ -990,6 +1010,8 @@ public class DataInitializer implements CommandLineRunner {
 					buildImtEmail("Laurent", "Menu-Kerforn"), "02 51 85 81 75", "08:00-16:00", WorkLocation.OFFICE,
 					EmployeeStatus.AVAILABLE, Sprite.MAN2);
 
+            // --- Meeting and MeetingEmployee for floor B2 ---
+
 			Meeting prepLogin = meetingRepo.save(Meeting.builder().room(b218).title("Préparation cours LOGIN")
 					.startingHour(LocalDateTime.of(2026, 3, 20, 13, 0)).endHour(LocalDateTime.of(2026, 3, 20, 14, 0))
 					.description("Préparation de l’année 2026-2027 en TAF LOGIN").build());
@@ -1017,7 +1039,7 @@ public class DataInitializer implements CommandLineRunner {
 
 			meetingEmployeeRepo.flush();
 
-			// --- DESKS ---
+			// --- DESKS base floors---
 			Desk deskA105 = deskRepo
 					.save(Desk.builder().deskName("Desk A105").room(roomA105).deskType(desk1office1desk).build());
 
@@ -1258,15 +1280,6 @@ public class DataInitializer implements CommandLineRunner {
 					new Person("Caillaud", "Georges", "H"));
 			Room[] openspaces = { openspace_1, openspace_2, openspace_3, openspace_4, openspace_5 };
 
-			DeskType[][] deskType_openspaces = new DeskType[2][10];
-			for (int i = 0; i < 10; i++) {
-				deskType_openspaces[0][i] = deskTypeRepo.save(DeskType.builder().coordX(2.2f + 2.52f * i).coordZ(0.4f)
-						.orientationDeg(0f).roomType(openspace).deskNumber(2 * i + 1).build());
-				deskType_openspaces[1][i] = deskTypeRepo.save(DeskType.builder().coordX(1.68f + 2.52f * i).coordZ(3.1f)
-						.orientationDeg(180f).roomType(openspace).deskNumber(2 * i + 2).build());
-			}
-			deskTypeRepo.flush();
-
 			for (int j = 0; j < 3; j++) {
 				for (int i = 0; i < 7; i++) {
 					if (j != 2 || i < 5) {
@@ -1395,6 +1408,7 @@ public class DataInitializer implements CommandLineRunner {
 				}
 			}
 
+            // Meeting and MeetingEmployee for base floors
 			LocalDateTime today = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
 
 			LocalDateTime tomorrow = today.plusDays(1);
@@ -1403,13 +1417,13 @@ public class DataInitializer implements CommandLineRunner {
 			List<Room> meetingRooms = roomRepo.findAll().stream()
 					.filter(r -> r.getRoomType().getRoomtypeName().equals("MeetingRoom")).toList();
 
-			// --- 1 réunion par salle aujourd'hui ---
+			// --- One meeting per room today ---
 			java.util.Map<Room, Meeting> todayMeetingsByRoom = new java.util.HashMap<>();
 
 			for (int i = 0; i < meetingRooms.size(); i++) {
 				Room room = meetingRooms.get(i);
 
-				// horaires différents selon la salle
+				// Different schedules depending on the room
 				LocalDateTime start = today.withHour(9 + i).withMinute(0);
 				LocalDateTime end = start.plusHours(1);
 
@@ -1420,7 +1434,7 @@ public class DataInitializer implements CommandLineRunner {
 				todayMeetingsByRoom.put(room, m);
 			}
 
-			// --- 1 réunion par salle demain ---
+			// --- One meeting per room tomorrow ---
 			java.util.Map<Room, Meeting> tomorrowMeetingsByRoom = new java.util.HashMap<>();
 
 			for (int i = 0; i < meetingRooms.size(); i++) {
@@ -1436,9 +1450,9 @@ public class DataInitializer implements CommandLineRunner {
 				tomorrowMeetingsByRoom.put(room, m);
 			}
 
-			// --- Répartition des employés comme participants (round-robin) ---
-			// Chaque employé participe à 1 meeting aujourd'hui + 1 meeting demain,
-			// sans créer de meetings supplémentaires (donc pas de conflit salle/jour).
+			// --- Distribution of employees as participants (round-robin) ---
+			// Each employee participates in 1 meeting today + 1 meeting tomorrow,
+			// without creating additional meetings (therefore no room/day conflict).
 			for (int idx = 0; idx < employees.size(); idx++) {
 				Employee employee = employees.get(idx);
 

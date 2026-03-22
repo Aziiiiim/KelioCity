@@ -2,6 +2,7 @@ package com.keliocity.backend.model.dto;
 
 import java.util.List;
 
+// DTO for admin page API
 public class DatabaseFillerDTO {
 
     private String auth;

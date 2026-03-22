@@ -37,13 +37,13 @@ public class EmployeeController {
 		this.changeService = changeService;
 	}
 
-
+    // API to get all employees
     @GetMapping
     public List<Employee> getAll() {
         return employeeRepo.findAll();
     }
     
-    // GET /api/employees/{id}
+    // API to get one employee based on its id
     @GetMapping("/{id}")
     public Employee getById(@PathVariable Integer id) {
         return employeeRepo.findById(id)
@@ -51,13 +51,43 @@ public class EmployeeController {
                         HttpStatus.NOT_FOUND, "Employee not found"));
     }
 
-    // GET /api/employees/{id}/in-meeting
+    // API to get all employees on a floor (based on its id)
+    @GetMapping("/floor/{floorId}")
+    public List<Employee> getByFloorId(@PathVariable Integer floorId) {
+        return employeeRepo.findByDesk_Room_Floor_id(floorId);
+    }
+
+    // API to search an employee by its name for search bar
+    @GetMapping("/search/{name}")
+    public List<Employee> getByName(@PathVariable String name) {
+        return employeeRepo.searchByName(name);
+    }
+
+    // API to get all employees currently in a meeting
     @GetMapping("/{id}/in-meeting")
     public boolean getInMeeting(@PathVariable Integer id) {
         return meetingEmployeeRepo.existsEmployeeInMeetingNow(id, LocalDateTime.now(ZoneId.of("Europe/Paris")));
     }
 
-    // GET /api/employees/{id}/global_status
+    // API to get all employees for one general status
+    @GetMapping("/status/{status}")
+    public List<Employee> getByStatus(@PathVariable EmployeeStatus status) {
+        return employeeRepo.findByStatus(status);
+    }
+
+    // API to get all employees for one location (OFFICE or REMOTE)
+    @GetMapping("/location/{loc}")
+    public List<Employee> getByLocation(@PathVariable WorkLocation loc) {
+        return employeeRepo.findByInOffice(loc);
+    }
+
+    // API to get all employees without desk
+    @GetMapping("/no-desk")
+    public List<Employee> getEmployeesWithoutDesk() {
+        return employeeRepo.findByDeskIsNull();
+    }
+
+    // API to get the status of an employee considering the general status and if in a meeting or not
     @GetMapping("/{id}/global_status")
     public String getGlobalStatus(@PathVariable Integer id) {
         Employee employee = getById(id);
@@ -75,19 +105,7 @@ public class EmployeeController {
         return "";
     }
 
-    // GET /api/employees/search/{name}
-    @GetMapping("/search/{name}")
-    public List<Employee> getByName(@PathVariable String name) {
-        return employeeRepo.searchByName(name);
-    }
-
-    // GET /api/employees/floor/{floorId}
-    @GetMapping("/floor/{floorId}")
-    public List<Employee> getByFloorId(@PathVariable Integer floorId) {
-        return employeeRepo.findByDesk_Room_Floor_id(floorId);
-    }
-
-    // POST /api/employees
+    // API to add a new employee
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Employee create(@RequestBody Employee employee) {
@@ -102,7 +120,7 @@ public class EmployeeController {
         return employeeRepo.save(employee);
     }
 
-    // PUT /api/employees/{id}
+    // API to modify an employee (based on its id)
     @PutMapping("/{id}")
     public Employee update(@PathVariable Integer id, @RequestBody Employee updated) {
         Employee existing = employeeRepo.findById(id)
@@ -131,7 +149,7 @@ public class EmployeeController {
         return employeeRepo.save(existing);
     }
 
-    // DELETE /api/employees/{id}
+    // API to delete an employee (based on its id)
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
@@ -142,27 +160,7 @@ public class EmployeeController {
         employeeRepo.deleteById(id);
     }
 
-    // --- Filtres utiles ---
-
-    // GET /api/employees/status/{status}
-    @GetMapping("/status/{status}")
-    public List<Employee> getByStatus(@PathVariable EmployeeStatus status) {
-        return employeeRepo.findByStatus(status);
-    }
-
-    // GET /api/employees/location/{loc} (OFFICE / REMOTE)
-    @GetMapping("/location/{loc}")
-    public List<Employee> getByLocation(@PathVariable WorkLocation loc) {
-        return employeeRepo.findByInOffice(loc);
-    }
-
-    // GET /api/employees/no-desk
-    @GetMapping("/no-desk")
-    public List<Employee> getEmployeesWithoutDesk() {
-        return employeeRepo.findByDeskIsNull();
-    }
-
-    // PATCH /api/employees/{id}/desk/{deskId}  (affecter un desk)
+    // API to affect a desk (based on its id) to an existing employee (based on its id)
     @PatchMapping("/{id}/desk/{deskId}")
     public Employee assignDesk(@PathVariable Integer id, @PathVariable Integer deskId) {
         Employee emp = employeeRepo.findById(id)
@@ -175,7 +173,7 @@ public class EmployeeController {
         return employeeRepo.save(emp);
     }
 
-    // PATCH /api/employees/{id}/desk (retirer le desk)
+    // API to remove a desk (based on its id) to an existing employee (based on its id)
     @PatchMapping("/{id}/desk")
     public Employee clearDesk(@PathVariable Integer id) {
         Employee emp = employeeRepo.findById(id)
@@ -185,7 +183,7 @@ public class EmployeeController {
         return employeeRepo.save(emp);
     }
 
-    // PATCH /api/employees/{id}/status/{status}
+    // API to change the general status of an employee (based on its id)
     @PatchMapping("/{id}/status/{status}")
     public Employee changeStatus(@PathVariable Integer id, @PathVariable EmployeeStatus status) {
         Employee emp = employeeRepo.findById(id)
@@ -195,7 +193,7 @@ public class EmployeeController {
         return employeeRepo.save(emp);
     }
 
-    // PATCH /api/employees/{id}/location/{loc}
+    // API to change the location (OFFICE or REMOTE) of an employee (based on its id)
     @PatchMapping("/{id}/location/{loc}")
     public Employee changeLocation(@PathVariable Integer id, @PathVariable WorkLocation loc) {
         Employee emp = employeeRepo.findById(id)

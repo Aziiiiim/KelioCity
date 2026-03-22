@@ -21,17 +21,20 @@ public class DeskTypeController {
         this.deskTypeRepo = deskTypeRepo;
     }
 
+    // API to get all deskTypes
     @GetMapping
     public List<DeskType> getAll() {
         return deskTypeRepo.findAll();
     }
 
+    // API to get one deskType based on its id
     @GetMapping("/{id}")
     public DeskType getById(@PathVariable Integer id) {
         return deskTypeRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "DeskType not found"));
     }
 
+    // API to add a new deskType
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public DeskType create(@RequestBody DeskType deskType) {
@@ -39,6 +42,7 @@ public class DeskTypeController {
         return deskTypeRepo.save(deskType);
     }
 
+    // API to modify a deskType based on its id
     @PutMapping("/{id}")
     public DeskType update(@PathVariable Integer id, @RequestBody DeskType updated) {
         DeskType existing = deskTypeRepo.findById(id)
@@ -51,6 +55,7 @@ public class DeskTypeController {
         return deskTypeRepo.save(existing);
     }
 
+    // API to delete a deskType based on its id
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {

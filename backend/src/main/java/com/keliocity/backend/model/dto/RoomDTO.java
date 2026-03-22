@@ -1,5 +1,6 @@
 package com.keliocity.backend.model.dto;
 
+// DTO for admin page API (DatabaseFillerDTO)
 public class RoomDTO {
 
     private String roomType;

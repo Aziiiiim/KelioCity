@@ -27,7 +27,7 @@ public class Meeting {
 
     @ManyToOne
     @JoinColumn(name = "desk_id")
-    private Desk desk; // optionnel
+    private Desk desk; // optional
 
     @Column(name = "title", nullable = false)
     private String title;

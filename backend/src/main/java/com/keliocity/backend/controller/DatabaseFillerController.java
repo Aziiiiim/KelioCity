@@ -43,13 +43,16 @@ public class DatabaseFillerController {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // API to fill the db with a lot of information (from admin page)
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public String create(@RequestBody DatabaseFillerDTO dbFillerDTO) {
+        // First security (there is also JWT, we should ensure the security in the current use of JWT before removing this security)
         if (dbFillerDTO.getAuth() != null && !(dbFillerDTO.getAuth().equals("AUTH_PR0C0M_k3l10c1ty"))) {
             return "not authentified";
         }
 
+        // We check which tables to reset in the right order (and reset auto increment also)
         if (dbFillerDTO.getReset().getMeetingEmployees()) {
             meetingEmployeeRepo.deleteAll();
             meetingEmployeeRepo.resetAutoIncrement();
@@ -86,6 +89,7 @@ public class DatabaseFillerController {
             floorRepo.flush();
         }
 
+        // We get all roomTypes and deskTypes and put them in a map to access them easily
         HashMap<String, RoomType> roomTypes = new HashMap<String, RoomType>();
         List<RoomType> roomTypeList = roomTypeRepo.findAll();
         for (int i=0; i<roomTypeList.size(); i++) {
@@ -97,12 +101,15 @@ public class DatabaseFillerController {
             deskTypes.put((deskTypeList.get(i).getRoomType().getRoomtypeName()+"_"+deskTypeList.get(i).getDeskNumber()).trim().toUpperCase(), deskTypeList.get(i));
         }
 
+        // We get all floors in the db in a map to access them easily
         LinkedHashMap<String, Floor> floors = new LinkedHashMap<String, Floor>();
         List<Floor> floorList = floorRepo.findAll();
         for (int i=0; i<floorList.size(); i++) {
             floors.put(floorList.get(i).getFloorName().trim().toUpperCase(), floorList.get(i));
         }
+        // We create each new floors from the API
         for (int i=0; i<dbFillerDTO.getFloors().size(); i++) {
+            // we have a default floor name if not filled
             String floorname = dbFillerDTO.getFloors().get(i).getFloorName();
             if (floorname == null) {
                 floorname = "floor_"+floors.size();
@@ -117,21 +124,26 @@ public class DatabaseFillerController {
         }
         floorRepo.flush();
 
+        // We get all rooms in the db in a map to access them easily
         HashMap<String, Room> rooms = new HashMap<String, Room>();
         List<Room> roomList = roomRepo.findAll();
         for (int i=0; i<roomList.size(); i++) {
             rooms.put(roomList.get(i).getRoomName().trim().toUpperCase(), roomList.get(i));
         }
+        // We create each new rooms from the API
         for (int i=0; i<dbFillerDTO.getRooms().size(); i++) {
+            // if not filled, we use the first floor
             String floorname = dbFillerDTO.getRooms().get(i).getFloorName();
             if (dbFillerDTO.getRooms().get(i).getFloorName() == null) {
                 floorname = floors.entrySet().iterator().next().getKey();
             }
             floorname = floorname.trim().toUpperCase();
+            // if not filled, we have a default room name
             String roomname = dbFillerDTO.getRooms().get(i).getRoomName();
             if (roomname == null) {
                 roomname = floorname+"_room_"+rooms.size();
             }
+            // we put nextFloorName in upper case
             String nextFloorName = dbFillerDTO.getRooms().get(i).getNextFloor();
             if (nextFloorName != null) {
                 nextFloorName = nextFloorName.trim().toUpperCase();
@@ -151,6 +163,7 @@ public class DatabaseFillerController {
         }
         roomRepo.flush();
 
+        // We get all desks in the db in a map to access them easily
         HashMap<String, Desk> desks = new HashMap<String, Desk>();
         List<Desk> deskList = deskRepo.findAll();
         HashMap<String, String> deskNames = new HashMap<String, String>();
@@ -158,11 +171,14 @@ public class DatabaseFillerController {
             desks.put(deskList.get(i).getDeskName().trim().toUpperCase(), deskList.get(i));
             deskNames.put((deskList.get(i).getRoom().getRoomName()+"_"+deskList.get(i).getDeskType().getDeskNumber()).trim().toUpperCase(), deskList.get(i).getDeskName());
         }
+        // We create each new desks from the API (we could also create them automatically with the rooms, it would be easier for the user in admin page)
         for (int i=0; i<dbFillerDTO.getDesks().size(); i++) {
+            // if there is no desk number filled, we put at 1
             Integer desknumber = dbFillerDTO.getDesks().get(i).getDeskNumber();
             if (rooms.get(dbFillerDTO.getDesks().get(i).getRoomName().trim().toUpperCase()).getRoomType().getRoomtypeName().equals("Office1Desk") && (desknumber == null || desknumber == 0)) {
                 desknumber = 1;
             }
+            // if there is no desk name filled, we have a default value
             String deskname = dbFillerDTO.getDesks().get(i).getDeskName();
             if (deskname == null) {
                 deskname = dbFillerDTO.getDesks().get(i).getRoomName()+"_"+desknumber;
@@ -178,13 +194,16 @@ public class DatabaseFillerController {
         }
         deskRepo.flush();
 
+        // We get all employees in the db in a map to access them easily
         HashMap<String, Employee> employees = new HashMap<String, Employee>();
         List<Employee> employeeList = employeeRepo.findAll();
         for (int i=0; i<employeeList.size(); i++) {
             employees.put((employeeList.get(i).getFirstName()+"_"+employeeList.get(i).getLastName()).trim().toUpperCase(), employeeList.get(i));
         }
-        Desk desk = null;
+        // We create new employees from the API
         for (int i=0; i<dbFillerDTO.getEmployees().size(); i++) {
+            Desk desk = null;
+            // We search the desk linked to the user (or create it)
             Integer desknumber = dbFillerDTO.getEmployees().get(i).getDeskNumber();
             String roomname = dbFillerDTO.getEmployees().get(i).getRoomName();
             if (roomname != null && rooms.get(roomname.trim().toUpperCase()).getRoomType().getRoomtypeName().equals("Office1Desk") && (desknumber == null || desknumber == 0)) {
@@ -211,6 +230,7 @@ public class DatabaseFillerController {
                 desk = desks.get(dbFillerDTO.getEmployees().get(i).getDeskName().trim().toUpperCase());
             }
 
+            // We have default value for inOffice, status, sprite
             String inoffice = dbFillerDTO.getEmployees().get(i).getInOffice();
             if (dbFillerDTO.getEmployees().get(i).getInOffice() == null) {
                 inoffice = "OFFICE";
@@ -239,26 +259,32 @@ public class DatabaseFillerController {
         }
         employeeRepo.flush();
 
+        // We get all accounts in the db in a map to access them easily
         HashMap<String, Account> accounts = new HashMap<String, Account>();
         List<Account> accountList = accountRepo.findAll();
         for (int i=0; i<accountList.size(); i++) {
             accounts.put(accountList.get(i).getEmail(), accountList.get(i));
         }
+        // We create all new accounts from the API
         for (int i=0; i<dbFillerDTO.getAccounts().size(); i++) {
+            // if not filled, the role is user
             String role = dbFillerDTO.getAccounts().get(i).getRole();
             if (role == null) {
                 role = "USER";
             }
             role.trim().toUpperCase();
+            // We have default value for email based on the name of the employee
             String email = dbFillerDTO.getAccounts().get(i).getEmail();
             if (email == null) {
                 email = dbFillerDTO.getAccounts().get(i).getFirstName().toLowerCase()+"."+dbFillerDTO.getAccounts().get(i).getLastName().toLowerCase()+"@keliocity.com";
             }
+            // The default password is mdp if not filled (the user should change it then - to be implemented)
             String password = dbFillerDTO.getAccounts().get(i).getPassword();
             if (password == null) {
                 password = "mdp";
             }
 
+            // we create the account
             Account acc = new Account();
             acc.setEmail(email);
             acc.setPassword(passwordEncoder.encode(password));
@@ -269,12 +295,15 @@ public class DatabaseFillerController {
         }
         accountRepo.flush();
 
+        // We get all meetings in the db in a map to access them easily
         HashMap<String, Meeting> meetings = new HashMap<String, Meeting>();
         List<Meeting> meetingList = meetingRepo.findAll();
         for (int i=0; i<meetingList.size(); i++) {
             meetings.put(meetingList.get(i).getTitle().trim().toUpperCase(), meetingList.get(i));
         }
+        // We create new meetings from the API
         for (int i=0; i<dbFillerDTO.getMeetings().size(); i++) {
+            // We search the room and desk linked to the meeting
             Integer desknumber = dbFillerDTO.getMeetings().get(i).getDeskNumber();
             if (rooms.get(dbFillerDTO.getMeetings().get(i).getRoomName().trim().toUpperCase()).getRoomType().getRoomtypeName().equals("Office1Desk") && desknumber == null) {
                 desknumber = 1;
@@ -299,11 +328,13 @@ public class DatabaseFillerController {
         }
         meetingRepo.flush();
 
+        // We get all meetingEmployees in the db in a map to access them easily
         HashMap<String, MeetingEmployee> meetingEmployees = new HashMap<String, MeetingEmployee>();
         List<MeetingEmployee> meetingEmployeeList = meetingEmployeeRepo.findAll();
         for (int i=0; i<meetingEmployeeList.size(); i++) {
             meetingEmployees.put((meetingEmployeeList.get(i).getEmployee().getFirstName()+"_"+meetingEmployeeList.get(i).getEmployee().getLastName()+"_"+meetingEmployeeList.get(i).getMeeting().getTitle()).trim().toUpperCase(), meetingEmployeeList.get(i));
         }
+        // We create each new meetingEmployees from the API
         for (int i=0; i<dbFillerDTO.getMeetingEmployees().size(); i++) {
             meetingEmployees.put((dbFillerDTO.getMeetingEmployees().get(i).getEmployeeFirstName()+"_"+dbFillerDTO.getMeetingEmployees().get(i).getEmployeeLastName()+"_"+dbFillerDTO.getMeetingEmployees().get(i).getMeetingTitle()).trim().toUpperCase(), meetingEmployeeRepo.save(
                     new MeetingEmployee(

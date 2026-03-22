@@ -20,6 +20,7 @@ public class EmployeeScheduleController {
         this.meetingEmployeeRepository = repo;
     }
 
+    // API to get the schedule of an employee based on its id
     @GetMapping("/{id}/schedule")
     public List<EmployeeScheduleItemDTO> getSchedule(
         @PathVariable Integer id,

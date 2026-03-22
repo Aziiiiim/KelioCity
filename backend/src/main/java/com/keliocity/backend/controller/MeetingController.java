@@ -33,23 +33,26 @@ public class MeetingController {
         this.deskRepo = deskRepo;
     }
 
+    // API to get all meetings
     @GetMapping
     public List<Meeting> getAll() {
         return meetingRepo.findAll();
     }
 
+    // API to get one meeting (based on its id)
     @GetMapping("/{id}")
     public Meeting getById(@PathVariable Integer id) {
         return meetingRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Meeting not found"));
     }
 
-    // GET /api/meetings/room/{roomId}
+    // API to get all meetings in one room (based on its id)
     @GetMapping("/room/{roomId}")
     public List<Meeting> getByRoom(@PathVariable Integer roomId) {
         return meetingRepo.findByRoom_Id(roomId);
     }
 
+    // API to get all meetings in one room (based on its id) between two datetime
     // GET /api/meetings/room/{roomId}/between?start=...&end=...
     @GetMapping("/room/{roomId}/between")
     public List<Meeting> getByRoomAndTime(
@@ -60,10 +63,11 @@ public class MeetingController {
         return meetingRepo.findByRoom_IdAndStartingHourBetween(roomId, start, end);
     }
 
+    // API to create a new meeting
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Meeting create(@RequestBody Meeting meeting) {
-        // Room obligatoire
+        // Room mandatory
         if (meeting.getRoom() == null || meeting.getRoom().getId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Room is required");
         }
@@ -71,7 +75,7 @@ public class MeetingController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Room not found"));
         meeting.setRoom(room);
 
-        // Desk optionnel
+        // Desk optional
         if (meeting.getDesk() != null && meeting.getDesk().getId() != null) {
             Desk desk = deskRepo.findById(meeting.getDesk().getId())
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Desk not found"));
@@ -84,6 +88,7 @@ public class MeetingController {
         return meetingRepo.save(meeting);
     }
 
+    // API to modify a meeting (based on its id)
     @PutMapping("/{id}")
     public Meeting update(@PathVariable Integer id, @RequestBody Meeting updated) {
         Meeting existing = meetingRepo.findById(id)
@@ -111,6 +116,7 @@ public class MeetingController {
         return meetingRepo.save(existing);
     }
 
+    // API to delete a meeting (based on its id)
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {

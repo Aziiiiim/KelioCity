@@ -2,6 +2,7 @@ package com.keliocity.backend.model.dto;
 
 import java.time.LocalDateTime;
 
+// DTO for admin page API (DatabaseFillerDTO)
 public class MeetingDTO {
 
     private String roomName;

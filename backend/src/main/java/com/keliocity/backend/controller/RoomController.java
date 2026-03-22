@@ -25,29 +25,32 @@ public class RoomController {
         this.roomTypeRepo = roomTypeRepo;
     }
 
+    // API to get all rooms
     @GetMapping
     public List<Room> getAll() {
         return roomRepo.findAll();
     }
 
+    // API to get one room (based on its id)
     @GetMapping("/{id}")
     public Room getById(@PathVariable Integer id) {
         return roomRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Room not found"));
     }
 
-    // GET /api/rooms/search/{name}
-    @GetMapping("/search/{name}")
-    public List<Room> getByName(@PathVariable String name) {
-        return roomRepo.searchByName(name);
-    }
-
-    // GET /api/rooms/floor/{floorId}
+    // API to get all rooms on one floor (based on its id)
     @GetMapping("/floor/{floorId}")
     public List<Room> getByFloorId(@PathVariable Integer floorId) {
         return roomRepo.findByFloor_id(floorId);
     }
 
+    // API to get all rooms that contain a string in their name (for searchbar)
+    @GetMapping("/search/{name}")
+    public List<Room> getByName(@PathVariable String name) {
+        return roomRepo.searchByName(name);
+    }
+
+    // API to create a new room
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Room create(@RequestBody Room room) {
@@ -62,6 +65,7 @@ public class RoomController {
         return roomRepo.save(room);
     }
 
+    // API to modify a room (based on its id)
     @PutMapping("/{id}")
     public Room update(@PathVariable Integer id, @RequestBody Room updated) {
         Room existing = roomRepo.findById(id)
@@ -82,6 +86,7 @@ public class RoomController {
         return roomRepo.save(existing);
     }
 
+    // API to delete a room (based on its id)
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {

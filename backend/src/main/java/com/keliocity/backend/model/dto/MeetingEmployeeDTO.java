@@ -1,5 +1,6 @@
 package com.keliocity.backend.model.dto;
 
+// DTO for admin page API (DatabaseFillerDTO)
 public class MeetingEmployeeDTO {
 
     private String meetingTitle;

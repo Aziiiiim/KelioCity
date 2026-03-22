@@ -32,19 +32,19 @@ public class MeetingEmployeeController {
         this.employeeRepo = employeeRepo;
     }
 
-    // GET /api/meeting-participants/meeting/{meetingId}
+    // API to get all meetingEmployee for one meeting (based on its id)
     @GetMapping("/meeting/{meetingId}")
     public List<MeetingEmployee> getParticipantsByMeeting(@PathVariable Integer meetingId) {
         return meetingEmployeeRepo.findByMeeting_Id(meetingId);
     }
 
-    // GET /api/meeting-participants/employee/{employeeId}
+    // API to get all employees for one meeting (based on its id)
     @GetMapping("/employee/{employeeId}")
     public List<MeetingEmployee> getMeetingsByEmployee(@PathVariable Integer employeeId) {
         return meetingEmployeeRepo.findByEmployee_Id(employeeId);
     }
 
-    // POST /api/meeting-participants
+    // API to create a new meetingEmployee
     // body: { "meeting": { "id": ... }, "employee": { "id": ... }, "present": true, "remote": false }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -72,7 +72,7 @@ public class MeetingEmployeeController {
         return meetingEmployeeRepo.save(me);
     }
 
-    // PATCH /api/meeting-participants/{meetingId}/{employeeId}
+    // API to change the presence or location of an meetingEmployee
     @PatchMapping("/{meetingId}/{employeeId}")
     public MeetingEmployee updateFlags(@PathVariable Integer meetingId,
                                        @PathVariable Integer employeeId,
@@ -91,7 +91,7 @@ public class MeetingEmployeeController {
         return meetingEmployeeRepo.save(existing);
     }
 
-    // DELETE /api/meeting-participants/{meetingId}/{employeeId}
+    // API to delete an meetingEmployee
     @DeleteMapping("/{meetingId}/{employeeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeParticipant(@PathVariable Integer meetingId,

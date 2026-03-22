@@ -21,17 +21,20 @@ public class FloorController {
         this.floorRepo = floorRepo;
     }
 
+    // API to get all floors
     @GetMapping
     public List<Floor> getAll() {
         return floorRepo.findAll();
     }
 
+    // API to get one floor (based on its id)
     @GetMapping("/{id}")
     public Floor getById(@PathVariable Integer id) {
         return floorRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Floor not found"));
     }
 
+    // API to create a new floor
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Floor create(@RequestBody Floor floor) {
@@ -39,6 +42,7 @@ public class FloorController {
         return floorRepo.save(floor);
     }
 
+    // API to modify a floor (based on its id)
     @PutMapping("/{id}")
     public Floor update(@PathVariable Integer id, @RequestBody Floor updated) {
         Floor existing = floorRepo.findById(id)
@@ -51,6 +55,7 @@ public class FloorController {
         return floorRepo.save(existing);
     }
 
+    // API to delete a floor (based on its id)
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {

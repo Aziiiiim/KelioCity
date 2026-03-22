@@ -31,7 +31,7 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name = "desk_id")
     @OnDelete(action = OnDeleteAction.SET_NULL)
-    private Desk desk; // peut être null si pas de bureau attribué
+    private Desk desk; // can be null if not desk assigned
 
     @Column(name = "phone_number")
     private String phoneNumber;

@@ -29,22 +29,26 @@ public class AuthController {
         this.changeService = changeService;
     }
 
+    // API to log in
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginDTO accDTO){
     	return authService.login(accDTO);
     }
 
+    // API to register an account
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public AuthResponse  register(@RequestBody RegisterDTO accDTO) {
     	return authService.register(accDTO);
     }
-    
+
+    // API to get information about the current account (email, role)
     @GetMapping("/me")
     public MeDTO me(@AuthenticationPrincipal Jwt jwt) {
     	return new MeDTO(jwt.getSubject(), jwt.getClaimAsString("role"));
     }
-    
+
+    // API to assign a desk to the current user
     @PutMapping("/me/desk")
     public void assignMyDesk(@RequestBody DeskAssignDTO dto, Principal principal) {
     	String email = principal.getName();

@@ -21,17 +21,20 @@ public class RoomTypeController {
         this.roomTypeRepo = roomTypeRepo;
     }
 
+    // API to get all roomType
     @GetMapping
     public List<RoomType> getAll() {
         return roomTypeRepo.findAll();
     }
 
+    // API to get one roomType (based on its id)
     @GetMapping("/{id}")
     public RoomType getById(@PathVariable Integer id) {
         return roomTypeRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "RoomType not found"));
     }
 
+    // API to add a new roomType
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RoomType create(@RequestBody RoomType roomType) {
@@ -39,6 +42,7 @@ public class RoomTypeController {
         return roomTypeRepo.save(roomType);
     }
 
+    // API to modify a roomType (based on its id)
     @PutMapping("/{id}")
     public RoomType update(@PathVariable Integer id, @RequestBody RoomType updated) {
         RoomType existing = roomTypeRepo.findById(id)
@@ -51,6 +55,7 @@ public class RoomTypeController {
         return roomTypeRepo.save(existing);
     }
 
+    // API to delete a roomType (based on its id)
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Integer id) {
