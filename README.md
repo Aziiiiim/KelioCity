@@ -78,10 +78,33 @@ Voici ce que met en place le **docker-compose.yml** :
 
 ## Fonctionnalités
 
----
+Le dashboard 3D offre une immersion spatiale dans les locaux de l'entreprise grâce aux fonctionnalités suivantes :
 
-## Démo
+### 🌍 Visualisation et Navigation 3D
+* **Immersion Spatiale** : Visualisation 3D complète des locaux, incluant les bureaux, les salles et les employés.
+* **Navigation Intuitive** : Déplacement fluide dans l'espace à l'aide de la souris.
+* **Optimisation par Zone** : Affichage d'une zone ou d'un étage à la fois pour optimiser le chargement des ressources (assets).
+* **Gestion des Étages** : Passage fluide entre les niveaux via un sélecteur dédié ou en cliquant sur les escaliers.
+* **Environnement Dynamique** : Fond dégradé interactif se déplaçant avec la caméra pour une expérience visuelle améliorée.
 
+### 🔍 Recherche et Interaction
+* **Fiches Descriptives** : Consultation de fiches détaillées lors d'un clic ou d'une recherche, accompagnée d'un zoom automatique sur l'objet concerné.
+* **Système de Recherche Avancé** : Barre de recherche permettant de localiser des salles, des employés ou des bureaux sur tous les étages et d'afficher leur fiche.
+* **Filtrage Intelligent** : Possibilité de filtrer les résultats par catégorie (Employé, Salle, Bureau).
+* **Interactions Objets** :
+    * **Illumination** : Les salles et employés s'illuminent au passage de la souris pour une sélection précise.
+    * **Portes Animées** : Les portes peuvent être ouvertes ou fermées par un simple clic.
+
+### 👥 Gestion des Employés et Profils
+* **Statuts en Temps Réel** : Visualisation de la disponibilité des employés (sur site/télétravail, occupé/absent) via un code couleur spécifique.
+* **Espace Personnel** : 
+    * Création de comptes avec personnalisation de l'avatar.
+    * Choix du bureau lors de l'inscription selon les disponibilités (visualisation via indicateurs vert/rouge).
+    * Modification du profil et localisation rapide de son propre emplacement sur l'étage.
+
+### ⚙️ Administration et Évolutivité
+* **Interface Admin** : Page dédiée pour l'ajout simplifié de données (salles, employés, étages) via un tableur dans la page admin.
+* **Sauvegarde de configurations** : Possibilité de charger ou de télécharger un tableur dans la page admin afin de rétablir ou sauvegarder une configuration d'étages, employés...
 ---
 
 ## Auteurs
