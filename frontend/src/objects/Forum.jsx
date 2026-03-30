@@ -22,6 +22,8 @@ export function createForum() {
     let doorOpen= false;
     let doorProgress = 0;
 
+    // Glass doors
+
     for (let i=0; i<11; i++) {
         if (i === 6) {
             makeInstance('/assets/models/GlassDoor.glb').then((door) => {
@@ -36,7 +38,7 @@ export function createForum() {
                     z+22
                 );
 
-                // Position locale de la porte
+                // Local position of the door
                 door.position.set(-2.7, 0, 0);
                 door.scale.set(6, 4.115, 1);
 
@@ -57,7 +59,6 @@ export function createForum() {
             new THREE.PlaneGeometry(72, 3),
             wallMat
         );
-        //UpWall.rotation.y = Math.PI/2;
         UpWall.position.set(x+41.5, 6.58, z+22);
         elements.add(UpWall);
 
@@ -84,7 +85,7 @@ export function createForum() {
 
     }
 
-    // Groupe table haute
+    // Standing Table with stools
 
     for (let i=0; i<2; i++) {
         let delta = 30;
@@ -127,6 +128,8 @@ export function createForum() {
         
     }
 
+    /// Columns
+
     for (let i=0; i<3; i++) {
         for (let j=0; j<2; j++) {
             makeInstance('/assets/models/Column.glb').then((column) => {
@@ -147,7 +150,7 @@ export function createForum() {
         elements.add(column);
     });
 
-    // Groupe Table + 8 tabourets
+    // Group Table + 8 stools
     makeInstance('/assets/models/Table1.glb').then((table) => {
         table.scale.set(0.13,0.15,0.20);
         table.position.set(x+76,0,z+45);
@@ -183,6 +186,7 @@ export function createForum() {
         }
     }
 
+    // Vegetation
 
     for (let i=0; i<2; i++) {
         makeInstance('/assets/models/Houseplant.glb').then((plant) => {
@@ -209,6 +213,8 @@ export function createForum() {
 
     // Espace Manif //////////////////////////////////////////////////////////
     
+
+    // Bars
     for (let i=0; i<8; i++) {
         makeInstance('/assets/models/Bar.glb').then((bar) => {
             bar.scale.set(4.9,3,3);
@@ -230,6 +236,8 @@ export function createForum() {
         elements.add(couch);
     });
 
+
+    // Columns
     for (let i=0; i<6; i++) {
         for (let j=0; j<2; j++) {
             makeInstance('/assets/models/Column.glb').then((column) => {
@@ -247,6 +255,8 @@ export function createForum() {
         elements.add(screen);
     })
 
+
+    // Windows
     for (let i=0; i<8; i++) {
         makeInstance('/assets/models/GlassWall.glb').then((wall) => {
             wall.scale.set(5, 4.75, 2);
@@ -255,6 +265,7 @@ export function createForum() {
         });
     }
 
+    // Walls
     const wallMat = new THREE.MeshBasicMaterial( { color: 0xffffff, side: THREE.DoubleSide } );
     const BackWall = new THREE.Mesh(
         new THREE.PlaneGeometry(22, 8.1),
@@ -274,6 +285,7 @@ export function createForum() {
 
     /////////////////////////////////////////////////////////
 
+    // functions to open the door
     function openDoor(delta) {
         if (!doorPivot) return;
 

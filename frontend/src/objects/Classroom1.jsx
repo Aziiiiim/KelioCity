@@ -9,6 +9,7 @@ export function createClassroom1() {
     let x = 0
     let z = 0
 
+    // Walls
     const wallGeo1 = new THREE.PlaneGeometry(10, 5);
     const wallGeo2 = new THREE.PlaneGeometry(12, 5);
     const wallMat = new THREE.MeshBasicMaterial( { color: 0xd6d4d0, side: THREE.DoubleSide } );
@@ -16,13 +17,6 @@ export function createClassroom1() {
     const wallMesh1 = new THREE.Mesh(wallGeo1, wallMat);
     wallMesh1.position.set(x+5,2.5,z);
     elements.add(wallMesh1);
-
-    /*
-    const wallMesh2 = new THREE.Mesh(wallGeo2, wallMat);
-    wallMesh2.rotation.y = Math.PI * -.5;
-    wallMesh2.position.set(x,2.5,z+6);
-    elements.add(wallMesh2);
-    */
 
     const wallMesh2_1 = new THREE.Mesh(
         new THREE.PlaneGeometry(9.4, 5),
@@ -58,6 +52,7 @@ export function createClassroom1() {
     wallMesh4.position.set(x+10,2.5,z+6);
     elements.add(wallMesh4);
 
+    // Floor
     const floorGeo = new THREE.PlaneGeometry(10, 12);
     const floorMat = new THREE.MeshBasicMaterial( { color: 0xb3afaf, side: THREE.DoubleSide } );
     const floorMesh = new THREE.Mesh(floorGeo, floorMat);
@@ -65,6 +60,7 @@ export function createClassroom1() {
     floorMesh.position.set(x+5,0.02,z+6);
     elements.add(floorMesh);
 
+    // Wooden decorations
     makeInstance('/assets/models/Wood.glb').then((wood) => {
         wood.position.set(x+2.5,2.5,z-0.02);
         wood.scale.set(10.3,2,10.3);
@@ -80,6 +76,7 @@ export function createClassroom1() {
         elements.add(wood);
     });
 
+    // Projector + board
     makeInstance('/assets/models/Whiteboard1.glb').then((board) => {
         board.position.set(x+0.2,1.5,z+8);
         board.scale.set(2,3.5,3.5);
@@ -93,12 +90,14 @@ export function createClassroom1() {
         elements.add(projector);
     });
 
+    // Window
     makeInstance('/assets/models/GlassWall.glb').then((window) => {
         window.position.set(x+7.6,0,z+12);
         window.scale.set(2.6,2.8,2.6);
         elements.add(window);
     });
 
+    // Deskw
     for (let j=0; j<4; j++) {
         for (let i=0; i<5; i++) {
 
@@ -130,7 +129,7 @@ export function createClassroom1() {
         });
     }
     
-    // Door (avec cache)
+    // Door + functions
     let doorPivot = null;
     let doorOpen = false;
     let doorProgress = 0;
@@ -145,7 +144,6 @@ export function createClassroom1() {
 
         doorPivot.position.set(x , 1.5, z +1);
 
-        // même offset que toi
         doorObj.position.set(-0.88, 0, 0);
 
         doorPivot.add(doorObj);
