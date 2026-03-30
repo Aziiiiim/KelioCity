@@ -53,6 +53,7 @@ export function createInteractionManager({ camera, renderer, targets }) {
   }
 
   function storeOriginal(root) {
+    // store original materials of objects
     let store = originalMaterials.get(root);
     if (!store) {
       store = {};
@@ -67,6 +68,7 @@ export function createInteractionManager({ camera, renderer, targets }) {
   }
 
   function restore(root) {
+    // restore the initial materials of objects
     const mats = originalMaterials.get(root);
     if (!mats) return;
     root.traverse((n) => {
@@ -80,6 +82,7 @@ export function createInteractionManager({ camera, renderer, targets }) {
   }
 
   function applyStyle(root, style) {
+    // apply style like materials and color on the objects from root
     if (!style) return;
     storeOriginal(root);
     root.traverse((n) => {
@@ -111,6 +114,7 @@ export function createInteractionManager({ camera, renderer, targets }) {
   let styleVersion = 0;
 
   async function hover(e) {
+    // modify objects when the mouse hover them
     if (e.target.closest("#sidebar")) return;
     
 
@@ -165,6 +169,7 @@ export function createInteractionManager({ camera, renderer, targets }) {
   }
 
   function click(e) {
+    // modify objects when the mouse click on them
     if (e.target.closest("#sidebar")) return;
     for (const p of plugins) {
       const hits = getMouseHits(e, p.targets);
@@ -231,6 +236,7 @@ export function doorPlugin() {
 }
 
 export function employeePlugin({ camera, controls, charactersGroup, refresh }) {
+  // add controls on employees
   return {
     name: "employee",
     priority: 50,
@@ -270,6 +276,7 @@ export function employeePlugin({ camera, controls, charactersGroup, refresh }) {
 }
 
 export function roomPlugin({camera, controls, onlyTypes = null } = {}) {
+  // add controls on different kind of rooms
   return {
     name: "room",
     priority: 10,

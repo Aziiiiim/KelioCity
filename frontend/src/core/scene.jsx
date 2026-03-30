@@ -88,7 +88,6 @@ const fragmentShader = `
 `;
 
 
-
 let myEmployeeId = null;
 let myCharacterRoot = null; 
 
@@ -102,6 +101,7 @@ export function getMyCharacterRoot() {
 
 
 export function setMode(mode) {
+    // function du swap modes : normal mode to navigate / register mode to select a desk
     const next = (mode === "REGISTER") ? "REGISTER" : "NORMAL";
     if (next === currentMode) return;
 
@@ -120,6 +120,7 @@ function applyMode() {
 }
 
 function setRegisterUIHidden(hidden) {
+    // hide the elements of user inteface for the register mode
     const ids = [
         "search-wrapper",
         "filter-wrapper",
@@ -251,17 +252,17 @@ function clearDeskHighlights() {
 export function createScene(floorId, mode){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
-    // Créer un environnement 3D dégradé avec une sphère
-    const sphereGeometry = new THREE.SphereGeometry(1000, 32, 32); // Sphère géante pour envelopper la scène
+
+    // Create a gradient 3D environment with a sphere
+    const sphereGeometry = new THREE.SphereGeometry(1000, 32, 32); 
     const sphereMaterial = new THREE.ShaderMaterial({
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-      side: THREE.BackSide, // Rendre l'intérieur de la sphère pour qu'elle entoure la caméra
+      side: THREE.BackSide, // Make the inside of the sphere so that it surrounds the camera
     });
     backgroundSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
     scene.add(backgroundSphere);
     _scene = scene;
-    //apiTest();
 
     const { camera, resize: resizeCamera, attachResetButton, attachZoomSelfButton } = createCamera(gameWindow);
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
@@ -272,7 +273,7 @@ export function createScene(floorId, mode){
     currentMode = initialMode;
     myEmployeeId = Number(sessionStorage.getItem("employeeId"));
     async function loadFloor() {
-        // Vider les anciennes données
+        // Clear old data
         characters.forEach(char => {
             scene.groupCharacters.remove(char.scene);
         });
@@ -280,13 +281,13 @@ export function createScene(floorId, mode){
         roomList.length = 0;
         objectList.length = 0;
         
-        // Supprimer l'ancien sol
+        // Remove old floor
         if (currentGround) {
             scene.remove(currentGround);
             currentGround = null;
         }
         
-        // Supprimer les anciennes lumières
+        // Remove old lights
         currentLights.forEach(light => scene.remove(light));
         currentLights.length = 0;
         
@@ -312,7 +313,7 @@ export function createScene(floorId, mode){
             scene.add(scene.groupCharacters);
         }
 
-        // Nettoyer l'ancienne interaction
+        // Clear old interactions
         if (interaction) {
             interaction.dispose?.();
         }
@@ -327,11 +328,11 @@ export function createScene(floorId, mode){
         const bouton_available = document.getElementById("available-btn");
         const bouton_occupied = document.getElementById("occupied-btn");
         
-        // Nettoyer les anciens listeners
+        // Clear old listeners
         bouton_available.replaceWith(bouton_available.cloneNode(true));
         bouton_occupied.replaceWith(bouton_occupied.cloneNode(true));
         
-        // Réattacher les éléments
+        // Reattach the elements
         const new_bouton_available = document.getElementById("available-btn");
         const new_bouton_occupied = document.getElementById("occupied-btn");
         
@@ -582,7 +583,7 @@ export function createScene(floorId, mode){
 
             if (camera.position.y < 0) camera.position.y = 0;
 
-            // Mettre à jour la position de la sphère pour qu'elle suive la caméra
+            // Update the sphere's position so that it follows the camera
             if (backgroundSphere) {
                 backgroundSphere.position.copy(camera.position);
             }
@@ -629,8 +630,8 @@ function findRoomById(roomId) {
 }
 
 async function findEmployeeByDeskId(deskId) {
-  // Option la plus simple: charger tous les employés et filtrer
-  // (si tu as un endpoint /api/desks/{id}/employee, remplace par ça)
+  //The simplest option: load all employees and filter
+  // (if you have an endpoint /api/desks/{id}/employee, replace it with this)
   const res = await apiFetch("/api/employees");
   const employees = await res.json();
   return (employees || []).find(e => Number(e?.desk?.id) === Number(deskId)) || null;

@@ -20,6 +20,7 @@ function onOutsideClick(e){
 }
 
 export function openMenu(){
+  // create the menu with the profile and notifications panel
     if (!menu) return;
 
     menu.classList.remove("hidden");
