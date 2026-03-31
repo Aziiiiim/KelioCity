@@ -37,12 +37,14 @@ Aucune autre installation n'est nécessaire.
 ```bash
 docker compose up
 ```
-Attendre que les 3 services se lancent:
+Attendre que les 3 services se lancent (ça peut être long, bien surveiller les logs):
 - MySQL
 - Backend SpringBoot
 - Frontend Three.js
 
 Puis, le projet sera accessible à l'adresse : <http://localhost:5173> (adresse du frontend)
+
+Le premier lancement peut prendre plusieurs minutes.
 
 Les API du backend sont accessible avec la base <http://localhost:8080>.
 Le port exposé pour la base de donnée est 3307 .
@@ -73,8 +75,27 @@ Voici ce que met en place le **docker-compose.yml** :
 
 ---
 
-## Déploiement
+### Base de données
+
+- La base est initialisée automatiquement au démarrage via le backend (DataInitializer).
+- Pour réinitialiser complètement la base :
+
+```bash
+docker compose down -v
+docker compose up --build
+```
+
 ---
+
+## Déploiement
+
+Il y a un workflow de créé qui permet d'automatiser le déploiement. Il écoute tous les push sur main et se lance. Ce workflow s’exécute sur un **runner GitHub Actions self-hosted**, il faut l'installer et le configurer pour ce dépot. 
+
+Pour rendre l'application accessible depuis l'extérieur, nous avions fait une redirection de ports vers la box internet.
+
+Le runner doit être installé sur une machine disposant de :
+- Docker
+- docker-compose (et pas docker compose !!!)
 
 ## Fonctionnalités
 
