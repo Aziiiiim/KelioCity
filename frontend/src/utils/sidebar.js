@@ -1,6 +1,7 @@
 import { apiFetch } from "./apiFetch.js";
 
 const sidebar = document.getElementById("sidebar");
+
 let currentScheduleDate = new Date();
 let currentEmployeeId = null;
 let currentRoomId = null;
@@ -8,10 +9,12 @@ let currentOfficeRoomId = null;
 let ignoreNextOutsideClick = false;
 
 function onKeyDown(e) {
-  if (e.key === "Escape")closeSidebar();
+  // ferme la sidebar avec Échap
+  if (e.key === "Escape") closeSidebar();
 }
 
 function onOutsideClick(e) {
+  // ferme si clic en dehors
   if (ignoreNextOutsideClick) {
     ignoreNextOutsideClick = false;
     return;
@@ -20,6 +23,7 @@ function onOutsideClick(e) {
 }
 
 function bindCommonSidebarListeners() {
+  // listeners communs à toutes les sidebars
   sidebar.querySelector(".close-btn")?.addEventListener("click", closeSidebar);
 
   sidebar.addEventListener("click", (e) => e.stopPropagation());
@@ -33,9 +37,10 @@ function bindCommonSidebarListeners() {
 }
 
 export function openSidebar(employee) {
+  // ouvre la sidebar d’un employé
   currentEmployeeId = employee.id;
   currentRoomId = null;
-  currentOfficeRoomId  = null;
+  currentOfficeRoomId = null;
   currentScheduleDate = new Date();
 
   sidebar.classList.remove("hidden");
@@ -97,6 +102,7 @@ export function openSidebar(employee) {
     bindCommonSidebarListeners();
     loadSchedule();
 
+    // recharge le vrai statut global depuis l’API
     apiFetch(`/api/employees/${employee.id}/global_status`)
       .then(res => res.text())
       .then(globalStatus => {
@@ -117,11 +123,11 @@ export function openSidebar(employee) {
   });
 }
 
-
 export function openMeetingRoomSidebar(room) {
-  currentRoomId = room.userData.roomId ;
+  // ouvre la sidebar d’une salle de réunion
+  currentRoomId = room.userData.roomId;
   currentEmployeeId = null;
-  currentOfficeRoomId  = null;
+  currentOfficeRoomId = null;
   currentScheduleDate = new Date();
 
   sidebar.classList.remove("hidden");
@@ -152,7 +158,7 @@ export function openMeetingRoomSidebar(room) {
           <div class="info-value">${room.openspaceNumber ?? "—"}</div>
 
           <div class="info-label">Type</div>
-          <div class="info-value">${ room.userData.roomType ?? "—"}</div>
+          <div class="info-value">${room.userData.roomType ?? "—"}</div>
         </div>
       </div>
 
@@ -179,16 +185,16 @@ export function openMeetingRoomSidebar(room) {
     `;
 
     bindCommonSidebarListeners();
-    bindMeetingRoomActions();   
+    bindMeetingRoomActions();
     loadRoomSchedule();
   });
 }
 
-
 export function closeSidebar() {
+  // réinitialise l’état et masque la sidebar
   currentOfficeRoomId = null;
   currentEmployeeId = null;
-  currentRoomId = null
+  currentRoomId = null;
   sidebar.classList.remove("visible");
   sidebar.classList.add("hidden");
 
@@ -197,12 +203,14 @@ export function closeSidebar() {
 }
 
 function changeDay(delta) {
+  // change de jour dans le planning
   currentScheduleDate.setDate(currentScheduleDate.getDate() + delta);
   if (currentEmployeeId) loadSchedule();
   else if (currentRoomId) loadRoomSchedule();
 }
 
 function getDayLabel(date) {
+  // renvoie Aujourd’hui / Demain / date formatée
   const today = new Date();
   const tomorrow = new Date();
   tomorrow.setDate(today.getDate() + 1);
@@ -222,6 +230,7 @@ function getDayLabel(date) {
 }
 
 function renderSchedule(items) {
+  // affiche la liste des événements/réunions
   const list = sidebar.querySelector(".schedule-list");
   list.innerHTML = "";
 
@@ -232,9 +241,9 @@ function renderSchedule(items) {
 
   items.forEach(item => {
     const start = item.startTime.slice(0, 5);
-    const end = item.endTime.slice(0,5);
+    const end = item.endTime.slice(0, 5);
     const cssClass = item.remote ? "focus" : "meeting";
-    
+
     list.innerHTML += `
       <div class="schedule-item ${cssClass}">
         <span class="time">${start}-${end}</span>
@@ -245,6 +254,7 @@ function renderSchedule(items) {
 }
 
 async function loadSchedule() {
+  // charge le planning d’un employé
   if (!currentEmployeeId) return;
 
   const dateStr = currentScheduleDate.toISOString().split("T")[0];
@@ -259,11 +269,13 @@ async function loadSchedule() {
       `/api/employees/${currentEmployeeId}/schedule?date=${dateStr}`
     );
     const items = await res.json();
-      items.sort((a, b) => {
+
+    items.sort((a, b) => {
       const [ah, am] = a.startTime.split(":").map(Number);
       const [bh, bm] = b.startTime.split(":").map(Number);
       return (ah * 60 + am) - (bh * 60 + bm);
     });
+
     renderSchedule(items);
   } catch (e) {
     list.innerHTML = "<em>Erreur de chargement</em>";
@@ -271,6 +283,7 @@ async function loadSchedule() {
 }
 
 async function loadRoomSchedule() {
+  // charge le planning d’une salle de réunion
   if (!currentRoomId) return;
 
   const list = sidebar.querySelector(".schedule-list");
@@ -281,6 +294,7 @@ async function loadRoomSchedule() {
 
   const start = new Date(currentScheduleDate);
   start.setHours(0, 0, 0, 0);
+
   const end = new Date(currentScheduleDate);
   end.setDate(end.getDate() + 1);
   end.setHours(0, 0, 0, 0);
@@ -289,19 +303,24 @@ async function loadRoomSchedule() {
   const endStr = toLocalISOString(end);
 
   try {
-    const res = await apiFetch(`/api/meetings/room/${currentRoomId}/between?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}`);
+    const res = await apiFetch(
+      `/api/meetings/room/${currentRoomId}/between?start=${encodeURIComponent(startStr)}&end=${encodeURIComponent(endStr)}`
+    );
     const meetings = await res.json();
+
     const items = (meetings || []).map(m => ({
       startTime: String(m.startingHour).slice(11, 16),
-      endTime: String(m.endHour).slice(11,16),
+      endTime: String(m.endHour).slice(11, 16),
       title: m.title,
       remote: false
     }));
+
     items.sort((a, b) => {
       const [ah, am] = a.startTime.split(":").map(Number);
       const [bh, bm] = b.startTime.split(":").map(Number);
       return (ah * 60 + am) - (bh * 60 + bm);
     });
+
     renderSchedule(items);
   } catch (e) {
     list.innerHTML = "<em>Erreur de chargement</em>";
@@ -309,11 +328,13 @@ async function loadRoomSchedule() {
 }
 
 function toLocalISOString(date) {
+  // format YYYY-MM-DDTHH:mm:ss
   const pad = (n) => String(n).padStart(2, "0");
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
 }
 
 export function openOfficeSidebar(room) {
+  // ouvre la sidebar d’un bureau / local / amphi
   currentOfficeRoomId = room.userData.roomId;
   currentEmployeeId = null;
   currentRoomId = null;
@@ -362,6 +383,7 @@ export function openOfficeSidebar(room) {
 }
 
 function capacityFromRoomType(roomType) {
+  // capacité statique selon le type
   if (roomType === "Office1Desk") return 1;
   if (roomType === "Office2Desks") return 2;
   if (roomType === "Office4Desks") return 4;
@@ -372,6 +394,7 @@ function capacityFromRoomType(roomType) {
 }
 
 async function loadOfficeOccupants(roomType) {
+  // charge les occupants de la salle/bureau
   const cap = capacityFromRoomType(roomType);
   const capEl = sidebar.querySelector("#office-capacity");
   if (capEl) capEl.textContent = cap ? String(cap) : "—";
@@ -392,6 +415,7 @@ async function loadOfficeOccupants(roomType) {
       list.innerHTML = "<em>Aucun occupant</em>";
       return;
     }
+
     occupants.sort((a, b) =>
       `${a.lastName} ${a.firstName}`.localeCompare(`${b.lastName} ${b.firstName}`, "fr")
     );
@@ -406,10 +430,9 @@ async function loadOfficeOccupants(roomType) {
   }
 }
 
-
 let meetingFormState = {
   open: false,
-  selectedParticipants: [], // {id, firstName, lastName}
+  selectedParticipants: [], // participants sélectionnés
   searchTimer: null,
 };
 
@@ -434,6 +457,7 @@ function bindMeetingRoomActions() {
 }
 
 function renderMeetingForm(container) {
+  // affiche le formulaire de création de réunion
   const dateStr = currentScheduleDate.toISOString().split("T")[0];
 
   container.innerHTML = `
@@ -485,6 +509,7 @@ function renderMeetingForm(container) {
 }
 
 function bindMeetingForm(container) {
+  // branche les events du formulaire
   const form = container.querySelector("#meeting-form");
   const cancelBtn = container.querySelector("#meeting-cancel");
   const qInput = container.querySelector("#participant-q");
@@ -496,7 +521,7 @@ function bindMeetingForm(container) {
     container.innerHTML = "";
   });
 
-  // Recherche participants (debounce léger)
+  // recherche participants avec debounce léger
   qInput?.addEventListener("input", () => {
     const q = qInput.value.trim();
     clearTimeout(meetingFormState.searchTimer);
@@ -519,7 +544,7 @@ function bindMeetingForm(container) {
     }, 200);
   });
 
-  // Fermer dropdown si blur (avec petit délai pour laisser le click passer)
+  // ferme le dropdown après blur
   qInput?.addEventListener("blur", () => {
     setTimeout(() => dropdown.classList.add("hidden"), 150);
   });
@@ -535,10 +560,10 @@ function bindMeetingForm(container) {
 }
 
 function renderParticipantDropdown(results, dropdown, qInput) {
+  // affiche les résultats de recherche des participants
   dropdown.innerHTML = "";
   dropdown.classList.remove("hidden");
 
-  // Filtrer ceux déjà sélectionnés
   const selectedIds = new Set(meetingFormState.selectedParticipants.map(p => Number(p.id)));
   const filtered = (results || []).filter(r => !selectedIds.has(Number(r.id)));
 
@@ -551,23 +576,28 @@ function renderParticipantDropdown(results, dropdown, qInput) {
     const item = document.createElement("div");
     item.className = "participant-item";
     item.textContent = `${emp.firstName} ${emp.lastName}`;
+
     item.addEventListener("pointerdown", (ev) => {
       ev.preventDefault();
+
       meetingFormState.selectedParticipants.push({
         id: emp.id,
         firstName: emp.firstName,
         lastName: emp.lastName,
       });
+
       qInput.value = "";
       dropdown.classList.add("hidden");
       dropdown.innerHTML = "";
       renderParticipantChips();
     });
+
     dropdown.appendChild(item);
   });
 }
 
 function renderParticipantChips() {
+  // affiche les participants ajoutés
   const chips = sidebar.querySelector("#participant-chips");
   if (!chips) return;
 
@@ -586,20 +616,22 @@ function renderParticipantChips() {
   chips.querySelectorAll(".chip-x").forEach(btn => {
     btn.addEventListener("click", () => {
       const id = Number(btn.dataset.id);
-      meetingFormState.selectedParticipants = meetingFormState.selectedParticipants.filter(p => Number(p.id) !== id);
+      meetingFormState.selectedParticipants =
+        meetingFormState.selectedParticipants.filter(p => Number(p.id) !== id);
       renderParticipantChips();
     });
   });
 }
 
 async function submitMeetingForm(container) {
+  // crée la réunion puis ajoute les participants
   const hint = container.querySelector("#meeting-hint");
   const title = container.querySelector("#meeting-title")?.value?.trim();
   const date = container.querySelector("#meeting-date")?.value;
   const start = container.querySelector("#meeting-start")?.value;
   const end = container.querySelector("#meeting-end")?.value;
 
-  const setHint = (msg, ok=false) => {
+  const setHint = (msg, ok = false) => {
     if (!hint) return;
     hint.textContent = msg || "";
     hint.classList.toggle("ok", !!ok);
@@ -609,7 +641,6 @@ async function submitMeetingForm(container) {
   if (!currentRoomId) return setHint("Aucune salle sélectionnée.");
   if (!title) return setHint("Le titre est obligatoire.");
   if (!date || !start || !end) return setHint("Date / heures obligatoires.");
-
   if (start >= end) return setHint("L'heure de fin doit être après l'heure de début.");
 
   const startDT = `${date}T${start}:00`;
@@ -638,6 +669,7 @@ async function submitMeetingForm(container) {
 
     const meeting = await meetingRes.json();
     const meetingId = meeting?.id;
+
     if (!meetingId) {
       setHint("Réunion créée, mais ID manquant.");
       return;

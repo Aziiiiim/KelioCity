@@ -36,14 +36,14 @@ import { createBigAmphi } from '../objects/BigAmphi.jsx';
 import { createSmallAmphi } from '../objects/SmallAmphi.jsx';
 import { createB2Access } from '../objects/B2Access.jsx';
 
-
 let _camera = null;
 let _controls = null;
 let _scene = null;
 let clock = new THREE.Clock();
-const roomList = [];
-const characters = [];
-const objectList = [];
+
+const roomList = [];      // liste des salles affichées
+const characters = [];    // liste des personnages chargés
+const objectList = [];    // liste des objets/salles avec logique
 let interaction = null;
 let currentGround = null;
 const currentLights = [];
@@ -51,8 +51,7 @@ let currentMode = "NORMAL";
 let _reloadFloor = null;
 let backgroundSphere = null;
 
-
-// Shader pour le dégradé de fond 3D
+// Shader pour le fond dégradé 3D
 const vertexShader = `
   varying vec3 vPosition;
   void main() {
@@ -64,29 +63,28 @@ const vertexShader = `
 const fragmentShader = `
   varying vec3 vPosition;
   void main() {
-    // Normaliser la coordonnée Y de la sphère (de -1000 à 1000) vers 0 à 1 pour le dégradé
+    // normalise Y pour créer un dégradé vertical
     float normalizedY = (vPosition.y + 1000.0) / 2000.0;
-    // Dégradé vertical : bleu fixe sur 0-30%, vert fixe sur 70-100%, dégradé entre 30-70%
+
     vec3 colorTop = vec3(0.125, 0.357, 0.588); 
-    // clair et flashy : 0.443, 0.847, 0.941 // plus foncé : 0.275, 0.510, 0.706
     vec3 colorBottom = vec3( 0.345, 0.537, 0.361);
-    //0.345, 0.537, 0.361 // #339b3b
+
     vec3 color;
     float a = 0.4;
     float b = 0.5;
+
     if (normalizedY < a) {
-      color = colorBottom; // Vert fixe en bas
+      color = colorBottom; // bas
     } else if (normalizedY > b) {
-      color = colorTop; // Bleu fixe en haut
+      color = colorTop; // haut
     } else {
-      // Dégradé entre 40% et 60%
       float t = (normalizedY - a) / (b-a);
-      color = mix(colorBottom, colorTop, t);
+      color = mix(colorBottom, colorTop, t); // transition
     }
+
     gl_FragColor = vec4(color, 1.0);
   }
 `;
-
 
 let myEmployeeId = null;
 let myCharacterRoot = null; 
@@ -99,9 +97,8 @@ export function getMyCharacterRoot() {
   return myCharacterRoot;
 }
 
-
 export function setMode(mode) {
-    // function du swap modes : normal mode to navigate / register mode to select a desk
+    // change entre mode normal et mode inscription
     const next = (mode === "REGISTER") ? "REGISTER" : "NORMAL";
     if (next === currentMode) return;
 
@@ -120,7 +117,7 @@ function applyMode() {
 }
 
 function setRegisterUIHidden(hidden) {
-    // hide the elements of user inteface for the register mode
+    // masque/affiche certains éléments UI en mode register
     const ids = [
         "search-wrapper",
         "filter-wrapper",
@@ -139,24 +136,27 @@ function setRegisterUIHidden(hidden) {
 
 function enterRegisterMode() {
     if (!interaction) return;
+
     const banner = document.getElementById("register-banner");
     if (banner) banner.classList.remove("hidden");
+
     setRegisterUIHidden(true); 
     interaction.clearPlugins();
 
     const sidebar = document.getElementById("sidebar");
     if (sidebar) sidebar.classList.add("hidden");
 
+    // active uniquement la sélection de bureau
     interaction.addPlugin(
         deskSelectionPlugin({
             charactersGroup: _scene.groupCharacters,
             onDeskSelected: async (deskId, root) => {
                 try {
-
                     interaction.setPersistentStyle(root, {
                         color: 0x00ff00,
                         emissive: 0x004400
                     });
+
                     const res = await apiFetch(`/api/me/desk`, {
                         method: "PUT",
                         headers: { "Content-Type": "application/json" },
@@ -166,8 +166,9 @@ function enterRegisterMode() {
                     if (!res.ok) {
                         console.error("Assign desk failed:", res.status);
                         interaction.clearPersistentStyle(root);
-                    return;
+                        return;
                     }
+
                     window.history.replaceState({}, "", "/index.html?mode=NORMAL");
                     setMode("NORMAL");
                     await _reloadFloor?.();
@@ -176,18 +177,17 @@ function enterRegisterMode() {
                     console.error(e);
                     interaction.clearPersistentStyle(root);
                 }
-
             }
         })
     );
-    //highlightAvailableDesks();
 }
 
 function exitRegisterMode() {
-
     if (!interaction) return;
+
     const banner = document.getElementById("register-banner");
     if (banner) banner.classList.add("hidden");
+
     setRegisterUIHidden(false); 
     interaction.clearPlugins();
 
@@ -199,8 +199,10 @@ function enterNormalMode() {
 
     interaction.clearPlugins();
 
+    // plugin portes
     interaction.addPlugin(doorPlugin());
 
+    // plugin clic sur employés
     interaction.addPlugin(
         employeePlugin({
             camera: _camera,
@@ -210,6 +212,7 @@ function enterNormalMode() {
         })
     );
 
+    // plugin clic sur salles
     interaction.addPlugin(
         roomPlugin({
             camera: _camera,
@@ -221,8 +224,10 @@ function enterNormalMode() {
     const sidebar = document.getElementById("sidebar");
     if (sidebar) sidebar.classList.remove("hidden");
 }
+
 function exitNormalMode() {
     if (!interaction) return;
+
     interaction.clearPlugins();
 
     const sidebar = document.getElementById("sidebar");
@@ -248,17 +253,16 @@ function clearDeskHighlights() {
     });
 }
 
-
 export function createScene(floorId, mode){
     const gameWindow = document.getElementById('render-target');
     const scene = new THREE.Scene();
 
-    // Create a gradient 3D environment with a sphere
+    // crée un fond sphérique avec shader
     const sphereGeometry = new THREE.SphereGeometry(1000, 32, 32); 
     const sphereMaterial = new THREE.ShaderMaterial({
       vertexShader: vertexShader,
       fragmentShader: fragmentShader,
-      side: THREE.BackSide, // Make the inside of the sphere so that it surrounds the camera
+      side: THREE.BackSide, // on voit l'intérieur de la sphère
     });
     backgroundSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
     scene.add(backgroundSphere);
@@ -267,13 +271,16 @@ export function createScene(floorId, mode){
     const { camera, resize: resizeCamera, attachResetButton, attachZoomSelfButton } = createCamera(gameWindow);
     const {renderer, resize:resizeRenderer} = createRenderer(gameWindow);
     const controls = createControls(camera,gameWindow);
+
     resizeRenderer();
     gameWindow.appendChild(renderer.domElement);
+
     const initialMode = (mode === "REGISTER") ? "REGISTER" : "NORMAL";
     currentMode = initialMode;
     myEmployeeId = Number(sessionStorage.getItem("employeeId"));
+
     async function loadFloor() {
-        // Clear old data
+        // nettoie anciennes données
         characters.forEach(char => {
             scene.groupCharacters.remove(char.scene);
         });
@@ -281,22 +288,24 @@ export function createScene(floorId, mode){
         roomList.length = 0;
         objectList.length = 0;
         
-        // Remove old floor
+        // supprime ancien sol
         if (currentGround) {
             scene.remove(currentGround);
             currentGround = null;
         }
         
-        // Remove old lights
+        // supprime anciennes lumières
         currentLights.forEach(light => scene.remove(light));
         currentLights.length = 0;
         
         if (scene.groupRooms) scene.groupRooms.clear();
         if (scene.groupCharacters) scene.groupCharacters.clear();
 
+        // récupère les bureaux du floor
         const desksRes = await apiFetch(`/api/desks/floor/${floorId}`);
         const desks = await desksRes.json();
 
+        // regroupe les bureaux par salle
         const desksByRoomId = new Map();
         for (const d of desks) {
             const rid = d.room?.id;
@@ -304,6 +313,8 @@ export function createScene(floorId, mode){
             if (!desksByRoomId.has(rid)) desksByRoomId.set(rid, []);
             desksByRoomId.get(rid).push(d);
         }
+
+        // groupes principaux
         if (!scene.groupRooms) {
             scene.groupRooms = new THREE.Group();
             scene.add(scene.groupRooms);
@@ -313,7 +324,7 @@ export function createScene(floorId, mode){
             scene.add(scene.groupCharacters);
         }
 
-        // Clear old interactions
+        // reset interactions
         if (interaction) {
             interaction.dispose?.();
         }
@@ -323,16 +334,18 @@ export function createScene(floorId, mode){
             renderer,
             targets: [scene.groupRooms, scene.groupCharacters],
         });
+
         applyMode();
+
+        // filtres employés dispo/occupés
         const { toggleAvailable, toggleOccupied } = filtersPlugin(scene.groupCharacters);
         const bouton_available = document.getElementById("available-btn");
         const bouton_occupied = document.getElementById("occupied-btn");
         
-        // Clear old listeners
+        // reset listeners en clonant les boutons
         bouton_available.replaceWith(bouton_available.cloneNode(true));
         bouton_occupied.replaceWith(bouton_occupied.cloneNode(true));
         
-        // Reattach the elements
         const new_bouton_available = document.getElementById("available-btn");
         const new_bouton_occupied = document.getElementById("occupied-btn");
         
@@ -343,10 +356,12 @@ export function createScene(floorId, mode){
             toggleOccupied(interaction);
         });
         
+        // charge les salles du floor
         apiFetch("/api/rooms/floor/"+floorId)
         .then(res => res.json())
         .then(rooms => {
             const holes = [];
+
             for (let i=0; i < rooms.length; i++) {
                     const roomType = rooms[i]?.roomType?.roomtypeName;
                     let roomObj = null;
@@ -354,6 +369,7 @@ export function createScene(floorId, mode){
                     const list = desksByRoomId.get(rooms[i].id) || [];
                     const deskIds = list.map(d => d.id);
 
+                    // crée le bon objet selon le type de salle
                     if (roomType === "MeetingRoom") {
                         roomObj = createMeetingRoom();
                     } 
@@ -429,27 +445,35 @@ export function createScene(floorId, mode){
                     else if (roomType === "B2Access") {
                         roomObj = createB2Access();
                     }
+
                     if (roomObj) {
                         roomElements = roomObj.elements;
                         objectList.push(roomObj);
                     }
                     if (!roomElements) continue;
 
+                    // stocke les infos utiles dans userData
                     roomElements.userData.kind = "room";
                     roomElements.userData.roomType = roomType;
                     roomElements.userData.roomId = rooms[i].id;
                     roomElements.userData.roomName = rooms[i]["roomName"];
+
                     if (rooms[i]["nextFloor"] != null) {
                         roomElements.userData.nextFloor = rooms[i]["nextFloor"];
                     }
                     if (rooms[i]["position"] != null) {
                         roomElements.userData.position = rooms[i]["position"];
                     }
+
+                    // rotation de la salle
                     roomElements.rotation.y = (rooms[i]["orientationDeg"] / 180) * Math.PI;
+
                     let newX, newZ;
                     const cosAngle = Math.cos(rooms[i]["orientationDeg"] / 180 * Math.PI);
                     const sinAngle = Math.sin(rooms[i]["orientationDeg"] / 180 * Math.PI);
                     const tanAngle = Math.tan(rooms[i]["orientationDeg"] / 180 * Math.PI);
+
+                    // calcule la vraie position selon l’orientation
                     if ((rooms[i]["orientationDeg"] >= -45 && rooms[i]["orientationDeg"]<45) || (rooms[i]["orientationDeg"] >= -360 && rooms[i]["orientationDeg"]<-315) || (rooms[i]["orientationDeg"] >= 315 && rooms[i]["orientationDeg"]<360)) {
                         newX = rooms[i]["coordX1"];
                         newZ = rooms[i]["coordZ1"];
@@ -463,24 +487,30 @@ export function createScene(floorId, mode){
                         newX = rooms[i]["coordX1"] - rooms[i]["roomType"]["lengthZ"]*sinAngle;
                         newZ = rooms[i]["coordZ1"] - rooms[i]["roomType"]["lengthZ"]*cosAngle;
                     }
+
                     roomElements.position.set(newX, 0, newZ);
+
+                    // crée un "trou" dans le sol pour certains escaliers descendants
                     if (roomElements.userData.roomType.includes("Stairs") && roomElements.userData.position === "down") {
                         if (roomElements.userData.roomType === "StairsB2") {
                             roomElements.position.set(newX, -2.19, newZ);
                         } else {
                             roomElements.position.set(newX, -5, newZ);
                         }
+
                         const hole = new THREE.Path();
                         const dx = rooms[i]["roomType"]["lengthX"];
                         const dz = rooms[i]["roomType"]["lengthZ"];
                         const startX = newX;
                         const startZ = - newZ;
+
                         const getRotatedPoint = (localX, localZ) => {
                             if (roomElements.userData.roomType === "Stairs") localX -= dx;
                             const rotX = localX * cosAngle - localZ * sinAngle;
                             const rotZ = localX * sinAngle + localZ * cosAngle;
                             return { x: startX + rotX, z: startZ + rotZ };
                         };
+
                         const p1 = getRotatedPoint(0, -dz);
                         const p2 = getRotatedPoint(0, 0);
                         const p3 = getRotatedPoint(dx, 0);
@@ -493,16 +523,20 @@ export function createScene(floorId, mode){
                         hole.lineTo(p1.x, p1.z);
                         holes.push(hole);
                     }
+
                     roomList.push(roomElements);
                     scene.groupRooms.add(roomElements);
             }
             
             setMode(currentMode);
+
+            // charge le sol + lumières liées au floor
             apiFetch("/api/floors/"+floorId)
             .then(res => res.json())
             .then(floor => {
                 currentGround = createGround(floor["lengthX"],floor["lengthZ"], holes);
                 scene.add(currentGround);
+
                 const light1 = createLight(-floor["lengthX"]/2,-floor["lengthZ"]/2,floor["lengthX"]/2,floor["lengthZ"]/2);
                 const light2 = createLight(floor["lengthX"]/2,floor["lengthZ"]/2,-floor["lengthX"]/2,-floor["lengthZ"]/2);
                 scene.add(light1);
@@ -510,25 +544,34 @@ export function createScene(floorId, mode){
                 currentLights.push(light1, light2);
             }).catch(err => console.error("Erreur API:", err));
 
+            // charge les employés du floor
             apiFetch("/api/employees/floor/"+floorId)
                 .then(res => res.json())
                 .then(employees => {
                     let loadedChars = 0;
+
                     for (let i=0; i < employees.length; i++) {
                         let spriteName = employees[i]["sprite"].charAt(0) + employees[i]["sprite"].slice(1).toLowerCase();
                         let pos_y = 0;
+
                         if (employees[i]["desk"]["room"]["roomType"]["roomtypeName"] === "Openspace") {
                             pos_y = 0.4;
                         }
+
+                        // charge le personnage 3D de l’employé
                         initChar("/assets/characters/"+spriteName+".glb", function(character) {
                             const roomOrientationRad = -employees[i]["desk"]["room"]["orientationDeg"]/180*Math.PI;
                             const newRelativeCoordX = employees[i]["desk"]["deskType"]["coordX"]*Math.cos(roomOrientationRad)-employees[i]["desk"]["deskType"]["coordZ"]*Math.sin(roomOrientationRad);
                             const newRelativeCoordZ = employees[i]["desk"]["deskType"]["coordX"]*Math.sin(roomOrientationRad)+employees[i]["desk"]["deskType"]["coordZ"]*Math.cos(roomOrientationRad);
+
                             character.scene.rotation.y = (employees[i]["desk"]["deskType"]["orientationDeg"]+employees[i]["desk"]["room"]["orientationDeg"])/180*Math.PI;
+
                             let newX, newZ;
                             const cosAngle = Math.cos(employees[i]["desk"]["room"]["orientationDeg"] / 180 * Math.PI);
                             const sinAngle = Math.sin(employees[i]["desk"]["room"]["orientationDeg"] / 180 * Math.PI);
                             const tanAngle = Math.tan(employees[i]["desk"]["room"]["orientationDeg"] / 180 * Math.PI);
+
+                            // calcule la position réelle du bureau/salarié dans la salle
                             if ((employees[i]["desk"]["room"]["orientationDeg"] >= -45 && employees[i]["desk"]["room"]["orientationDeg"]<45) || (employees[i]["desk"]["room"]["orientationDeg"] >= -360 && employees[i]["desk"]["room"]["orientationDeg"]<-315) || (employees[i]["desk"]["room"]["orientationDeg"] >= 315 && employees[i]["desk"]["room"]["orientationDeg"]<360)) {
                                 newX = employees[i]["desk"]["room"]["coordX1"];
                                 newZ = employees[i]["desk"]["room"]["coordZ1"];
@@ -542,12 +585,17 @@ export function createScene(floorId, mode){
                                 newX = employees[i]["desk"]["room"]["coordX1"] - employees[i]["desk"]["room"]["roomType"]["lengthZ"]*sinAngle;
                                 newZ = employees[i]["desk"]["room"]["coordZ1"] - employees[i]["desk"]["room"]["roomType"]["lengthZ"]*cosAngle;
                             }
+
                             character.scene.position.set(newRelativeCoordX+newX, pos_y, newRelativeCoordZ+newZ);
                             character.play("Sitting");
+
                             character.scene.userData.employee = employees[i];
+
+                            // garde une référence vers mon propre personnage
                             if (myEmployeeId && Number(employees[i]?.id) === myEmployeeId) {
                                 myCharacterRoot = character.scene;
                             }
+
                             scene.groupCharacters.add(character.scene);
                             characters.push(character);
                             loadedChars += 1;
@@ -558,9 +606,11 @@ export function createScene(floorId, mode){
         })
         .catch(err => console.error("Erreur API:", err));
     };
-    _reloadFloor = loadFloor;
 
+    _reloadFloor = loadFloor;
     loadFloor();
+
+    // lumières globales de setup
     const lights = createSetupLight();
     for (let i=0; i<lights.length; i++) {           
         scene.add(lights[i]);
@@ -568,11 +618,13 @@ export function createScene(floorId, mode){
 
     attachResetButton(controls);
     attachZoomSelfButton(controls,() => myCharacterRoot);
+
     function start() {
         function onResize() {
             resizeRenderer();
             resizeCamera();
         }
+
         window.addEventListener('resize', onResize);
         onResize();
 
@@ -583,45 +635,48 @@ export function createScene(floorId, mode){
 
             if (camera.position.y < 0) camera.position.y = 0;
 
-            // Update the sphere's position so that it follows the camera
+            // le fond suit la caméra
             if (backgroundSphere) {
                 backgroundSphere.position.copy(camera.position);
             }
 
+            // met à jour animations et objets
             characters.forEach(c => c.mixer.update(delta));
             objectList.forEach(room => room.openDoor?.(delta));
             
             renderer.render(scene, camera);
         });
-        }
+    }
 
-        function stop() {
-            renderer.setAnimationLoop(null);
-        }
+    function stop() {
+        renderer.setAnimationLoop(null);
+    }
 
-        function updateFloor(floor) {
-            floorId = floor;
-            loadFloor();
-            camera.position.set(10,20,20);
-            controls.reset();
-        }
+    function updateFloor(floor) {
+        floorId = floor;
+        loadFloor();
+        camera.position.set(10,20,20);
+        controls.reset();
+    }
 
-        _camera = camera;
-        _controls = controls;
+    _camera = camera;
+    _controls = controls;
 
-    return { start, stop, updateFloor, scene, camera, renderer, reload: loadFloor  };
+    return { start, stop, updateFloor, scene, camera, renderer, reload: loadFloor };
 }
 
 export function selectEmployee(employeeId) {
     const id = Number(employeeId);
+
     const character = characters.find(
         c => Number(c.scene.userData?.employee?.id) === id
     );
 
     if (!character) return;
+
     const root = character.scene;
     openSidebar(root.userData.employee);
-    cameraOn(_camera, _controls, root);
+    cameraOn(_camera, _controls, root); // focus caméra sur l’employé
 }
 
 function findRoomById(roomId) {
@@ -630,8 +685,7 @@ function findRoomById(roomId) {
 }
 
 async function findEmployeeByDeskId(deskId) {
-  //The simplest option: load all employees and filter
-  // (if you have an endpoint /api/desks/{id}/employee, replace it with this)
+  // cherche l’employé associé à un bureau
   const res = await apiFetch("/api/employees");
   const employees = await res.json();
   return (employees || []).find(e => Number(e?.desk?.id) === Number(deskId)) || null;
@@ -641,13 +695,18 @@ export async function selectDesk(deskId) {
   try {
     const dres = await apiFetch(`/api/desks/${deskId}`);
     if (!dres.ok) return;
+
     const desk = await dres.json();
     const employee = await findEmployeeByDeskId(desk.id);
+
+    // si bureau vide → focus sur la salle
     if (!employee) {
       const roomId = desk?.room?.id;
       if (roomId) selectObject("room", roomId);
       return;
     }
+
+    // sinon focus sur l’employé
     selectEmployee(employee.id);
   } catch (e) {
   }
@@ -658,11 +717,14 @@ export function selectObject(type, id) {
         selectEmployee(id);
         return;
     }
+
     if (type === "room") {
         const roomObj = findRoomById(id);
         if (!roomObj) return;
 
         const roomType = roomObj.userData?.roomType;
+
+        // ouvre la bonne sidebar selon le type de salle
         if (roomType.includes("MeetingRoom")) {
             openMeetingRoomSidebar(roomObj);
         }
@@ -672,10 +734,11 @@ export function selectObject(type, id) {
 
         cameraOn(_camera, _controls, roomObj);
     }
+
     if(type === "desk"){
         selectDesk(id);
         return;
     }
+
     return;
 }
-
